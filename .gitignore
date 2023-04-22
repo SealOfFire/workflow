@@ -11,3 +11,4 @@
 /source/workflow/out/build
 /source/workflow/workflow/ast/.vscode
 /source/workflow/CMakePresets.json
+/.vs
