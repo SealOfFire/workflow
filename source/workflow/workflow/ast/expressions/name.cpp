@@ -1,4 +1,5 @@
 #include "name.h"
+#include "../modules/module.h"
 
 using namespace std;
 using namespace workflow::ast::types;
@@ -11,7 +12,8 @@ Name::Name(string id) : id(id) {}
 /// </summary>
 /// <returns></returns>
 Object* Name::execute(Context* context) {
-    return context->variables.getValue(this->id);
+    return context->currentModule->variables[this->id];
+    //return context->variables.getValue(this->id);
 }
 
 string Name::getClassName() const {

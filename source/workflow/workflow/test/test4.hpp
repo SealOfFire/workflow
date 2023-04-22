@@ -95,7 +95,7 @@ void test4() {
 
     // 模块1中调用模块2的函数2
     map<string, Expression*> arguments3; // 输入参数列表
-    Call module1_call_fun2("func2", arguments3);
+    Call module1_call_fun2("module2", "func2", arguments3);
     Print module1_print_func2_call(&module1_call_fun2); //
     module1.addStatement(&module1_print_func2_call); //
 

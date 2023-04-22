@@ -11,19 +11,36 @@ using namespace workflow::ast::expressions;
 /// 构造函数
 /// </summary>
 /// <param name="name">函数名</param>
-Call::Call(string name, map<string, Expression*> arguments) :name(name), arguments(arguments) {
+Call::Call(string functionName, map<string, Expression*> arguments) :functionName(functionName), arguments(arguments) {
 }
+
+/// <summary>
+/// 
+/// </summary>
+/// <param name="modeuleName"></param>
+/// <param name="functionName"></param>
+/// <param name="arguments"></param>
+Call::Call(string modeuleName, string functionName, map<string, Expression*> arguments) :modeuleName(modeuleName), functionName(functionName), arguments(arguments) {
+}
+
 
 Object* Call::execute(Context* context) {
     //return context->variables[this->id];
 
-    // 循环入参的表达式列表，计算入参
+    Module* module = nullptr;
+    if (this->modeuleName.empty()) {
+        module = context->currentModule;
+    }
+    else
+    {
+        module = context->currentModule->modules[this->modeuleName];
+    }
 
     // 设置输入变量值
-    // TODO 如何获取这个函数变量
-    //FunctionDefinition* func = new FunctionDefinition(this->name);
-    FunctionDefinition* func = context->functions[this->name];
+    //FunctionDefinition* func = context->functions[this->functionName];
+    FunctionDefinition* func = module->functions[this->functionName];
 
+    // 循环入参的表达式列表，计算入参
     // 计算输入参数列表
     for (auto [name, expr] : this->arguments) {
         // 计算结果直接放入函数的局域变量列表
@@ -60,5 +77,14 @@ string Call::toScriptCode(Context* context) {
         args += expr->toScriptCode(context) + ", ";
     }
 
-    return "CALL " + this->name + "(" + args + ")";
+    string output("CALL ");
+    if (this->modeuleName.empty()) {
+        output += this->functionName;
+    }
+    else {
+        output += this->modeuleName + "." + this->functionName;
+    }
+    output += "(" + args + ")";
+
+    return output;
 }

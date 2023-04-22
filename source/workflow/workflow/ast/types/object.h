@@ -23,6 +23,10 @@ namespace workflow::ast::types {
         /// <param name="valueType"></param>
         //Object(void* value);
 
+        //Object operator+(Object &value);
+        virtual Object* Add(Object* value);
+        virtual Object Add(Object& value);
+
         /// <summary>
         /// 获取类型名称
         /// </summary>

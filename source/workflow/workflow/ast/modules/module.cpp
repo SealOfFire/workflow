@@ -26,8 +26,28 @@ void Module::execute(Context* context) {
     //context->parent = this;
     context->modules[this->name] = this;
 
+    //Module* parent = nullptr;
+    //  if (context->currentModule != nullptr) {
+    Module* parent = context->currentModule;
+    // }
+    context->currentModule = this;
+
+    // 把当前模块添加到父模块列表
+    if (this->parent != nullptr) {
+        if (this->parent->getClassName() == Module::className) {
+            ((Module*)this->parent)->modules[this->name] = this;
+        }
+    }
+
     //
-    this->body->run(context);
+    if (this->body != nullptr) {
+        this->body->run(context);
+    }
+
+    // if (parent != nullptr) {
+         // 当前模块运行完，当前模块切换会父模块
+    context->currentModule = parent;
+    //}
 
     // 只保留当前层内的模块，方便函数调用
     // 不能移除

@@ -12,7 +12,7 @@ namespace workflow::ast::statements {
     /// <summary>
     /// 循环
     /// </summary>
-    class While {
+    class While :public Statement {
 
     public:
         static constexpr const char* className = CLASS_NAME_WHILE;
@@ -25,7 +25,9 @@ namespace workflow::ast::statements {
         /// <summary>
         /// 条件结果位true时运行
         /// </summary>
-        Statement* body;
+        Statement* body = nullptr;
+
+        While(Expression* test);
 
         /// <summary>
         /// 

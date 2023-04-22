@@ -17,3 +17,16 @@ string Integer::getClassName() const {
 string Integer::toString() {
     return std::to_string(this->value);
 }
+
+Object* Integer::Add(Object* value) {
+    int result = 0;
+    if (value->getClassName() == Integer::className) {
+        result = this->value + ((Integer*)value)->value;
+    }
+    return new Integer(result);
+}
+
+Object Integer::Add(Object& value) {
+    //int result = this->value + value.value;
+    return Integer(1);
+}

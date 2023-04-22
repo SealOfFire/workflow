@@ -18,6 +18,9 @@ namespace workflow::ast::types {
 
         Integer(int value);
 
+        virtual Object* Add(Object* value);
+        virtual Object Add(Object& value);
+
         virtual string getClassName() const;
 
         virtual string toString();

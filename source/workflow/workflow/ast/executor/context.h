@@ -28,6 +28,7 @@ namespace workflow::ast::executor {
 
     /// <summary>
     /// ast运行时的上下文
+    /// 断点从类属性，改为上下文你中的列表
     /// </summary>
     class Context {
     public:
@@ -58,14 +59,19 @@ namespace workflow::ast::executor {
         //xworkflow::ast::modules::Module* parent = nullptr;
 
         /// <summary>
-        /// 函数列表
+        /// 函数列表 TODO 可删除
         /// </summary>
         map<string, workflow::ast::modules::FunctionDefinition*> functions;
 
         /// <summary>
-        /// 
+        /// TODO 可删除
         /// </summary>
         map<string, workflow::ast::modules::Module*> modules;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        workflow::ast::modules::Module* currentModule = nullptr;
 
         /// <summary>
         /// 错误信息列表

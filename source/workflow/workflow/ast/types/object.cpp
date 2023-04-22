@@ -21,3 +21,14 @@ string Object::getClassName() const {
 string Object::toString() {
     return Object::className;
 }
+
+//Object Object::operator+(Object& value) {
+//    return Object();
+//}
+Object* Object::Add(Object* value) {
+    return this;
+}
+
+Object Object::Add(Object& value) {
+    return Object();
+}

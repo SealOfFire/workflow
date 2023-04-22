@@ -15,6 +15,8 @@ list(APPEND file_list executor/executor.h)
 list(APPEND file_list executor/variableStack.cpp)
 list(APPEND file_list executor/variableStack.h)
 # 表达式
+list(APPEND file_list expressions/binaryOperator.cpp)
+list(APPEND file_list expressions/binaryOperator.h)
 list(APPEND file_list expressions/bool_operate_expression.cpp)
 list(APPEND file_list expressions/bool_operate_expression.h)
 list(APPEND file_list expressions/call.cpp)

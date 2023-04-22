@@ -17,9 +17,14 @@ namespace workflow::ast::expressions {
         static constexpr const char* className = CLASS_NAME_CALL;
 
         /// <summary>
+        /// 模块名
+        /// </summary>
+        string modeuleName;
+
+        /// <summary>
         /// 函数名
         /// </summary>
-        string name;
+        string functionName;
 
         /// <summary>
         /// 输入参数列表
@@ -30,8 +35,15 @@ namespace workflow::ast::expressions {
         /// 构造函数
         /// </summary>
         /// <param name="name">函数名</param>
-        Call(string name, map<string, Expression*> arguments);
+        Call(string functionName, map<string, Expression*> arguments);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="modeuleName"></param>
+        /// <param name="functionName"></param>
+        /// <param name="arguments"></param>
+        Call(string modeuleName, string functionName, map<string, Expression*> arguments);
 
         Object* execute(Context* context);
 

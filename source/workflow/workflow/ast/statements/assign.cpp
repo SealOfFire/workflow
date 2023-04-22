@@ -1,5 +1,6 @@
 ﻿#include "assign.h"
 #include "../expressions/name.h"
+#include "../modules/module.h"
 
 using namespace workflow::ast::executor;
 using namespace workflow::ast::expressions;
@@ -26,8 +27,8 @@ void Assign::execute(Context* context) {
         string name = ((Name*)this->target)->id;
 
         // 在变量存储空间中修改变量名对应的值
-        context->variables.setValue(name, this->value->run(context));
-
+        //context->variables.setValue(name, this->value->run(context));
+        context->currentModule->variables[name] = this->value->run(context);
     }
     else {
         // 字典。或者数组下标赋值
