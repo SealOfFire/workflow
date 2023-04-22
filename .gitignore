@@ -1,0 +1,13 @@
+﻿################################################################################
+# 此 .gitignore 文件已由 Microsoft(R) Visual Studio 自动创建。
+################################################################################
+
+/source/workflow/.idea
+/source/workflow/.vs
+/.vs/workflow/v17
+/source/workflow/cmake-build-debug
+/source/workflow/cmake-build-debug-visual-studio-amd64
+/source/workflow/cmake-build-release-visual-studio-amd64
+/source/workflow/out/build
+/source/workflow/workflow/ast/.vscode
+/source/workflow/CMakePresets.json
