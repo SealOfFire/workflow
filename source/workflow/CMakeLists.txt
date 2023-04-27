@@ -11,6 +11,8 @@ endif()
 
 project ("test")
 
+#add_definitions(-DSHARED_LIB_BUILD="true")
+
 # 包含子项目。
 add_subdirectory ("workflow")
 

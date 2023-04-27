@@ -1,86 +1,112 @@
-﻿project (ast)
+﻿# ------------------------------------
+# 抽象语法树库
+# ------------------------------------
+
+cmake_minimum_required (VERSION 3.8)
+
+project (ast)
 set(CMAKE_CXX_STANDARD 20)
 
 # 项目文件列表
 list(APPEND file_list exceptions/exception.cpp)
-list(APPEND file_list exceptions/exception.h)
 # 执行器
-list(APPEND file_list executor/context.h)
-list(APPEND file_list executor/executeThread.cpp)
-list(APPEND file_list executor/executeThread.h)
-list(APPEND file_list executor/executor.cpp)
-list(APPEND file_list executor/executor.h)
-#list(APPEND file_list executor/moduleStack.cpp)
-#list(APPEND file_list executor/moduleStack.h)
-list(APPEND file_list executor/variableStack.cpp)
-list(APPEND file_list executor/variableStack.h)
+list(APPEND file_list executors/executeThread.cpp)
+list(APPEND file_list executors/executor.cpp)
+list(APPEND file_list executors/variableStack.cpp)
 # 表达式
 list(APPEND file_list expressions/binaryOperator.cpp)
-list(APPEND file_list expressions/binaryOperator.h)
-list(APPEND file_list expressions/bool_operate_expression.cpp)
-list(APPEND file_list expressions/bool_operate_expression.h)
 list(APPEND file_list expressions/call.cpp)
-list(APPEND file_list expressions/call.h)
 list(APPEND file_list expressions/compare.cpp)
-list(APPEND file_list expressions/compare.h)
 list(APPEND file_list expressions/constant.cpp)
-list(APPEND file_list expressions/constant.h)
 list(APPEND file_list expressions/expression.cpp)
-list(APPEND file_list expressions/expression.h)
-list(APPEND file_list expressions/lua.cpp)
-list(APPEND file_list expressions/lua.h)
 list(APPEND file_list expressions/name.cpp)
-list(APPEND file_list expressions/name.h)
 # 模块
 list(APPEND file_list modules/functionDefinition.cpp)
-list(APPEND file_list modules/functionDefinition.h)
 list(APPEND file_list modules/module.cpp)
-list(APPEND file_list modules/module.h)
 # 语句
 list(APPEND file_list statements/assign.cpp)
-list(APPEND file_list statements/assign.h)
 list(APPEND file_list statements/break.cpp)
-list(APPEND file_list statements/break.h)
 list(APPEND file_list statements/condition.cpp)
-list(APPEND file_list statements/condition.h)
 list(APPEND file_list statements/container.cpp)
-list(APPEND file_list statements/container.h)
 list(APPEND file_list statements/continue.cpp)
-list(APPEND file_list statements/continue.h)
 list(APPEND file_list statements/print.cpp)
-list(APPEND file_list statements/print.h)
 list(APPEND file_list statements/return.cpp)
-list(APPEND file_list statements/return.h)
 list(APPEND file_list statements/statement.cpp)
-list(APPEND file_list statements/statement.h)
 list(APPEND file_list statements/while.cpp)
-list(APPEND file_list statements/while.h)
 # 数据类型
 list(APPEND file_list types/boolean.cpp)
-list(APPEND file_list types/boolean.h)
 list(APPEND file_list types/float.cpp)
-list(APPEND file_list types/float.h)
 list(APPEND file_list types/integer.cpp)
-list(APPEND file_list types/integer.h)
 list(APPEND file_list types/null.cpp)
-list(APPEND file_list types/null.h)
 list(APPEND file_list types/object.cpp)
-list(APPEND file_list types/object.h)
 list(APPEND file_list types/string.cpp)
-list(APPEND file_list types/string.h)
-list(APPEND file_list types/types.h)
 list(APPEND file_list types/void.cpp)
-list(APPEND file_list types/void.h)
 #list(APPEND file_list ast.cpp)
 #list(APPEND file_list ast.h)
-list(APPEND file_list common.h)
+#list(APPEND file_list common.h)
 
-add_library(ast STATIC ${file_list})
+list(APPEND headers exceptions/exception.h)
+#
+list(APPEND headers executors/context.h)
+list(APPEND headers executors/executeThread.h)
+list(APPEND headers executors/executor.h)
+list(APPEND headers executors/variableStack.h)
+#
+list(APPEND headers expressions/binaryOperator.h)
+list(APPEND headers expressions/call.h)
+list(APPEND headers expressions/compare.h)
+list(APPEND headers expressions/constant.h)
+list(APPEND headers expressions/expression.h)
+list(APPEND headers expressions/expressions.h)
+list(APPEND headers expressions/name.h)
+#
+list(APPEND headers modules/functionDefinition.h)
+list(APPEND headers modules/module.h)
+list(APPEND headers modules/modules.h)
+#
+list(APPEND headers statements/assign.h)
+list(APPEND headers statements/break.h)
+list(APPEND headers statements/condition.h)
+list(APPEND headers statements/container.h)
+list(APPEND headers statements/continue.h)
+list(APPEND headers statements/print.h)
+list(APPEND headers statements/return.h)
+list(APPEND headers statements/statement.h)
+list(APPEND headers statements/while.h)
+#
+list(APPEND headers types/boolean.h)
+list(APPEND headers types/float.h)
+list(APPEND headers types/integer.h)
+list(APPEND headers types/null.h)
+list(APPEND headers types/object.h)
+list(APPEND headers types/string.h)
+list(APPEND headers types/types.h)
+list(APPEND headers types/void.h)
+
+#add_definitions(-DSHARED_LIB_EXPORT="true")
+
+if(SHARED_LIB_BUILD)
+	add_library(${PROJECT_NAME} SHARED ${headers} ${file_list}) # 动态链接库
+	#target_compile_definitions(ast PUBLIC -DSHARED_LIB_BUILD)
+	#target_compile_definitions(ast PRIVATE -DSHARED_LIB_EXPORT)
+else()
+	add_library(${PROJECT_NAME} STATIC ${headers} ${file_list}) # 静态链接库
+endif()
 
 #[[
-# 添加boost库
-find_package(Boost 1.81.0 COMPONENTS regex)
-include_directories(${Boost_INCLUDE_DIRS})
-link_directories(${Boost_LIBRARY_DIRS})
-target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
+# 导出库头文件
+message(cmake\ bin\ dir:[${CMAKE_BINARY_DIR}])
+#message(${INSTALL_INCLUDEDIR})
+
+include(GenerateExportHeader)
+generate_export_header(${PROJECT_NAME})
+
+message(libary\ install\ dir:[${PROJECT_SOURCE_DIR}])
+message(libary\ install\ dir:[${INCLUDE_INSTALL_DIR}])
+message(libary\ install\ dir:[${PROJECT_BINARY_DIR}])
+install(TARGETS ${PROJECT_NAME} DESTINATION ${LIBRARY_INSTALL_DIR})
+install(FILES
+	types/void.h
+	${PROJECT_BINARY_DIR}/ast_export.h DESTINATION ${PROJECT_SOURCE_DIR}/include/
+)
 ]]

@@ -6,6 +6,12 @@ using namespace workflow::ast::types;
 
 namespace workflow::ast::expressions {
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="left"></param>
+    /// <param name="compareOperator"></param>
+    /// <param name="right"></param>
     Compare::Compare(Expression* left, CompareOperator compareOperator, Expression* right) :left(left), compareOperator(compareOperator), right(right) {
     }
 
@@ -55,6 +61,10 @@ namespace workflow::ast::expressions {
         return new Boolean(result);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     string Compare::getClassName() const {
         return  Compare::className;
     }

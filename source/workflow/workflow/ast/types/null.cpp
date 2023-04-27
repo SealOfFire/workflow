@@ -1,16 +1,18 @@
 ﻿#include "null.h"
 
 using namespace std;
-using namespace workflow::ast::types;
 
-/// <summary>
-/// 
-/// </summary>
-/// <returns></returns>
-string Null::getClassName() const {
-    return Null::className;
-}
+namespace workflow::ast::types {
 
-string Null::toString() {
-    return Null::className;
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    string Null::getClassName() const {
+        return Null::className;
+    }
+
+    string Null::toString() {
+        return Null::className;
+    }
 }

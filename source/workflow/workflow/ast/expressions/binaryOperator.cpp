@@ -37,7 +37,7 @@ namespace workflow::ast::expressions {
             break;
         }
 
-         return result;
+        return result;
     }
 
     string BinaryOperator::getClassName() const {

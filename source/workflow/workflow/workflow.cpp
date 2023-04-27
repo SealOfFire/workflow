@@ -3,45 +3,53 @@
 
 #include "workflow.h"
 
-#define HAVE_SNPRINTF
-//#include <Python.h>
-#ifdef _DEBUG
-#undef _DEBUG
-
-#include <Python.h>
-
-#define _DEBUG
-#else
-#include <Python.h>
-#endif
-
-#include "logger.cpp"
+//#include "logger.cpp"
 
 // ast
 // ast执行器引用
-#include "ast/executor/executor.h"
-#include "ast/executor/executeThread.h"
+//#include "ast/executor/executor.h"
+//#include "ast/executor/executeThread.h"
 // ast的表达式和语句和数据类型引用
-#include "ast/includeAST.h"
+//#include "ast/includeAST.h"
 
-#include "test/test1.hpp"
-#include "test/test2.hpp"
-#include "test/test3.hpp"
-#include "test/test4.hpp"
-#include "test/test5.hpp"
+#define astDebug false
+#if astDebug
+#include "test/ast/test1.hpp"
+#include "test/ast/test2.hpp"
+#include "test/ast/test3.hpp"
+#include "test/ast/test4.hpp"
+#include "test/ast/test5.hpp"
+#else
+#include "framework/test.h"
+#include "framework/expressions/test2.h"
+#include "framework/executors/executor.h"
+#include "test/framework/test1.cpp"
+#endif
 
 using namespace std;
 
 int main() {
-    initLogger();
+    //initLogger();
 
     cout << "Hello CMake." << endl;
 
+#if ast
     //test1();
     //test2();
     //test3();
     //test4();
     test5();
+#else
+    //workflow::framework::Test test;
+    //workflow::framework::expressions::Test2 test2;
+    // test.init();
+
+    test1();
+
+    //workflow::framework::executors::Executor executor;
+    //executor.InitializePython();
+
+#endif
 
     cout << "执行结束" << endl;
 

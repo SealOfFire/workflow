@@ -1,10 +1,21 @@
 ﻿#include "exception.h"
 
 using namespace std;
-using namespace workflow::ast::exceptions;
 
-Exception::Exception(string message) :message(message) {}
+namespace workflow::ast::exceptions {
 
-string Exception::what() const {
-    return this->message;
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="message"></param>
+    Exception::Exception(string message) :message(message) {}
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    string Exception::what() const {
+        return this->message;
+    }
+
 }
