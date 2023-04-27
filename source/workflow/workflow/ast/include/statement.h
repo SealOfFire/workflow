@@ -1,27 +1,23 @@
 ﻿#pragma once
 
-#include<string>
-#include<iostream>
-#include "expressions.h"
-#include "../types/object.h"
+#include <string>
+#include <map>
+#include <iostream>
+#include "statements.h"
 #include "../executor/context.h"
 
 using namespace std;
-using namespace workflow::ast;
 using namespace workflow::ast::executor;
-using namespace workflow::ast::types;
 
-/// <summary>
-/// 
-/// </summary>
-namespace workflow::ast::expressions {
+namespace workflow::ast::statements {
 
     /// <summary>
-    /// 表达式
+    /// 语句
     /// </summary>
-    class Expression {
+    class Statement {
+
     public:
-        static constexpr const char* className = CLASS_NAME_EXPRESSION;
+        static constexpr const char* className = CLASS_NAME_STATEMENT;
 
         /// <summary>
         /// 断点
@@ -29,32 +25,25 @@ namespace workflow::ast::expressions {
         bool breakpoint = false;
 
         /// <summary>
-        /// 
+        /// 当前语句的父节点语句
+        /// </summary>
+        Statement* parent = nullptr;
+
+        /// <summary>
+        /// 执行语句
         /// </summary>
         /// <param name="env"></param>
-        Object* run(Context* context);
+        void run(Context* context);
 
         /// <summary>
-        /// 注释
+        /// 每个脚本子类自己实现执行脚本时的功能
         /// </summary>
-        //string comment;
+        virtual void execute(Context* context);
 
         /// <summary>
-        /// 表达式值
+        /// 获取对象名称
         /// </summary>
-        //string value;
-
-        /// <summary>
-        /// 表达式结果的值类型
-        /// </summary>
-        //ValueType valueType;
-
-        /// <summary>
-        /// 运行表达式
-        /// </summary>
-        /// <returns>返回指向结果的指针</returns>
-        virtual Object* execute(Context* context);
-
+        /// <returns></returns>
         virtual string getClassName() const;
 
         /// <summary>

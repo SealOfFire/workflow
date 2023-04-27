@@ -13,7 +13,7 @@ namespace workflow::ast::types {
     public:
         static constexpr const char* className = CLASS_NAME_STRING;
 
-        std::string value;
+        string value;
 
         /// <summary>
         /// 构造函数
