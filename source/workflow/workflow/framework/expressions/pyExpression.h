@@ -22,6 +22,8 @@ namespace workflow::framework::expressions {
         /// </summary>
         std::string value;
 
+        PyExpression(std::string value);
+
         /// <summary>
         /// 每个脚本子类自己实现执行脚本时的功能
         /// </summary>

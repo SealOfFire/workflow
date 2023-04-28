@@ -1,5 +1,5 @@
 ﻿#pragma once
-
+#include <Python.h>
 #include <string>
 #include "activity.h"
 
@@ -23,6 +23,22 @@ namespace workflow::framework::activities {
 
         // TODO 参数列表
 
+        /// <summary>
+        /// 函数的入参列表
+        /// 安顺序传入
+        /// </summary>
+        vector<Expression*> functionParameters;
+
+        /// <summary>
+        /// 函数的返回值
+        /// </summary>
+        PyObject* functionReturn = nullptr;
+
+        /// <summary>
+        /// 创建一个调用python模块的组件
+        /// </summary>
+        /// <param name="moduleName">模块名称</param>
+        /// <param name="functionName">调用的函数名称</param>
         PyActivity(std::string moduleName, std::string functionName);
 
         /// <summary>
@@ -36,5 +52,27 @@ namespace workflow::framework::activities {
         /// </summary>
         /// <returns></returns>
         virtual std::string toScriptCode(Context* context);
+
+    private:
+
+        /// <summary>
+        /// 设置组件的参数
+        /// </summary>
+        void setParameters(workflow::ast::executors::Context* context, PyObject* pyModule);
+
+        /// <summary>
+        /// 调用函数的入参
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name=""></param>
+        /// <returns></returns>
+        PyObject* getFunctionParameters(workflow::ast::executors::Context* context);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        static PyObject* convertAstObjectToPyObject(workflow::ast::types::Object* value);
     };
 }

@@ -12,14 +12,14 @@
 #include<map>
 #include<iostream>
 #include<string>
-#include "../../ast/executor/executor.h"
-#include "../../ast/executor/executeThread.h"
+#include "../../ast/executors/executor.h"
+#include "../../ast/executors/executeThread.h"
 #include "../../ast/includeAST.h"
 
 void test4() {
     using namespace std;
     using namespace workflow::ast::expressions;
-    using namespace workflow::ast::executor;
+    using namespace workflow::ast::executors;
     using namespace workflow::ast::statements;
     using namespace workflow::ast::modules;
     using namespace workflow::ast::types;

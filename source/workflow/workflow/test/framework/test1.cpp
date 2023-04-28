@@ -2,9 +2,11 @@
 #include <modules/module.h>
 #include "../framework/executors/executeThread.h"
 #include "../framework/activities/pyActivity.h"
+#include "../framework/expressions/pyExpression.h"
 
 using namespace workflow::framework::activities;
 using namespace workflow::framework::executors;
+using namespace workflow::framework::expressions;
 
 void test1() {
 
@@ -13,6 +15,8 @@ void test1() {
 
     // 执行python组件
     PyActivity module1_pyActivity1("activity", "run");
+    module1_pyActivity1.parameters["val1"] = new PyExpression("\"ccccc\""); // 添加python 组件的变量
+    module1_pyActivity1.parameters["val2"] = new PyExpression("3+5");// 添加python 组件的变量
     module1.addStatement(&module1_pyActivity1);
 
     // 打印脚本

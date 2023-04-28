@@ -22,6 +22,8 @@ namespace workflow::framework::activities {
         // TODO 执行后延迟
         // TODO 错误执行
 
+        const char* paramterTypeName = "Parameter";
+
         /// <summary>
         /// 参数列表
         /// </summary>

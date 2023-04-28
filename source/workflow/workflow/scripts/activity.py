@@ -14,4 +14,6 @@ def run():
 	执行组件
 	"""
 	print("activity run")
+	print(val1.result)
+	print(val2.result)
 

@@ -41,6 +41,9 @@ list(APPEND headers expressions/luaExpression.h)
 list(APPEND headers expressions/pyExpression.h)
 list(APPEND file_list expressions/test2.cpp)
 list(APPEND file_list expressions/test2.h)
+#
+list(APPEND file_list types/astPyObject.cpp)
+list(APPEND headers types/astPyObject.h)
 
 list(APPEND file_list test.cpp)
 list(APPEND file_list test.h)
@@ -59,7 +62,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..
 target_link_libraries(${PROJECT_NAME} lua)
 
 #python3 link
-target_include_directories(${PROJECT_NAME} PRIVATE ${Python3_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} PUBLIC ${Python3_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ${Python3_LIBRARIES})
 
 # copy dll到目标位置
