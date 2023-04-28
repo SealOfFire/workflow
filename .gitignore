@@ -12,3 +12,6 @@
 /source/workflow/workflow/ast/.vscode
 /source/workflow/CMakePresets.json
 /.vs
+
+*/__pycache__
+/source/workflow/scripts/__pycache__
