@@ -37,6 +37,7 @@ namespace workflow::framework::activities {
             return;
         }
 
+        // 计算模块的输入参数
         // 设置模块的全局参数
         this->setParameters(context, pModule);
 
@@ -52,12 +53,11 @@ namespace workflow::framework::activities {
             return;
         }
 
-        // 计算模块的输入参数
-
         // 调用模块中的运行函数
         PyObject_CallObject(pFunc, pArgs);
 
-        // 计算模块的输出参数
+        // TODO 计算模块的输出参数
+
 
         // 释放资源
         Py_CLEAR(pArgs);

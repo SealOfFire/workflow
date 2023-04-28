@@ -14,4 +14,4 @@
 /.vs
 
 */__pycache__
-/source/workflow/scripts/__pycache__
+/source/workflow/workflow/scripts/__pycache__
