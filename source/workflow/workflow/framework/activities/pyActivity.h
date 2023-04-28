@@ -30,7 +30,8 @@ namespace workflow::framework::activities {
         vector<Expression*> functionParameters;
 
         /// <summary>
-        /// TODO 函数的返回值
+        /// 函数的返回值
+        /// TODO 没有释放
         /// </summary>
         PyObject* functionReturn = nullptr;
 

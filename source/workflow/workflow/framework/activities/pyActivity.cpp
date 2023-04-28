@@ -19,14 +19,12 @@ namespace workflow::framework::activities {
     /// <param name="context"></param>
     void PyActivity::executeActivity(workflow::ast::executors::Context* context) {
 
-        // 
+        //
         if (!Py_IsInitialized()) {
             // TODO 最后改成异常
             std::cout << "python 初始化出错" << std::endl;
             return;
         }
-
-        //PyRun_SimpleString("print(sys.path)");
 
         // 根据模块名导入模块
         // 调用python文件名，不需要写后缀
@@ -54,7 +52,8 @@ namespace workflow::framework::activities {
         }
 
         // 调用模块中的运行函数
-        PyObject_CallObject(pFunc, pArgs);
+        //PyObject_CallObject(pFunc, pArgs);
+        this->functionReturn = PyEval_CallObject(pFunc, pArgs); // 带返回值的函数调用
 
         // TODO 计算模块的输出参数
 
