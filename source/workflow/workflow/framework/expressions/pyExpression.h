@@ -1,8 +1,8 @@
 ﻿#pragma once
-
 #include <executors/context.h>
 #include <expressions/expression.h>
 #include <types/object.h>
+#include "expressions.h"
 #include "../../exportLib.h"
 
 using namespace workflow::ast::executors;
@@ -16,6 +16,7 @@ namespace workflow::framework::expressions {
     /// </summary>
     class SHARED_LIB_API PyExpression : public Expression {
     public:
+        static constexpr const char* className = CLASS_NAME_PY_EXPRESSION;
 
         /// <summary>
         /// 表达式脚本
@@ -35,5 +36,17 @@ namespace workflow::framework::expressions {
         /// </summary>
         /// <returns></returns>
         virtual std::string toScriptCode(Context* context);
+
+        virtual string getClassName() const;
+
+        /// <summary>
+        /// 表达式是否是变量。如果是变量，返回变量名字符串
+        /// 不是变量返回null
+        /// </summary>
+        /// <returns></returns>
+        virtual std::string isName();
+
+    private:
+
     };
 }

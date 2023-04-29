@@ -26,7 +26,7 @@ namespace workflow::ast::expressions {
     /// <returns></returns>
     Object* Constant::execute(Context* context) {
         //Expression::execute(env);
-
+        // TODO 正则匹配的表达式改成静态常量
         // 判断数组类型是否是字符串
         // 前后是否有双引号或单引号。中间包含的引号都是转移符号的引号
         // https://dev.to/xowap/the-string-matching-regex-explained-step-by-step-4lkp
@@ -36,7 +36,9 @@ namespace workflow::ast::expressions {
         //bool flag = regex_match(this->value, regexString);
         if (regex_match(this->value, regexString)) {
             // 字符串常量
-            return new String(this->value);
+            // 去掉前后的引号转义
+            //std:string val2 = this->value.substr(1, this->value.size() - 2);
+            return new String(this->value.substr(1, this->value.size() - 2));
         }
 
         // 匹配null

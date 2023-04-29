@@ -24,5 +24,8 @@ namespace workflow::ast::types {
         virtual string getClassName() const;
 
         virtual string toString();
+
+        static std::string stringToUTF8(const std::string str);
+        static std::string UTF8ToString(const std::string str);
     };
 }

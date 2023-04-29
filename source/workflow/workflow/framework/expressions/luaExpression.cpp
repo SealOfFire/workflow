@@ -18,4 +18,12 @@ namespace workflow::framework::expressions {
     std::string LuaExpression::toScriptCode(Context* context) {
         return "LuaExpression(" + this->value + ")";
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    string LuaExpression::getClassName() const {
+        return LuaExpression::className;
+    }
 }

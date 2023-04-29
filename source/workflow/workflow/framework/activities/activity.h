@@ -25,9 +25,9 @@ namespace workflow::framework::activities {
         const char* paramterTypeName = "Parameter";
 
         /// <summary>
-        /// 参数列表
+        /// 组件的属性列表
         /// </summary>
-        std::map<std::string, Expression*> parameters;
+        std::map<std::string, Expression*> properties;
 
         /// <summary>
         /// 

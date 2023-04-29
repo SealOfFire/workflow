@@ -5,5 +5,6 @@ https://zhuanlan.zhihu.com/p/570430778
 C++ python
 https://blog.csdn.net/jindayue/article/details/128182555
 https://docs.python.org/3/extending/extending.html
+https://docs.python.org/zh-cn/3/c-api/index.html
 
 C# 编写组件，用托管C++写个中间层

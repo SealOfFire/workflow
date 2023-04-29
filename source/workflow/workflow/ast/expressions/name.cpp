@@ -29,4 +29,12 @@ namespace workflow::ast::expressions {
         return this->id;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    std::string Name::isName() {
+        return this->id;
+    }
+
 }

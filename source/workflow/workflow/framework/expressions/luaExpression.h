@@ -3,6 +3,7 @@
 #include <executors/context.h>
 #include <expressions/expression.h>
 #include <types/object.h>
+#include "expressions.h"
 #include "../../exportLib.h"
 
 using namespace workflow::ast::executors;
@@ -16,6 +17,7 @@ namespace workflow::framework::expressions {
     /// </summary>
     class SHARED_LIB_API LuaExpression : public Expression {
     public:
+        static constexpr const char* className = CLASS_NAME_LUA_EXPRESSION;
 
         /// <summary>
         /// 表达式脚本
@@ -33,5 +35,7 @@ namespace workflow::framework::expressions {
         /// </summary>
         /// <returns></returns>
         virtual std::string toScriptCode(Context* context);
+
+        virtual string getClassName() const;
     };
 }

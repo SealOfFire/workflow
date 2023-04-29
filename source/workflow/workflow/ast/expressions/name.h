@@ -34,5 +34,12 @@ namespace workflow::ast::expressions {
         /// </summary>
         /// <returns></returns>
         virtual string toScriptCode(Context* context);
+
+        /// <summary>
+        /// 表达式是否是变量。如果是变量，返回变量名字符串
+        /// 不是变量返回null
+        /// </summary>
+        /// <returns></returns>
+        virtual std::string isName();
     };
 }

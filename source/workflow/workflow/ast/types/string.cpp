@@ -19,4 +19,13 @@ namespace workflow::ast::types {
     string String::toString() {
         return this->value;
     }
+
+    string String::stringToUTF8(const std::string str) {
+        //int nwLen = ::MultiByteToWideChar();
+        return nullptr;
+    }
+
+    string String::UTF8ToString(const std::string str) {
+        return nullptr;
+    }
 }

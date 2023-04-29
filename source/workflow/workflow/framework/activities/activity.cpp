@@ -15,7 +15,7 @@ namespace workflow::framework::activities {
         // TODO错误执行
         try {
             // 计算表达式
-            for (auto [name, expr] : this->parameters) {
+            for (auto [name, expr] : this->properties) {
                 Object* value = expr->run(context);
                 // 表达式结果传入到python中
             }

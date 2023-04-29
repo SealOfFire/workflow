@@ -62,4 +62,13 @@ namespace workflow::ast::expressions {
         //ring indent(context->indentCount * context->indentLevel, ' ');
         return "ScriptCode";
     }
+
+    /// <summary>
+    /// 表达式是否是变量。如果是变量，返回变量名字符串
+    /// 不是变量返回空字符串
+    /// </summary>
+    /// <returns></returns>
+    std::string Expression::isName() {
+        return std::string();
+    }
 }

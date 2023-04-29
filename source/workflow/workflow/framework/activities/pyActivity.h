@@ -1,6 +1,8 @@
 ﻿#pragma once
+#include <stdio.h>
 #include <Python.h>
 #include <string>
+#include "activities.h"
 #include "activity.h"
 
 namespace workflow::framework::activities {
@@ -54,12 +56,51 @@ namespace workflow::framework::activities {
         /// <returns></returns>
         virtual std::string toScriptCode(Context* context);
 
-    private:
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        static PyObject* convertAstObjectToPyObject(workflow::ast::types::Object* value);
 
         /// <summary>
-        /// 设置组件的参数
+        /// 
         /// </summary>
-        void setParameters(workflow::ast::executors::Context* context, PyObject* pyModule);
+        static workflow::ast::types::Object* convertPyObjectToAstObject(PyObject* value);
+
+    private:
+
+        //typedef void (PyActivity::* changePropertiesFunction)(const char*, PyObject*);
+
+        /// <summary>
+        /// 加载的python脚本模块
+        /// </summary>
+        PyObject* pyModule;
+
+        /// <summary>
+        /// 遍历属性
+        /// </summary>
+        /// <param name="context"></param>
+        void iterateProperties(workflow::ast::executors::Context* context, bool set);
+
+        /// <summary>
+        /// TODO 可删除
+        /// 设置组件的属性
+        /// 组件的属性列表中的变量名和python脚本中的全局变量名称一致的时候，会把属性列表的值传递到python脚本中
+        /// </summary>
+        void setProperties(const char* attributeName, PyObject* value);
+
+        /// <summary>
+        /// TODO 可删除
+        /// </summary>
+        /// <param name="attributeName"></param>
+        PyObject* getProperties(const char* attributeName);
+
+        /// <summary>
+        /// TODO 可删除
+        /// </summary>
+        /// <param name="context"></param>
+        void setParameters(workflow::ast::executors::Context* context);
 
         /// <summary>
         /// 调用函数的入参
@@ -69,11 +110,5 @@ namespace workflow::framework::activities {
         /// <returns></returns>
         PyObject* getFunctionParameters(workflow::ast::executors::Context* context);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        static PyObject* convertAstObjectToPyObject(workflow::ast::types::Object* value);
     };
 }

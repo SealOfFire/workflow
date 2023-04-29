@@ -11,8 +11,8 @@
 #include<map>
 #include<iostream>
 #include<string>
-#include "../../ast/executor/executor.h"
-#include "../../ast/executor/executeThread.h"
+#include "../../ast/executors/executor.h"
+#include "../../ast/executors/executeThread.h"
 #include "../../ast/includeAST.h"
 
 void test5() {

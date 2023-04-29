@@ -1,9 +1,15 @@
 #include <executors/context.h>
+#include <expressions/constant.h>
+#include <expressions/name.h>
 #include <modules/module.h>
+#include <statements/assign.h>
+#include <statements/print.h>
+
 #include "../framework/executors/executeThread.h"
 #include "../framework/activities/pyActivity.h"
 #include "../framework/expressions/pyExpression.h"
 
+using namespace workflow;
 using namespace workflow::framework::activities;
 using namespace workflow::framework::executors;
 using namespace workflow::framework::expressions;
@@ -13,11 +19,24 @@ void test1() {
     // 模块1
     Module module1("module1");
 
+    // 模块添加局域变量
+    // val1 = "111";
+    ast::expressions::Constant module1_constant_0("\"c++\""); // int 0
+    ast::expressions::Name module1_name1_val1("val1"); // 定义变量 val1
+    ast::statements::Assign module1_assign1_val1(&module1_name1_val1, &module1_constant_0); // 赋值 val1=0
+    module1.addStatement(&module1_assign1_val1);
+
     // 执行python组件
     PyActivity module1_pyActivity1("activity", "run");
-    module1_pyActivity1.parameters["val1"] = new PyExpression("\"ccccc\""); // 添加python 组件的变量
-    module1_pyActivity1.parameters["val2"] = new PyExpression("3+5");// 添加python 组件的变量
+    module1_pyActivity1.properties["val1"] = new PyExpression("val1"); // 当前模块的局域变量val1传入到python的val1中
+    //module1_pyActivity1.parameters["val1"] = new PyExpression("\"ccccc\""); // 添加python 组件的变量
+    module1_pyActivity1.properties["val2"] = new PyExpression("3+5");// 添加python 组件的变量
     module1.addStatement(&module1_pyActivity1);
+
+    // 打印ast中的val1
+    // 打印val1值
+    ast::statements::Print module1_print_val1(&module1_name1_val1);// 打印
+    module1.addStatement(&module1_print_val1);
 
     // 打印脚本
     Context context;
