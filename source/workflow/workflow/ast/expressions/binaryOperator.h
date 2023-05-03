@@ -14,16 +14,25 @@ namespace workflow::ast::expressions {
     public:
         static constexpr const char* className = CLASS_NAME_BINARY_OPERATOR;
 
-        // 运算符
-        Operator op;
-
-        Expression* left; // 左表达式
-        Expression* right; // 右表达式
-
+        /// <summary>
+        /// 创建一个双目运算表达式
+        /// </summary>
+        /// <param name="left">左表达式</param>
+        /// <param name="op">运算符</param>
+        /// <param name="right">右表达式</param>
         BinaryOperator(Expression* left, Operator op, Expression* right);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         Object* execute(Context* context);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         virtual string getClassName() const;
 
         /// <summary>
@@ -31,5 +40,23 @@ namespace workflow::ast::expressions {
         /// </summary>
         /// <returns></returns>
         virtual string toScriptCode(Context* context);
+
+    private:
+
+        /// <summary>
+        /// 运算符
+        /// </summary>
+        Operator op;
+
+        /// <summary>
+        /// 左表达式
+        /// </summary>
+        Expression* left = nullptr;
+
+        /// <summary>
+        /// 右表达式
+        /// </summary>
+        Expression* right = nullptr;
+
     };
 }

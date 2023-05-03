@@ -18,13 +18,17 @@ namespace workflow::ast::exceptions {
         /// </summary>
         string message;
 
+        /// <summary>
+        /// 错误对象
+        /// </summary>
+        void* object;
 
     public:
         /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="message"></param>
-        Exception(string message);
+        Exception(void* object, string message);
 
         virtual string what() const;
 

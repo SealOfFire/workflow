@@ -32,7 +32,15 @@ namespace workflow::ast {
     /// 运行模式
     /// </summary>
     enum ExecuteMode {
+
+        /// <summary>
+        /// 
+        /// </summary>
         Release,
+
+        /// <summary>
+        /// 
+        /// </summary>
         Debug
     };
 

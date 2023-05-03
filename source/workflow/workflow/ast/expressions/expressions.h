@@ -10,3 +10,7 @@
 #define CLASS_NAME_EXPRESSION "workflow::ast::expressions::Expression"
 #define CLASS_NAME_NAME "workflow::ast::expressions::Name"
 
+#define EXPECTION_MESSAGE_BINARY_OP_LEFT "双目运算符的左表达式为空"
+#define EXPECTION_MESSAGE_BINARY_OP_RIGHT "双目运算符的左表达式为空"
+#define EXPECTION_MESSAGE_CALL_MODULE "函数调用的模块为空:"
+#define EXPECTION_MESSAGE_CALL_FUN_NAME "函数调用的函数名称找不到:"

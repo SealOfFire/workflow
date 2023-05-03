@@ -8,7 +8,7 @@ namespace workflow::ast::exceptions {
     /// 
     /// </summary>
     /// <param name="message"></param>
-    Exception::Exception(string message) :message(message) {}
+    Exception::Exception(void* object, string message) :object(object), message(message) {}
 
     /// <summary>
     /// 

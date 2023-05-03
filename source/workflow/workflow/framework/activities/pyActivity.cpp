@@ -355,10 +355,50 @@ namespace workflow::framework::activities {
         // TODO
         if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_STRING) &&
             (strncmp(value->ob_type->tp_name, PY_TYPE_STRING, strlen(PY_TYPE_STRING))) == 0) {
+            // 字符串类型
             Py_ssize_t size;
             const char* ptr = PyUnicode_AsUTF8AndSize(value, &size);
             std::string str(ptr, size);
             return new ast::types::String(str);
+        }
+        else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_INTEGER) &&
+            (strncmp(value->ob_type->tp_name, PY_TYPE_INTEGER, strlen(PY_TYPE_INTEGER))) == 0) {
+            // integer
+            // TODO
+        }
+        else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_FLOAT) &&
+            (strncmp(value->ob_type->tp_name, PY_TYPE_FLOAT, strlen(PY_TYPE_FLOAT))) == 0) {
+            // float
+            // TODO
+        }
+        else     if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_NONE) &&
+            (strncmp(value->ob_type->tp_name, PY_TYPE_NONE, strlen(PY_TYPE_NONE))) == 0) {
+            // none
+            // TODO
+        }
+        else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_DICTIONARY) &&
+            (strncmp(value->ob_type->tp_name, PY_TYPE_DICTIONARY, strlen(PY_TYPE_DICTIONARY))) == 0) {
+            // dict
+            // TODO
+        }
+        else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_LIST) &&
+            (strncmp(value->ob_type->tp_name, PY_TYPE_LIST, strlen(PY_TYPE_LIST))) == 0) {
+            // list
+            // TODO
+        }
+        else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_BOOLEAN) &&
+            (strncmp(value->ob_type->tp_name, PY_TYPE_BOOLEAN, strlen(PY_TYPE_BOOLEAN))) == 0) {
+            // bool
+            // TODO
+        }
+        else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_TUPLE) &&
+            (strncmp(value->ob_type->tp_name, PY_TYPE_TUPLE, strlen(PY_TYPE_TUPLE))) == 0) {
+            // tuple
+            // TODO
+        }
+        else {
+            // 其他的python数据类型。直接保存为python数据
+            return new framework::types::AstPyObject(value);
         }
 
         return new ast::types::Object();

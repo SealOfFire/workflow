@@ -23,11 +23,9 @@ namespace workflow::framework::activities {
         /// </summary>
         std::string functionName;
 
-        // TODO 参数列表
-
         /// <summary>
         /// 函数的入参列表
-        /// 安顺序传入
+        /// 按顺序传入
         /// </summary>
         vector<Expression*> functionParameters;
 

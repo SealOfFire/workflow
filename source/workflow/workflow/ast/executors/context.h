@@ -51,6 +51,7 @@ namespace workflow::ast::executors {
         DebugMode debugMode;
 
         /// <summary>
+        /// TODO可删除
         /// 变量列表，容器内的语句使用同一层级的作用域变量
         /// 变量栈，
         /// 执行容器型语句的时候压入当前容器的的变量列表

@@ -22,6 +22,11 @@ namespace workflow::framework::activities {
         // TODO 执行后延迟
         // TODO 错误执行
 
+
+        /// <summary>
+        /// TODO 可删除
+        /// 不使用特定类型来处理
+        /// </summary>
         const char* paramterTypeName = "Parameter";
 
         /// <summary>

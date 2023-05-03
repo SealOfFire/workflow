@@ -9,6 +9,8 @@ set(CMAKE_CXX_STANDARD 20)
 
 # 项目文件列表
 list(APPEND file_list exceptions/exception.cpp)
+list(APPEND file_list exceptions/keyNotFoundException.cpp)
+list(APPEND file_list exceptions/nullReferenceException.cpp)
 # 执行器
 list(APPEND file_list executors/executeThread.cpp)
 list(APPEND file_list executors/executor.cpp)
@@ -45,8 +47,10 @@ list(APPEND file_list types/void.cpp)
 #list(APPEND file_list ast.cpp)
 #list(APPEND file_list ast.h)
 #list(APPEND file_list common.h)
-
+#---------------------------------------------------------
 list(APPEND headers exceptions/exception.h)
+list(APPEND file_list exceptions/keyNotFoundException.h)
+list(APPEND headers exceptions/nullReferenceException.h)
 #
 list(APPEND headers executors/context.h)
 list(APPEND headers executors/executeThread.h)

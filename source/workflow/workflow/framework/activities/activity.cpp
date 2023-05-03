@@ -1,4 +1,5 @@
 ﻿#include "activity.h"
+#include <exceptions/exception.h>
 
 using namespace workflow::ast::executors;
 using namespace workflow::ast::statements;
@@ -22,7 +23,7 @@ namespace workflow::framework::activities {
 
             this->executeActivity(context);
         }
-        catch (int i) {
+        catch (ast::exceptions::Exception exception) {
 
         }
 

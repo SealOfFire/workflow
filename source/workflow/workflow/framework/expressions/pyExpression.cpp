@@ -53,7 +53,9 @@ namespace workflow::framework::expressions {
         //PyTypeObject* typeObject = result->ob_type;
         //std::cout << typeObject->tp_name << std::endl;
 
-        AstPyObject object(result);
+        // TODO resultValue需要delete
+        AstPyObject* returnValue = new AstPyObject(result);
+
         /*
         int nResult;
         int pyResult = PyArg_Parse(result, "i", &nResult);
@@ -63,7 +65,7 @@ namespace workflow::framework::expressions {
         }
         */
 
-        return &object;
+        return returnValue;
     }
 
     std::string PyExpression::toScriptCode(Context* context) {
