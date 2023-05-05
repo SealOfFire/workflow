@@ -61,6 +61,11 @@ namespace workflow::ast::executors {
         VariableStack variables;
 
         /// <summary>
+        /// 全局变量
+        /// </summary>
+        map<string, Object*> globalVariables;
+
+        /// <summary>
         /// 模块
         /// </summary>
         //xworkflow::ast::modules::Module* parent = nullptr;

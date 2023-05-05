@@ -397,7 +397,7 @@ namespace workflow::framework::activities {
             // float
             // TODO
         }
-        else     if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_NONE) &&
+        else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_NONE) &&
             (strncmp(value->ob_type->tp_name, PY_TYPE_NONE, strlen(PY_TYPE_NONE))) == 0) {
             // none
             // TODO
@@ -411,6 +411,8 @@ namespace workflow::framework::activities {
             (strncmp(value->ob_type->tp_name, PY_TYPE_LIST, strlen(PY_TYPE_LIST))) == 0) {
             // list
             // TODO
+            int a = 0;
+            a++;
         }
         else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_BOOLEAN) &&
             (strncmp(value->ob_type->tp_name, PY_TYPE_BOOLEAN, strlen(PY_TYPE_BOOLEAN))) == 0) {

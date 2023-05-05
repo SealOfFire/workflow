@@ -5,6 +5,8 @@ python组件
 
 from parameter import Parameter
 
+#import 全局变量
+
 # 定义输出输出参数
 val1 = "value1";
 val2 = "value2"
@@ -18,5 +20,6 @@ def run():
 	print(val1)
 	print(val2)
 	val1="python change val1 value";
+	val1=[1,2,3]
 
 #run()

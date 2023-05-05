@@ -8,3 +8,5 @@
 #define CLASS_NAME_OBJECT "workflow::ast::types::Object"
 #define CLASS_NAME_STRING "workflow::ast::types::String"
 #define CLASS_NAME_VOID "workflow::ast::types::Void"
+#define CLASS_NAME_LIST "workflow::ast::types::List"
+#define CLASS_NAME_DICT "workflow::ast::types::Dictionary"
