@@ -44,11 +44,12 @@ namespace workflow::ast::expressions {
         }
 
         if (module == nullptr) {
+            // 模块不存在
             throw ast::exceptions::NullReferenceException(this, EXPECTION_MESSAGE_CALL_MODULE + this->modeuleName);
         }
 
         if (module->functions.count(this->functionName) == 0) {
-            // 函数名称不对
+            // 函数名称不存在
             throw ast::exceptions::KeyNotFoundException(this, EXPECTION_MESSAGE_CALL_FUN_NAME + this->functionName);
         }
 

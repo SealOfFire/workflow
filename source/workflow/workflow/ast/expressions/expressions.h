@@ -14,3 +14,6 @@
 #define EXPECTION_MESSAGE_BINARY_OP_RIGHT "双目运算符的左表达式为空"
 #define EXPECTION_MESSAGE_CALL_MODULE "函数调用的模块为空:"
 #define EXPECTION_MESSAGE_CALL_FUN_NAME "函数调用的函数名称找不到:"
+
+#define EXPECTION_MESSAGE_NAME_MODULE "局域变量引用，模块不存在"
+#define EXPECTION_MESSAGE_NAME_ID "局域变量引用，找不到变量名:"

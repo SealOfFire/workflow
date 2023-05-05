@@ -15,6 +15,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../lua ${CMAKE_CURRENT_BINARY_DIR}/
 
 # 添加python库引用
 set(Python3_ROOT_DIR "D:/Program Files/Python310")
+#set(Python3_ROOT_DIR "D:/ProgramData/Anaconda3/envs/DeepAIEnviroment32")
 find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
 message(Python\ root:[${Python3_ROOT_DIR}])
 message(Python\ version:[${Python3_VERSION}])

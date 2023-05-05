@@ -45,6 +45,9 @@ namespace workflow::framework::expressions {
                 std::cout << "添加局域变量出错" << std::endl;
             }
 
+            Py_DECREF(key);
+            Py_DECREF(object);
+
             //Py_CLEAR(key);
             //Py_CLEAR(object);
         }
@@ -64,6 +67,9 @@ namespace workflow::framework::expressions {
             std::cout << "表达式计算出错" << std::endl;
         }
         */
+
+        Py_DECREF(global_dict);
+        Py_DECREF(code);
 
         return returnValue;
     }

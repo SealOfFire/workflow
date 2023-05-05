@@ -9,6 +9,11 @@ namespace workflow::framework::types {
     AstPyObject::AstPyObject(PyObject* value) :value(value) {
     }
 
+    AstPyObject::~AstPyObject() {
+        Py_DECREF(this->value);
+        //Py_CLEAR(this->value);
+    }
+
     std::string AstPyObject::getClassName() const {
         return  AstPyObject::className;
     }

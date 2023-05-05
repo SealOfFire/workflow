@@ -32,4 +32,39 @@ namespace workflow::ast::types {
     Object Object::Add(Object& value) {
         return Object();
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    int Object::getReferenceCount() {
+        return this->referenceCount;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    void Object::increaseReferenceCount() {
+        this->referenceCount += 1;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    void Object::decreaseReferenceCount() {
+        if (this->referenceCount == 0) {
+            // TODO 减少报错
+        }
+        this->referenceCount -= 1;
+    }
+
+    /// <summary>
+    /// 释放object类型对象
+    /// </summary>
+    /// <param name="object"></param>
+    void Object::release(Object* object) {
+        if (object->getReferenceCount() <= 0) {
+            delete object;
+        }
+    }
 }

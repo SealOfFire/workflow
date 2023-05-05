@@ -25,7 +25,8 @@ void Condition::execute(Context* context) {
         this->orelse->run(context);
     }
 
-    delete result;
+    // result是计算获取的新值。这里需要删除，如果是从局域变量里获取的值。这里不删除
+    Object::release(result);
 }
 
 string Condition::getClassName() const {

@@ -22,6 +22,11 @@ namespace workflow::framework::types {
         AstPyObject(PyObject* value);
 
         /// <summary>
+        /// 
+        /// </summary>
+        ~AstPyObject();
+
+        /// <summary>
         /// 获取类型名称
         /// </summary>
         /// <returns></returns>

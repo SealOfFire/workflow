@@ -29,10 +29,13 @@ namespace workflow::ast::statements {
 
             // 在变量存储空间中修改变量名对应的值
             //context->variables.setValue(name, this->value->run(context));
-            context->currentModule->variables[name] = this->value->run(context);
+            Object* result = this->value->run(context);
+            result->increaseReferenceCount();
+            context->currentModule->variables[name] = result;
         }
         else {
             // 字典。或者数组下标赋值
+            // TODO
         }
 
     }

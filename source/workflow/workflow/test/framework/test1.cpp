@@ -24,12 +24,13 @@ void test1() {
     ast::expressions::Constant module1_constant_0("\"c++\""); // int 0
     ast::expressions::Name module1_name1_val1("val1"); // 定义变量 val1
     ast::statements::Assign module1_assign1_val1(&module1_name1_val1, &module1_constant_0); // 赋值 val1=0
+    //module1_assign1_val1.breakpoint = true;
     module1.addStatement(&module1_assign1_val1);
 
     // 执行python组件
     PyActivity module1_pyActivity1("activity", "run");
     module1_pyActivity1.properties["val1"] = new PyExpression("val1"); // 当前模块的局域变量val1传入到python的val1中
-    //module1_pyActivity1.parameters["val1"] = new PyExpression("\"ccccc\""); // 添加python 组件的变量
+    //module1_pyActivity1.properties["val1"] = new PyExpression("\"ccccc\""); // 添加python 组件的变量
     module1_pyActivity1.properties["val2"] = new PyExpression("3+5");// 添加python 组件的变量
     module1.addStatement(&module1_pyActivity1);
 
@@ -51,7 +52,7 @@ void test1() {
     workflow::framework::executors::ExecuteThread executor(&module1); // 执行的根是模块组件
     //executor.InitializePython();
     executor.appendPythonPath("D:/MyProgram/github/workflow/source/workflow/workflow/scripts/");
-    executor.execute(workflow::ast::ExecuteMode::Release); // 执行语句
+    executor.execute(workflow::ast::ExecuteMode::Debug); // 执行语句
 
     // 执行器运行
     cout << "请输入 s 下一句/p 下一个过程/c 继续/exit" << endl;

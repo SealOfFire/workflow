@@ -1,6 +1,12 @@
 ﻿#pragma once
 #include <vector>
 #include <executors/executor.h>
+// c++ 引用c
+extern "C" {
+#include <lua.h>
+#include <lualib.h>
+#include <lauxlib.h>
+}
 
 namespace workflow::framework::executors {
 
@@ -17,6 +23,8 @@ namespace workflow::framework::executors {
         /// </summary>
         std::vector<std::string> pythonPaths;
 
+        lua_State* luaState = nullptr;
+
         /// <summary>
         /// 构造函数
         /// </summary>
@@ -27,6 +35,15 @@ namespace workflow::framework::executors {
         /// 初始化python运行环境
         /// </summary>
         void InitializePython();
+
+        /// <summary>
+        /// 初始化lua
+        /// </summary>
+        void InitializeLua();
+
+        void ReleasePython();
+
+        void ReleaseLua();
 
         /// <summary>
         /// 执行语句

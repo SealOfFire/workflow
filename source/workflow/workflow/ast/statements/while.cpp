@@ -15,12 +15,13 @@ namespace  workflow::ast::statements {
     /// </summary>
     void While::execute(Context* context) {
         //Boolean* result = (Boolean*)this->test->run(context);
-
-        while (((Boolean*)this->test->run(context))->value) {
+        Boolean* result = (Boolean*)this->test->run(context);
+        while (result->value) {
             this->body->run(context);
         }
 
-        //delete result;
+        // result是计算获取的新值。这里需要删除，如果是从局域变量里获取的值。这里不删除
+        Object::release(result);
     }
 
     string While::getClassName() const {

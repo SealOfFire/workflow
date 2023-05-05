@@ -1,4 +1,6 @@
 ﻿#include "name.h"
+#include "../exceptions/keyNotFoundException.h"
+#include "../exceptions/nullReferenceException.h"
 #include "../modules/module.h"
 
 using namespace std;
@@ -13,6 +15,17 @@ namespace workflow::ast::expressions {
     /// </summary>
     /// <returns></returns>
     Object* Name::execute(Context* context) {
+
+        if (context->currentModule == nullptr) {
+            // 模块不存在
+            throw ast::exceptions::NullReferenceException(this, EXPECTION_MESSAGE_NAME_MODULE);
+        }
+
+        if (context->currentModule->variables.count(this->id) == 0) {
+            // 变量不存在
+            throw ast::exceptions::KeyNotFoundException(this, EXPECTION_MESSAGE_NAME_ID + this->id);
+        }
+
         return context->currentModule->variables[this->id];
         //return context->variables.getValue(this->id);
     }

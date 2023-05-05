@@ -14,6 +14,7 @@ namespace workflow::framework::activities {
 
     PyActivity::PyActivity(std::string moduleName, std::string functionName) :moduleName(moduleName), functionName(functionName) {
         this->pyModule = nullptr;
+        this->dict = nullptr;
     }
 
     /// <summary>
@@ -25,6 +26,7 @@ namespace workflow::framework::activities {
         //
         if (!Py_IsInitialized()) {
             // TODO 最后改成异常
+            PyErr_Print();
             std::cout << "python 初始化出错" << std::endl;
             return;
         }
@@ -34,18 +36,23 @@ namespace workflow::framework::activities {
         this->pyModule = PyImport_ImportModule(this->moduleName.c_str());
         if (!this->pyModule) {
             PyErr_Print();
-            std::cout << "没找到模块" << this->moduleName << std::endl;
+            std::cout << "没找到模块1" << this->moduleName << std::endl;
+            return;
+        }
+
+        this->dict = PyModule_GetDict(this->pyModule);
+        if (!this->dict) {
+            PyErr_Print();
+            std::cout << "没找到模块2" << this->moduleName << std::endl;
             return;
         }
 
         // 计算模块的输入参数
         // 设置模块的全局参数
         this->iterateProperties(context, true);
-        //this->setParameters(context);
 
         // 函数的入参
         PyObject* pArgs = this->getFunctionParameters(context);
-
 
         // 调用的函数名
         PyObject* pFunc = PyObject_GetAttrString(this->pyModule, this->functionName.c_str());
@@ -59,17 +66,28 @@ namespace workflow::framework::activities {
         //PyObject_CallObject(pFunc, pArgs);
         this->functionReturn = PyEval_CallObject(pFunc, pArgs); // 带返回值的函数调用
 
-        // TODO 计算模块的输出参数
+        // 计算模块的输出参数
         this->iterateProperties(context, false);
 
         // 释放资源
-        Py_CLEAR(pArgs);
+        if (this->functionReturn != nullptr) {
+            Py_DECREF(this->functionReturn);
+            //Py_CLEAR(this->functionReturn);
+        }
 
+        if (this->functionParameters.size() > 0) {
+            Py_DECREF(pArgs);
+            //Py_CLEAR(pArgs);
+        }
+
+        // 这里释放资源会在Py_Finalize时报错
         //Py_DECREF(pFunc);
-        Py_CLEAR(pFunc);
+        //Py_CLEAR(pFunc);
+        //Py_DECREF(this->dict);
+        //Py_CLEAR(this->dict);
 
-        //Py_DECREF(pModule);
-        Py_CLEAR(this->pyModule);
+        //Py_DECREF(this->pyModule);
+        //Py_CLEAR(this->pyModule);
 
     }
 
@@ -101,13 +119,12 @@ namespace workflow::framework::activities {
     /// <param name="context"></param>
     void PyActivity::iterateProperties(workflow::ast::executors::Context* context, bool set) {
         // 从模块中获取模块的所有元素
-        PyObject* dict = PyModule_GetDict(this->pyModule);
-        if (!dict) {
-            // TODO 获取错误
-            return;
-        }
+        //PyObject* dict = PyModule_GetDict(this->pyModule);
+        // python执行结果
+        int pyResult = -1;
+
         // 遍历python模块中的所有元素
-        PyObject* keys = PyDict_Keys(dict);
+        PyObject* keys = PyDict_Keys(this->dict);
         Py_ssize_t s = PyList_Size(keys);
         for (int i = 0; i < s; ++i) {
             // 模块的所有属性
@@ -129,7 +146,6 @@ namespace workflow::framework::activities {
                     // std::cout << "python模块中的局域变量，不是要传入的属性" << std::endl;
                 }
                 else {
-
                     if (set) {
                         // ast->python
                         // 属性传入到python脚本中
@@ -138,146 +154,155 @@ namespace workflow::framework::activities {
                         // 创建对应类型的参数数据;
                         // 参数表达式的计算结果，输入到python模块中
                         PyObject* value = PyActivity::convertAstObjectToPyObject(result);
-                        PyTypeObject* typeObject = value->ob_type;
                         // 回调函数 设置或者读取属性
-                        //this->setProperties(attributeName.c_str(), PyActivity::convertAstObjectToPyObject(this->properties[attributeName]->run(context)));
-                        this->setProperties(attributeName.c_str(), value);
                         //(this->*callback)(attributeName.c_str(), value);
-                        // TODO 删除result;
-                        // TODO delete result;
-                        // TODO
                         // Py_CLEAR(value);
+                        pyResult = PyObject_SetAttrString(this->pyModule, attributeName.c_str(), value); // TODO 或者get
+                        if (pyResult < 0) {
+                            // TODO 设置值出错
+                            std::cout << "设置值到python中出错" << std::endl;
+                        }
+
+                        // 删除result;
+                        Object::release(result);
+                        // 
+                        Py_DECREF(value);
+                        //Py_CLEAR(value);
                     }
                     else {
                         // python->ast
-                        // TODO 这里的属性值如果是个变量名。需要python脚本中的值修改组件属性值。把值从python脚本中传出到ast中
-                        // TODO 支持更多的表达式就要穷举
+                        // 这里的属性值如果是个变量名。需要python脚本中的值修改组件属性值。把值从python脚本中传出到ast中
                         std::string propertyName = this->properties[attributeName]->isName();
                         if (propertyName.size() != 0) {
                             // 表达式是个变量名。可以传出数值
-                            PyObject* value = this->getProperties(attributeName.c_str());
-                            //PyObject* value = PyObject_GetAttrString(this->pyModule, attributeName.c_str()); // TODO 或者get
+                            PyObject* value = PyDict_GetItemString(this->dict, attributeName.c_str()); // TODO 或者get
+                            if (!value) {
+                                // TODO 设置值出错
+                                std::cout << "从python获取值出错" << std::endl;
+                            }
                             // TODO 字典和list时候的处理没有 
                             // TODO 赋值前删掉旧值避免泄露。检查其他的地方map是否会泄露
                             context->currentModule->variables[propertyName] = this->convertPyObjectToAstObject(value);
+                            Py_DECREF(value);
                         }
+                        propertyName.clear();
                     }
-
                 }
             }
 
             attributeName.clear();
-            // TODO
+            // TODO 这里释放资源会在Py_Finalize时报错
             //Py_CLEAR(item);
+            //Py_DECREF(item);
         }
-        // TODO
+        // 释放资源
+        Py_DECREF(keys);
         //Py_CLEAR(keys);
-        //Py_CLEAR(dict);
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="context"></param>
-    void PyActivity::setProperties(const char* attributeName, PyObject* value) {
-        int pyResult = -1;
-        pyResult = PyObject_SetAttrString(this->pyModule, attributeName, value); // TODO 或者get
-        if (pyResult < 0) {
-            // TODO 设置值出错
-            std::cout << "设置值到python中出错" << std::endl;
-        }
-    }
+    ///// <summary>
+    ///// 
+    ///// </summary>
+    ///// <param name="context"></param>
+    //void PyActivity::setProperties(const char* attributeName, PyObject* value) {
+    //    int pyResult = -1;
+    //    pyResult = PyObject_SetAttrString(this->pyModule, attributeName, value); // TODO 或者get
+    //    if (pyResult < 0) {
+    //        // TODO 设置值出错
+    //        std::cout << "设置值到python中出错" << std::endl;
+    //    }
+    //}
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="attributeName"></param>
-    /// <param name="value">不需要</param>
-    PyObject* PyActivity::getProperties(const char* attributeName) {
-        int pyResult = -1;
-        PyObject* dict = PyModule_GetDict(this->pyModule);
-        PyObject* value = PyDict_GetItemString(dict, attributeName); // TODO 或者get
-        if (!value) {
-            // TODO 设置值出错
-            std::cout << "从python获取值出错" << std::endl;
-        }
-        // TODO 值转换成ast对象。保存到局部变量中
-        // TODO
-        // Py_CLEAR(value);
-        // TODO 字典和list时候的处理没有
-        return value;
-    }
+    ///// <summary>
+    ///// 
+    ///// </summary>
+    ///// <param name="attributeName"></param>
+    ///// <param name="value">不需要</param>
+    //PyObject* PyActivity::getProperties(const char* attributeName) {
+    //    int pyResult = -1;
+    //    PyObject* dict = PyModule_GetDict(this->pyModule);
+    //    PyObject* value = PyDict_GetItemString(dict, attributeName); // TODO 或者get
+    //    if (!value) {
+    //        // TODO 设置值出错
+    //        std::cout << "从python获取值出错" << std::endl;
+    //    }
+    //    // TODO 值转换成ast对象。保存到局部变量中
+    //    // TODO
+    //    // Py_CLEAR(value);
+    //    // TODO 字典和list时候的处理没有
+    //    return value;
+    //}
 
-    /// <summary>
-    /// 设置组件的参数
-    /// </summary>
-    void PyActivity::setParameters(workflow::ast::executors::Context* context) {
-        //PyImport_GetModuleDict
-        // 从模块中获取模块的所有元素
-        int pyResult = 5;
-        PyObject* dict = PyModule_GetDict(this->pyModule);
-        if (!dict) {
-            // TODO 获取错误
-            return;
-        }
-        // 遍历python模块中的所有元素
-        PyObject* keys = PyDict_Keys(dict);
-        Py_ssize_t s = PyList_Size(keys);
-        for (int i = 0; i < s; ++i) {
-            PyObject* item = PyList_GetItem(keys, i);
-            std::string attributeName(_PyUnicode_AsString(item));
-            //std::cout << attributeName << std::endl;
-            if (attributeName.rfind("__", 0) == 0) {
-                // __开头的忽略
-            }
-            else {
-                // 获取模块中的参数。
-                PyObject* paramter = PyDict_GetItemString(dict, attributeName.c_str());
-                // 获取参数对象类型
-                PyTypeObject* typeObject = paramter->ob_type;
-                //std::cout << typeObject->tp_name << std::endl;
-                if (strlen(PyActivity::paramterTypeName) == strlen(typeObject->tp_name) &&
-                    (strncmp(PyActivity::paramterTypeName, typeObject->tp_name, strlen(PyActivity::paramterTypeName))) == 0) {
-                    // 根据指定的参数类型判断是否在变量列表中
-                    if (this->properties.count(attributeName) == 0) {
-                        // TODO 变量名不存在 报错
-                        std::cout << "变量名不存在 报错" << std::endl;
-                    }
-                    else {
-                        // 计算输入参数表达式的结果
-                        Object* result = this->properties[attributeName]->run(context);
+    ///// <summary>
+    ///// 设置组件的参数
+    ///// </summary>
+    //void PyActivity::setParameters(workflow::ast::executors::Context* context) {
+    //    //PyImport_GetModuleDict
+    //    // 从模块中获取模块的所有元素
+    //    int pyResult = 5;
+    //    PyObject* dict = PyModule_GetDict(this->pyModule);
+    //    if (!dict) {
+    //        // TODO 获取错误
+    //        return;
+    //    }
+    //    // 遍历python模块中的所有元素
+    //    PyObject* keys = PyDict_Keys(dict);
+    //    Py_ssize_t s = PyList_Size(keys);
+    //    for (int i = 0; i < s; ++i) {
+    //        PyObject* item = PyList_GetItem(keys, i);
+    //        std::string attributeName(_PyUnicode_AsString(item));
+    //        //std::cout << attributeName << std::endl;
+    //        if (attributeName.rfind("__", 0) == 0) {
+    //            // __开头的忽略
+    //        }
+    //        else {
+    //            // 获取模块中的参数。
+    //            PyObject* paramter = PyDict_GetItemString(dict, attributeName.c_str());
+    //            // 获取参数对象类型
+    //            PyTypeObject* typeObject = paramter->ob_type;
+    //            //std::cout << typeObject->tp_name << std::endl;
+    //            if (strlen(PyActivity::paramterTypeName) == strlen(typeObject->tp_name) &&
+    //                (strncmp(PyActivity::paramterTypeName, typeObject->tp_name, strlen(PyActivity::paramterTypeName))) == 0) {
+    //                // 根据指定的参数类型判断是否在变量列表中
+    //                if (this->properties.count(attributeName) == 0) {
+    //                    // TODO 变量名不存在 报错
+    //                    std::cout << "变量名不存在 报错" << std::endl;
+    //                }
+    //                else {
+    //                    // 计算输入参数表达式的结果
+    //                    Object* result = this->properties[attributeName]->run(context);
 
-                        // 创建对应类型的参数数据;
-                        // 参数表达式的计算结果，输入到python模块中
-                        PyObject* value = PyActivity::convertAstObjectToPyObject(result);
-                        // TODO 如果PyObject是个变量名,这里记录下来用于计算结束后，变脸结果回传给组件外部
+    //                    // 创建对应类型的参数数据;
+    //                    // 参数表达式的计算结果，输入到python模块中
+    //                    PyObject* value = PyActivity::convertAstObjectToPyObject(result);
+    //                    // TODO 如果PyObject是个变量名,这里记录下来用于计算结束后，变脸结果回传给组件外部
 
-                        //pyResult = PyObject_SetAttrString(paramter, "value", this->parameters[attributeName]->toScriptCode(context));
-                        pyResult = PyObject_SetAttrString(paramter, "result", value); // TODO 或者get
-                        if (pyResult < 0) {
-                            // TODO 设置值出错
-                            std::cout << "设置值出错" << std::endl;
-                        }
-                        //PyDict_SetItemString(dict, attributeName.c_str(), paramter);
+    //                    //pyResult = PyObject_SetAttrString(paramter, "value", this->parameters[attributeName]->toScriptCode(context));
+    //                    pyResult = PyObject_SetAttrString(paramter, "result", value); // TODO 或者get
+    //                    if (pyResult < 0) {
+    //                        // TODO 设置值出错
+    //                        std::cout << "设置值出错" << std::endl;
+    //                    }
+    //                    //PyDict_SetItemString(dict, attributeName.c_str(), paramter);
 
-                        // TODO 删除result;
-                        // TODO delete result;
-                    }
-                }
-                //std::cout << "------------" << std::endl;
+    //                    // TODO 删除result;
+    //                    // TODO delete result;
+    //                }
+    //            }
+    //            //std::cout << "------------" << std::endl;
 
-                //Py_CLEAR(typeObject);
-                //Py_CLEAR(paramter);
-            }
-            attributeName.clear();
-            //Py_CLEAR(item);
-            //std::cout << "------------" << std::endl;
-        }
-        //Py_CLEAR(keys);
-        //Py_CLEAR(dict);
+    //            //Py_CLEAR(typeObject);
+    //            //Py_CLEAR(paramter);
+    //        }
+    //        attributeName.clear();
+    //        //Py_CLEAR(item);
+    //        //std::cout << "------------" << std::endl;
+    //    }
+    //    //Py_CLEAR(keys);
+    //    //Py_CLEAR(dict);
 
 
-    }
+    //}
 
     /// <summary>
     /// 函数的入参
@@ -294,7 +319,8 @@ namespace workflow::framework::activities {
                 Object* result = this->functionParameters[i]->run(context);
                 // 变量添加到python参数列表中
                 PyTuple_SetItem(pArgs, i, PyActivity::convertAstObjectToPyObject(result));
-                delete result;
+                //delete result;
+                Object::release(result);
             }
         }
         return pArgs;
@@ -403,4 +429,5 @@ namespace workflow::framework::activities {
 
         return new ast::types::Object();
     }
+
 }

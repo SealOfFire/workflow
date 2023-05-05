@@ -39,5 +39,35 @@ namespace workflow::ast::types {
         /// </summary>
         /// <returns></returns>
         virtual string toString();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        int getReferenceCount();
+
+        /// <summary>
+        /// 增加引用计数
+        /// </summary>
+        void increaseReferenceCount();
+
+        /// <summary>
+        /// 减少引用计数
+        /// </summary>
+        void decreaseReferenceCount();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="object"></param>
+        static void release(Object* object);
+
+    private:
+
+        /// <summary>
+        /// 引用计数
+        /// </summary>
+        int referenceCount = 0;
+
     };
 }
