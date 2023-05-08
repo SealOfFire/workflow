@@ -1,5 +1,10 @@
 #include "executor.h"
+#include <regex>
+#include <iostream>
 #include <Python.h>
+
+
+using namespace std;
 
 namespace workflow::framework::executors {
 
@@ -19,8 +24,35 @@ namespace workflow::framework::executors {
         char* home;
         wchar_t* homt = Py_GetPythonHome();
 
+        /*PyStatus status;
+        PyConfig config;
+        PyConfig_InitPythonConfig(&config);*/
+
+        // 在初始化之情添加sys.path
+        // TODO win使用”;“分割。unix和mac os使用”:“分割
+        //const char separator(';');
+
+        ////std::vector<std::wstring> paths = Executor::stringSplit(Py_GetPath(), separator);
+        //std::vector<std::wstring> paths;
+        //// 添加python环境路径
+        //for (std::wstring path : this->pythonPaths) {
+        //    paths.push_back(path);
+        //}
+        //std::wstring newPaths;
+        //Executor::stringJoin(paths, separator, newPaths);
+        //Py_SetPath(newPaths.c_str());
+
         // 初始化python运行环境
         Py_Initialize();
+        //Py_InitializeFromConfig(&config);
+
+        // 在初始化之后添加sys.path
+        // 添加sys.path
+        for (std::string path : this->pythonPaths) {
+            PyList_Append(PySys_GetObject("path"), PyUnicode_FromString(path.c_str()));
+        }
+
+        //PyConfig_Clear(&config);
 
         if (!Py_IsInitialized()) {
             // TODO 最后改成异常
@@ -28,13 +60,12 @@ namespace workflow::framework::executors {
             return;
         }
 
-        // 添加python环境路径
-        PyRun_SimpleString("import sys");
-        for (std::string path : this->pythonPaths) {
-            std::string append("sys.path.append(\'" + path + "\')");
-            //std::cout << "python path:" << append << std::endl;
-            PyRun_SimpleString(append.c_str());
-        }
+        //wchar_t* sysPath2 = Py_GetPath();
+
+        // TODO win使用”;“分割。unix和mac os使用”:“分割
+        // Py_SetPath(sysPath);
+
+        // wchar_t* sysPath2 = Py_GetPath();
 
     }
 
@@ -94,4 +125,26 @@ namespace workflow::framework::executors {
         this->ReleasePython();
         this->ReleaseLua();
     }
+
+    std::vector<std::wstring> Executor::stringSplit(const std::wstring& str, char delim) {
+        std::wstring s;
+        s.append(1, delim);
+        //std::regex reg(s);
+        std::wregex reg(s);
+        //std::vector<std::wstring> elems(std::sregex_token_iterator(str.begin(), str.end(), reg, -1), std::sregex_token_iterator());
+        std::vector<std::wstring> elems(std::wsregex_token_iterator(str.begin(), str.end(), reg, -1), std::wsregex_token_iterator());
+
+        return elems;
+    }
+
+    void Executor::stringJoin(std::vector<std::wstring> list, char delim, std::wstring& s) {
+        for (std::vector<std::wstring>::const_iterator ii = list.begin(); ii != list.end(); ++ii)
+        {
+            s += (*ii);
+            if (ii + 1 != list.end()) {
+                s += delim;
+            }
+        }
+    }
+
 }

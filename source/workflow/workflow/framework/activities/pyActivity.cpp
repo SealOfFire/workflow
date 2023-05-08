@@ -1,8 +1,10 @@
 ﻿#include <expressions/name.h>
 #include <modules/module.h>
 #include <types/boolean.h>
+#include <types/dictionary.h>
 #include <types/float.h>
 #include <types/integer.h>
+#include <types/list.h>
 #include <types/long.h>
 #include <types/null.h>
 #include <types/string.h>
@@ -183,7 +185,10 @@ namespace workflow::framework::activities {
                             // TODO 字典和list时候的处理没有 
                             // TODO 赋值前删掉旧值避免泄露。检查其他的地方map是否会泄露
                             context->currentModule->variables[propertyName] = this->convertPyObjectToAstObject(value);
-                            Py_DECREF(value);
+                            // 返回数据中如果有list。这里调用Py_DECREF会报错
+                            if (!PyList_Check(value)) {
+                                Py_DECREF(value);
+                            }
                         }
                         propertyName.clear();
                     }
@@ -359,6 +364,12 @@ namespace workflow::framework::activities {
             else if (value->getClassName() == workflow::ast::types::Null::className) {
                 result = Py_BuildValue("z", NULL);
             }
+            else if (value->getClassName() == workflow::ast::types::List::className) {
+                // TODO 递归
+            }
+            else if (value->getClassName() == workflow::ast::types::Dictionary::className) {
+                // TODO 递归
+            }
             else {
                 // TODO 没法处理的数据类型
                 std::cout << "没法处理的数据类型" << std::endl;
@@ -390,34 +401,43 @@ namespace workflow::framework::activities {
         else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_INTEGER) &&
             (strncmp(value->ob_type->tp_name, PY_TYPE_INTEGER, strlen(PY_TYPE_INTEGER))) == 0) {
             // integer
-            // TODO
+            return new ast::types::Integer(_PyLong_AsInt(value));
         }
         else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_FLOAT) &&
             (strncmp(value->ob_type->tp_name, PY_TYPE_FLOAT, strlen(PY_TYPE_FLOAT))) == 0) {
             // float
-            // TODO
+            return new ast::types::Float(PyFloat_AsDouble(value));
         }
         else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_NONE) &&
             (strncmp(value->ob_type->tp_name, PY_TYPE_NONE, strlen(PY_TYPE_NONE))) == 0) {
             // none
-            // TODO
+            //return new ast::types::List();
+            return new ast::types::Null();
         }
         else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_DICTIONARY) &&
             (strncmp(value->ob_type->tp_name, PY_TYPE_DICTIONARY, strlen(PY_TYPE_DICTIONARY))) == 0) {
             // dict
-            // TODO
+            // TODO 递归
+            int a = 0;
+            a++;
         }
         else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_LIST) &&
             (strncmp(value->ob_type->tp_name, PY_TYPE_LIST, strlen(PY_TYPE_LIST))) == 0) {
             // list
-            // TODO
-            int a = 0;
-            a++;
+            ast::types::List* result = new ast::types::List();
+            for (int i = 0; i < PyList_Size(value); i++) {
+                PyObject* listVal = PyList_GetItem(value, i);
+                //PyObject* listVal = PySequence_GetItem(value, i);
+                result->value.push_back(PyActivity::convertPyObjectToAstObject(listVal));
+                //Py_DECREF(listVal);
+                //Py_CLEAR(listVal);
+            }
+            return result;
         }
         else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_BOOLEAN) &&
             (strncmp(value->ob_type->tp_name, PY_TYPE_BOOLEAN, strlen(PY_TYPE_BOOLEAN))) == 0) {
             // bool
-            // TODO
+            return new ast::types::Boolean(PyBool_Check(value));
         }
         else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_TUPLE) &&
             (strncmp(value->ob_type->tp_name, PY_TYPE_TUPLE, strlen(PY_TYPE_TUPLE))) == 0) {

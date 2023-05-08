@@ -1,3 +1,4 @@
+#include <wchar.h>
 #include <executors/context.h>
 #include <expressions/constant.h>
 #include <expressions/name.h>
@@ -51,6 +52,12 @@ void test1() {
     // workflow::ast::executor::ExecuteThread  executor(&container); // 执行根是容器组件
     workflow::framework::executors::ExecuteThread executor(&module1); // 执行的根是模块组件
     //executor.InitializePython();
+    //executor.appendPythonPath(L"D:\\MyProgram\\github\\workflow\\source\\workflow\\out\\build\\x64-debug\\workflow\\python310_d.zip");
+    //executor.appendPythonPath(L"D:\\Program Files\\Python310\\DLLs");
+    //executor.appendPythonPath(L"D:\\Program Files\\Python310\\Lib");
+    //executor.appendPythonPath(L"D:\\MyProgram\\github\\workflow\\source\\workflow\\out\\build\\x64-debug\\workflow");
+    //executor.appendPythonPath(L"D:\\Program Files\\Python310");
+    //executor.appendPythonPath(L"D:\\Program Files\\Python310\\lib\\site-packages");
     executor.appendPythonPath("D:/MyProgram/github/workflow/source/workflow/workflow/scripts/");
     executor.execute(workflow::ast::ExecuteMode::Debug); // 执行语句
 

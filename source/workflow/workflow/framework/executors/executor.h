@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <wchar.h>
 #include <vector>
 #include <executors/executor.h>
 // c++ 引用c
@@ -50,5 +51,8 @@ namespace workflow::framework::executors {
         /// </summary>
         /// <param name="playMode">debug/release</param>
         void execute(ExecuteMode executeMode);
+
+        static std::vector<std::wstring> stringSplit(const std::wstring& str, char delim);
+        static void stringJoin(std::vector<std::wstring> list, char delim, std::wstring& s);
     };
 }
