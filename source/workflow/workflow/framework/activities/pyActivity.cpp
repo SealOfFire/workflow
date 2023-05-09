@@ -366,10 +366,20 @@ namespace workflow::framework::activities {
                 result = Py_BuildValue("z", NULL);
             }
             else if (value->getClassName() == workflow::ast::types::List::className) {
-                // TODO 递归
+                workflow::ast::types::List* list = (workflow::ast::types::List*)value;
+                PyObject* pyList = PyList_New(list->value.size());
+                for (int i = 0; i < list->value.size(); i++) {
+                    PyList_Append(pyList, PyActivity::convertAstObjectToPyObject(list->value[i]));
+                }
+                return pyList;
             }
             else if (value->getClassName() == workflow::ast::types::Dictionary::className) {
-                // TODO 递归
+                workflow::ast::types::Dictionary* dict = (workflow::ast::types::Dictionary*)value;
+                PyObject* pyDict = PyDict_New();
+                for (auto [key, val] : dict->value) {
+                    PyDict_SetItem(pyDict, PyUnicode_FromString(key.c_str()), PyActivity::convertAstObjectToPyObject(val));
+                }
+                return pyDict;
             }
             else {
                 // TODO 没法处理的数据类型
