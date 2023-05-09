@@ -186,7 +186,8 @@ namespace workflow::framework::activities {
                             // TODO 赋值前删掉旧值避免泄露。检查其他的地方map是否会泄露
                             context->currentModule->variables[propertyName] = this->convertPyObjectToAstObject(value);
                             // 返回数据中如果有list。这里调用Py_DECREF会报错
-                            if (!PyList_Check(value)) {
+                            bool valueaa = PyDict_Check(value);
+                            if (value != NULL && !PyList_Check(value) && !PyDict_Check(value)) {
                                 Py_DECREF(value);
                             }
                         }
@@ -418,8 +419,20 @@ namespace workflow::framework::activities {
             (strncmp(value->ob_type->tp_name, PY_TYPE_DICTIONARY, strlen(PY_TYPE_DICTIONARY))) == 0) {
             // dict
             // TODO 递归
-            int a = 0;
-            a++;
+            ast::types::Dictionary* result = new ast::types::Dictionary();
+            PyObject* keys = PyDict_Keys(value);
+            Py_ssize_t s = PyList_Size(keys);
+            for (int i = 0; i < s; ++i) {
+                // 模块的所有属性
+                PyObject* item = PyList_GetItem(keys, i);
+
+                // python对象类型转成c++数据类型字符串
+                std::string key(_PyUnicode_AsString(item));
+
+                PyObject* val = PyDict_GetItemString(value, key.c_str());
+                result->value[key] = PyActivity::convertPyObjectToAstObject(val);
+            }
+            return result;
         }
         else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_LIST) &&
             (strncmp(value->ob_type->tp_name, PY_TYPE_LIST, strlen(PY_TYPE_LIST))) == 0) {

@@ -12,6 +12,11 @@ namespace workflow::ast::types {
     }
 
     string Dictionary::toString() {
-        return "{LIST}";
+        std::string output = "{";
+        for (auto [key, val] : this->value) {
+            output += key + ":" + val->toString() + ", ";
+        }
+        output += "}";
+        return output;
     }
 }
