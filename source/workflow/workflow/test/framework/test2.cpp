@@ -6,6 +6,7 @@
 #include <expressions/subscript.h>
 #include <modules/module.h>
 #include <statements/assign.h>
+#include <statements/for.h>
 #include <statements/print.h>
 
 #include "../framework/executors/executeThread.h"
@@ -26,13 +27,14 @@ void test2() {
     // 模块1
     Module module1("module1");
 
-
     // 模块添加list类型局域变量
     ast::expressions::List module1_list1;
     ast::expressions::Constant module1_constant_0("1"); // int 0
     ast::expressions::Constant module1_constant_1("\"2\""); // int 0
+    ast::expressions::Constant module1_constant_11("\"abc\""); // int 0
     module1_list1.push_back(&module1_constant_0);
     module1_list1.push_back(&module1_constant_1);
+    module1_list1.push_back(&module1_constant_11);
 
     // workflow::ast::types::List module1_list1();
     // list添加数据
@@ -50,6 +52,14 @@ void test2() {
     ast::expressions::Subscript subscript0(&module1_name1_list1, &module1_constant_2);
     ast::statements::Print module1_print_list1_0(&subscript0);// 打印
     module1.addStatement(&module1_print_list1_0);
+
+    // 遍历打印
+    ast::expressions::Name module1_name1_item("item"); // 定义变量 val1
+    ast::statements::Print module1_print_item(&module1_name1_item);// 打印
+    ast::statements::For module1_for(&module1_name1_item, &module1_name1_list1, &module1_print_item);
+    module1.addStatement(&module1_for);
+
+    // list传入传出python
 
 
     // 打印脚本

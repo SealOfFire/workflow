@@ -9,3 +9,4 @@
 #define CLASS_NAME_RETURN "workflow::ast::statement::Return"
 #define CLASS_NAME_STATEMENT "workflow::ast::statement::Statement"
 #define CLASS_NAME_WHILE "workflow::ast::statement::While"
+#define CLASS_NAME_FOR "workflow::ast::statement::For"
