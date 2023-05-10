@@ -28,4 +28,12 @@ namespace workflow::ast::types {
         output += "]";
         return output;
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="item"></param>
+    void List::append(Object* item) {
+        this->value.push_back(item);
+    }
 }

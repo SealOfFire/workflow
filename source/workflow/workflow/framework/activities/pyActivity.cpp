@@ -186,7 +186,7 @@ namespace workflow::framework::activities {
                             // TODO 赋值前删掉旧值避免泄露。检查其他的地方map是否会泄露
                             context->currentModule->variables[propertyName] = this->convertPyObjectToAstObject(value);
                             // 返回数据中如果有list。这里调用Py_DECREF会报错
-                            bool valueaa = PyDict_Check(value);
+                            //bool is = PyDict_Check(value);
                             if (value != NULL && !PyList_Check(value) && !PyDict_Check(value)) {
                                 Py_DECREF(value);
                             }
@@ -205,110 +205,6 @@ namespace workflow::framework::activities {
         Py_DECREF(keys);
         //Py_CLEAR(keys);
     }
-
-    ///// <summary>
-    ///// 
-    ///// </summary>
-    ///// <param name="context"></param>
-    //void PyActivity::setProperties(const char* attributeName, PyObject* value) {
-    //    int pyResult = -1;
-    //    pyResult = PyObject_SetAttrString(this->pyModule, attributeName, value); // TODO 或者get
-    //    if (pyResult < 0) {
-    //        // TODO 设置值出错
-    //        std::cout << "设置值到python中出错" << std::endl;
-    //    }
-    //}
-
-    ///// <summary>
-    ///// 
-    ///// </summary>
-    ///// <param name="attributeName"></param>
-    ///// <param name="value">不需要</param>
-    //PyObject* PyActivity::getProperties(const char* attributeName) {
-    //    int pyResult = -1;
-    //    PyObject* dict = PyModule_GetDict(this->pyModule);
-    //    PyObject* value = PyDict_GetItemString(dict, attributeName); // TODO 或者get
-    //    if (!value) {
-    //        // TODO 设置值出错
-    //        std::cout << "从python获取值出错" << std::endl;
-    //    }
-    //    // TODO 值转换成ast对象。保存到局部变量中
-    //    // TODO
-    //    // Py_CLEAR(value);
-    //    // TODO 字典和list时候的处理没有
-    //    return value;
-    //}
-
-    ///// <summary>
-    ///// 设置组件的参数
-    ///// </summary>
-    //void PyActivity::setParameters(workflow::ast::executors::Context* context) {
-    //    //PyImport_GetModuleDict
-    //    // 从模块中获取模块的所有元素
-    //    int pyResult = 5;
-    //    PyObject* dict = PyModule_GetDict(this->pyModule);
-    //    if (!dict) {
-    //        // TODO 获取错误
-    //        return;
-    //    }
-    //    // 遍历python模块中的所有元素
-    //    PyObject* keys = PyDict_Keys(dict);
-    //    Py_ssize_t s = PyList_Size(keys);
-    //    for (int i = 0; i < s; ++i) {
-    //        PyObject* item = PyList_GetItem(keys, i);
-    //        std::string attributeName(_PyUnicode_AsString(item));
-    //        //std::cout << attributeName << std::endl;
-    //        if (attributeName.rfind("__", 0) == 0) {
-    //            // __开头的忽略
-    //        }
-    //        else {
-    //            // 获取模块中的参数。
-    //            PyObject* paramter = PyDict_GetItemString(dict, attributeName.c_str());
-    //            // 获取参数对象类型
-    //            PyTypeObject* typeObject = paramter->ob_type;
-    //            //std::cout << typeObject->tp_name << std::endl;
-    //            if (strlen(PyActivity::paramterTypeName) == strlen(typeObject->tp_name) &&
-    //                (strncmp(PyActivity::paramterTypeName, typeObject->tp_name, strlen(PyActivity::paramterTypeName))) == 0) {
-    //                // 根据指定的参数类型判断是否在变量列表中
-    //                if (this->properties.count(attributeName) == 0) {
-    //                    // TODO 变量名不存在 报错
-    //                    std::cout << "变量名不存在 报错" << std::endl;
-    //                }
-    //                else {
-    //                    // 计算输入参数表达式的结果
-    //                    Object* result = this->properties[attributeName]->run(context);
-
-    //                    // 创建对应类型的参数数据;
-    //                    // 参数表达式的计算结果，输入到python模块中
-    //                    PyObject* value = PyActivity::convertAstObjectToPyObject(result);
-    //                    // TODO 如果PyObject是个变量名,这里记录下来用于计算结束后，变脸结果回传给组件外部
-
-    //                    //pyResult = PyObject_SetAttrString(paramter, "value", this->parameters[attributeName]->toScriptCode(context));
-    //                    pyResult = PyObject_SetAttrString(paramter, "result", value); // TODO 或者get
-    //                    if (pyResult < 0) {
-    //                        // TODO 设置值出错
-    //                        std::cout << "设置值出错" << std::endl;
-    //                    }
-    //                    //PyDict_SetItemString(dict, attributeName.c_str(), paramter);
-
-    //                    // TODO 删除result;
-    //                    // TODO delete result;
-    //                }
-    //            }
-    //            //std::cout << "------------" << std::endl;
-
-    //            //Py_CLEAR(typeObject);
-    //            //Py_CLEAR(paramter);
-    //        }
-    //        attributeName.clear();
-    //        //Py_CLEAR(item);
-    //        //std::cout << "------------" << std::endl;
-    //    }
-    //    //Py_CLEAR(keys);
-    //    //Py_CLEAR(dict);
-
-
-    //}
 
     /// <summary>
     /// 函数的入参

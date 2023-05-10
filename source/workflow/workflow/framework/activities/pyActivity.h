@@ -83,25 +83,6 @@ namespace workflow::framework::activities {
         /// <param name="context"></param>
         void iterateProperties(workflow::ast::executors::Context* context, bool set);
 
-        /*/// <summary>
-        /// TODO 可删除
-        /// 设置组件的属性
-        /// 组件的属性列表中的变量名和python脚本中的全局变量名称一致的时候，会把属性列表的值传递到python脚本中
-        /// </summary>
-        void setProperties(const char* attributeName, PyObject* value);
-
-        /// <summary>
-        /// TODO 可删除
-        /// </summary>
-        /// <param name="attributeName"></param>
-        PyObject* getProperties(const char* attributeName);
-
-        /// <summary>
-        /// TODO 可删除
-        /// </summary>
-        /// <param name="context"></param>
-        void setParameters(workflow::ast::executors::Context* context);*/
-
         /// <summary>
         /// 调用函数的入参
         /// </summary>

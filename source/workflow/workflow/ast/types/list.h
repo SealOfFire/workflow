@@ -17,5 +17,10 @@ namespace workflow::ast::types {
         virtual string getClassName() const;
 
         virtual string toString();
+
+        /// <summary>
+        /// 添加数据
+        /// </summary>
+        void append(Object* item);
     };
 }

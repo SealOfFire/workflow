@@ -20,6 +20,8 @@ def run():
 	执行组件
 	"""
 	global val1
+	va1=[1,2,3,4];
+	
 	print("activity run")
 	print(val1)
 	print(val2)

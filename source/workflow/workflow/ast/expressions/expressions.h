@@ -9,6 +9,8 @@
 #define CLASS_NAME_CONSTANT "workflow::ast::expressions::Constant"
 #define CLASS_NAME_EXPRESSION "workflow::ast::expressions::Expression"
 #define CLASS_NAME_NAME "workflow::ast::expressions::Name"
+#define CLASS_NAME_EXPR_LIST "workflow::ast::expressions::List"
+#define CLASS_NAME_EXPR_SUBSCRIPT "workflow::ast::expressions::Subscript"
 
 #define EXPECTION_MESSAGE_BINARY_OP_LEFT "双目运算符的左表达式为空"
 #define EXPECTION_MESSAGE_BINARY_OP_RIGHT "双目运算符的左表达式为空"

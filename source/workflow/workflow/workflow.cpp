@@ -24,6 +24,7 @@
 #include "framework/expressions/test2.h"
 #include "framework/executors/executor.h"
 #include "test/framework/test1.cpp"
+#include "test/framework/test2.cpp"
 #endif
 
 using namespace std;
@@ -44,7 +45,8 @@ int main() {
     //workflow::framework::expressions::Test2 test2;
     // test.init();
 
-    test1();
+    //test1();
+    test2();
 
     //workflow::framework::executors::Executor executor;
     //executor.InitializePython();
