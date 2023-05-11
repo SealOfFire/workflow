@@ -1,6 +1,7 @@
 ﻿#include <wchar.h>
 #include <executors/context.h>
 #include <expressions/constant.h>
+#include <expressions/dictionary.h>
 #include <expressions/list.h>
 #include <expressions/name.h>
 #include <expressions/subscript.h>
@@ -58,6 +59,29 @@ void test2() {
     ast::statements::Print module1_print_item(&module1_name1_item);// 打印
     ast::statements::For module1_for(&module1_name1_item, &module1_name1_list1, &module1_print_item);
     module1.addStatement(&module1_for);
+
+    // 字典
+    ast::expressions::Dictionary module1_dict1;
+    ast::expressions::Constant module1_constant_key1("\"key1\"");
+    ast::expressions::Constant module1_constant_value1("1");
+    ast::expressions::Constant module1_constant_key2("\"key2\"");
+    ast::expressions::Constant module1_constant_value2("\"value2\"");
+    module1_dict1.insert(&module1_constant_key1, &module1_constant_value1);
+    module1_dict1.insert(&module1_constant_key2, &module1_constant_value2);
+
+    ast::expressions::Name module1_name1_dict1("dict1"); // 定义变量 val1
+    ast::statements::Assign module1_assign1_val2(&module1_name1_dict1, &module1_dict1); // 赋值 val1=0
+    module1.addStatement(&module1_assign1_val2);
+
+    // 打印dict
+    ast::statements::Print module1_print_dict1(&module1_name1_dict1);// 打印
+    module1.addStatement(&module1_print_dict1);
+
+    // 打印dict["key1"]
+    ast::expressions::Constant module1_constant_33("\"key2\""); // int 0
+    ast::expressions::Subscript subscript1(&module1_name1_dict1, &module1_constant_33);
+    ast::statements::Print module1_print_dict1_key1(&subscript1);// 打印
+    module1.addStatement(&module1_print_dict1_key1);
 
     // list传入传出python
 

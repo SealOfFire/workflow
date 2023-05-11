@@ -2,6 +2,7 @@
 #include "../types/dictionary.h"
 #include "../types/integer.h"
 #include "../types/list.h"
+#include "../types/string.h"
 
 namespace workflow::ast::expressions {
 
@@ -24,6 +25,20 @@ namespace workflow::ast::expressions {
         if (resultValue->getClassName() == types::Dictionary::className) {
             // TODO
             // dict下标处理
+            types::Dictionary* dict = (types::Dictionary*)resultValue;
+            if (resultSlice->getClassName() == types::String::className) {
+                types::String* key = (types::String*)resultSlice;
+                if (dict->value.count(key->value) != 0) {
+                    Object* result = dict->value[key->value];
+                    return result;
+                }
+                else {
+                    // TODO key不存在
+                }
+            }
+            else {
+                // TODO 字典的key不是字符串
+            }
         }
         else if (resultValue->getClassName() == types::List::className) {
             types::List* list = (types::List*)resultValue;
