@@ -1,6 +1,11 @@
 ﻿#include "assign.h"
 #include "../expressions/name.h"
+#include "../expressions/subscript.h"
 #include "../modules/module.h"
+#include "../types/dictionary.h"
+#include "../types/integer.h"
+#include "../types/list.h"
+#include "../types/string.h"
 
 using namespace workflow::ast::executors;
 using namespace workflow::ast::expressions;
@@ -33,9 +38,42 @@ namespace workflow::ast::statements {
             result->increaseReferenceCount();
             context->currentModule->variables[name] = result;
         }
-        else {
+        else if (this->target->getClassName() == expressions::Subscript::className) {
             // 字典。或者数组下标赋值
-            // TODO
+            expressions::Subscript* subscript = (expressions::Subscript*)this->target;
+            Object* result = this->value->run(context);
+            result->increaseReferenceCount();
+
+            if (subscript->value->getClassName() == expressions::Name::className) {
+                //subscript->run(context);
+                expressions::Name* name = (expressions::Name*)subscript->value;
+                Object* target = context->currentModule->variables[name->id];
+                Object* slice = subscript->slice->run(context);
+                if (target->getClassName() == types::Dictionary::className) {
+                    if (slice->getClassName() == types::String::className) {
+                        ((types::Dictionary*)target)->value[((types::String*)slice)->value] = result;
+                    }
+                    else {
+                        // TODO 下标不是字符串
+                    }
+                }
+                else if (target->getClassName() == types::List::className) {
+                    if (slice->getClassName() == types::Integer::className) {
+                        ((types::List*)target)->value[((types::Integer*)slice)->value] = result;
+                    }
+                    else {
+                        // TODO  下标不是整形
+                    }
+                }
+
+                Object::release(slice);
+            }
+            else {
+                // TODO 下标不是标记的变量
+            }
+        }
+        else {
+            // TODO 赋值类型错误
         }
 
     }

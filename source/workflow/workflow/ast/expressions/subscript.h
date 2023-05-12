@@ -40,8 +40,6 @@ namespace workflow::ast::expressions {
         /// <returns></returns>
         virtual string toScriptCode(Context* context);
 
-    protected:
-
         Expression* value;
         Expression* slice;
 

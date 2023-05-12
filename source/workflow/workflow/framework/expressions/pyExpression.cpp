@@ -51,6 +51,7 @@ namespace workflow::framework::expressions {
             //Py_CLEAR(key);
             //Py_CLEAR(object);
         }
+        // 执行python脚本
         PyObject* result = PyEval_EvalCode(code, global_dict, local_dict);
 
         //PyTypeObject* typeObject = result->ob_type;

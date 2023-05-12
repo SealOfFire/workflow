@@ -33,6 +33,7 @@ def run():
 	val1=[1,2,3,["1","2","3"]]
 	val1={"key1":1,"key2":"val1","key3":[1,2,3,4]}
 
+	print("python end")
 #run()
 
 

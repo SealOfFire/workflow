@@ -265,7 +265,8 @@ namespace workflow::framework::activities {
                 workflow::ast::types::List* list = (workflow::ast::types::List*)value;
                 PyObject* pyList = PyList_New(list->value.size());
                 for (int i = 0; i < list->value.size(); i++) {
-                    PyList_Append(pyList, PyActivity::convertAstObjectToPyObject(list->value[i]));
+                    PyList_SetItem(pyList, i, PyActivity::convertAstObjectToPyObject(list->value[i]));
+                    //PyList_Append(pyList, PyActivity::convertAstObjectToPyObject(list->value[i]));
                 }
                 return pyList;
             }

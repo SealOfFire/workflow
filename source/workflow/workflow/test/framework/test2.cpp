@@ -83,8 +83,37 @@ void test2() {
     ast::statements::Print module1_print_dict1_key1(&subscript1);// 打印
     module1.addStatement(&module1_print_dict1_key1);
 
-    // list传入传出python
+    // 修改下标值list[0]=5
+    ast::expressions::Constant module1_constant_3("1");
+    ast::expressions::Subscript subscript2(&module1_name1_list1, &module1_constant_3);
+    ast::expressions::Constant module1_constant_4("100");
+    ast::statements::Assign module1_assign1_val3(&subscript2, &module1_constant_4); // 赋值 val1=0
+    module1.addStatement(&module1_assign1_val3);
 
+    // 修改下标值dict["key1"]=val111
+    ast::expressions::Constant module1_constant_5("\"key1\"");
+    ast::expressions::Subscript subscript3(&module1_name1_dict1, &module1_constant_5);
+    ast::expressions::Constant module1_constant_6("\"val111\"");
+    ast::statements::Assign module1_assign1_val4(&subscript3, &module1_constant_6); // 赋值 val1=0
+    module1.addStatement(&module1_assign1_val4);
+
+    // list传入传出python
+    // 执行python组件
+    PyActivity module1_pyActivity1("activity", "run");
+    module1_pyActivity1.properties["val1"] = new PyExpression("list1[2]"); // 当前模块的局域变量val1传入到python的val1中
+    //module1_pyActivity1.properties["val1"] = new PyExpression("\"ccccc\""); // 添加python 组件的变量
+    module1_pyActivity1.properties["val2"] = new PyExpression("dict1[\"key2\"]");// 添加python 组件的变量
+    module1.addStatement(&module1_pyActivity1);
+
+    // 打印ast中的val1
+    // 打印val1值
+    ast::expressions::Name module1_name1_val1("list1"); // 定义变量 val1
+    ast::statements::Print module1_print_val1(&module1_name1_val1);// 打印
+    module1.addStatement(&module1_print_val1);
+
+    ast::expressions::Name module1_name1_val2("dict1"); // 定义变量 val1
+    ast::statements::Print module1_print_val2(&module1_name1_val2);// 打印
+    module1.addStatement(&module1_print_val2);
 
     // 打印脚本
     Context context;
