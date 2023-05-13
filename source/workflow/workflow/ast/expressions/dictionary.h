@@ -20,7 +20,7 @@ namespace workflow::ast::expressions {
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        virtual Object* execute(Context* context);
+        virtual Object* execute(executors::Context* context);
 
         /// <summary>
         /// 
@@ -32,7 +32,7 @@ namespace workflow::ast::expressions {
         /// 转换成脚本
         /// </summary>
         /// <returns></returns>
-        virtual string toScriptCode(Context* context);
+        virtual string toScriptCode(executors::Context* context);
 
     protected:
 

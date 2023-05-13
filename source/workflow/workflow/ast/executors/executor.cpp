@@ -18,6 +18,7 @@ namespace workflow::ast::executors {
     /// <param name="statement">需要执行的语句</param>
     Executor::Executor(Statement* statement) : statement(statement) {
         this->context = new Context();
+        this->context->executor = this;
     }
 
     /// <summary>

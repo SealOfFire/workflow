@@ -4,6 +4,7 @@
 #include "pyExpression.h"
 #include "../activities/pyActivity.h"
 #include "../types/astPyObject.h"
+#include "../pyTools.h"
 
 using namespace workflow::ast::executors;
 using namespace workflow::ast::types;
@@ -35,22 +36,25 @@ namespace workflow::framework::expressions {
         PyObject* code = Py_CompileString(this->value.c_str(), "<string>", Py_eval_input);
         PyObject* global_dict = PyDict_New();
 
-        PyObject* local_dict = PyDict_New(); // TODO 需要把模块的变量列表全部转成python变量
-        for (auto [name, value] : context->currentModule->variables) {
-            PyObject* object = workflow::framework::activities::PyActivity::convertAstObjectToPyObject(value);
-            PyObject* key = Py_BuildValue("s", name.c_str());
-            pyResult = PyDict_SetItem(local_dict, key, object);
-            if (pyResult < 0) {
-                // TODO 添加局域变量出错
-                std::cout << "添加局域变量出错" << std::endl;
-            }
 
-            Py_DECREF(key);
-            Py_DECREF(object);
+        PyObject* local_dict = convertAstVariablesToPyDict(context->currentModule->variables);
 
-            //Py_CLEAR(key);
-            //Py_CLEAR(object);
-        }
+        //PyObject* local_dict = PyDict_New(); // TODO 需要把模块的变量列表全部转成python变量
+        //for (auto [name, value] : context->currentModule->variables) {
+        //    PyObject* object = convertAstObjectToPyObject(value);
+        //    PyObject* key = Py_BuildValue("s", name.c_str());
+        //    pyResult = PyDict_SetItem(local_dict, key, object);
+        //    if (pyResult < 0) {
+        //        // TODO 添加局域变量出错
+        //        std::cout << "添加局域变量出错" << std::endl;
+        //    }
+
+        //    Py_DECREF(key);
+        //    Py_DECREF(object);
+
+        //    //Py_CLEAR(key);
+        //    //Py_CLEAR(object);
+        //}
         // 执行python脚本
         PyObject* result = PyEval_EvalCode(code, global_dict, local_dict);
 
@@ -58,7 +62,8 @@ namespace workflow::framework::expressions {
         //std::cout << typeObject->tp_name << std::endl;
 
         // TODO resultValue需要delete
-        AstPyObject* returnValue = new AstPyObject(result);
+        Object* returnValue = convertPyObjectToAstObject(result);
+        //AstPyObject* returnValue = new AstPyObject(result);
 
         /*
         int nResult;
@@ -69,6 +74,7 @@ namespace workflow::framework::expressions {
         }
         */
 
+        Py_DECREF(local_dict);
         Py_DECREF(global_dict);
         Py_DECREF(code);
 
@@ -93,10 +99,15 @@ namespace workflow::framework::expressions {
         // 正则表达式匹配。匹配中括号结尾的时候，获取中括号内的参数
         // TODO list和dict不支持
 
+        // 判断当前的表达式是变量还是下标，还是其他表达式
+
+        //aaa();
+
         std::regex regexName(REGULAR_NAME);
         if (std::regex_match(this->value, regexName)) {
             return this->value;
         }
         return Expression::isName();
     }
+
 }

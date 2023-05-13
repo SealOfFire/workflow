@@ -10,6 +10,7 @@
 #include <statements/for.h>
 #include <statements/print.h>
 
+#include "../framework/executors/context.h"
 #include "../framework/executors/executeThread.h"
 #include "../framework/activities/pyActivity.h"
 #include "../framework/expressions/pyExpression.h"
@@ -100,9 +101,13 @@ void test2() {
     // list传入传出python
     // 执行python组件
     PyActivity module1_pyActivity1("activity", "run");
-    module1_pyActivity1.properties["val1"] = new PyExpression("list1[2]"); // 当前模块的局域变量val1传入到python的val1中
+    module1_pyActivity1.properties["val1"] = new PyExpression("list1[1]"); // 当前模块的局域变量val1传入到python的val1中
     //module1_pyActivity1.properties["val1"] = new PyExpression("\"ccccc\""); // 添加python 组件的变量
     module1_pyActivity1.properties["val2"] = new PyExpression("dict1[\"key2\"]");// 添加python 组件的变量
+    module1_pyActivity1.properties["val3"] = &module1_name1_dict1;
+    module1_pyActivity1.properties["val3"] = &subscript1;
+    //module1_pyActivity1.properties["val3"] = &module1_name1_list1;
+    //module1_pyActivity1.properties["val3"] = &subscript2;
     module1.addStatement(&module1_pyActivity1);
 
     // 打印ast中的val1
@@ -115,8 +120,9 @@ void test2() {
     ast::statements::Print module1_print_val2(&module1_name1_val2);// 打印
     module1.addStatement(&module1_print_val2);
 
+
     // 打印脚本
-    Context context;
+    workflow::framework::executors::Context context;
     cout << module1.toScriptCode(&context);
 
     // 执行器

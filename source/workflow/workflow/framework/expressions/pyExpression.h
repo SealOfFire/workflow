@@ -29,13 +29,13 @@ namespace workflow::framework::expressions {
         /// 每个脚本子类自己实现执行脚本时的功能
         /// </summary>
         /// <returns>返回指向结果的指针</returns>
-        virtual Object* execute(Context* context);
+        virtual Object* execute(executors::Context* context);
 
         /// <summary>
         /// 转换成脚本
         /// </summary>
         /// <returns></returns>
-        virtual std::string toScriptCode(Context* context);
+        virtual std::string toScriptCode(executors::Context* context);
 
         virtual string getClassName() const;
 

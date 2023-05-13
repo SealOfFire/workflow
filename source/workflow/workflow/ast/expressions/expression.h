@@ -34,7 +34,7 @@ namespace workflow::ast::expressions {
         /// 执行脚本
         /// </summary>
         /// <param name="env"></param>
-        Object* run(Context* context);
+        Object* run(executors::Context* context);
 
         /// <summary>
         /// 注释
@@ -55,20 +55,20 @@ namespace workflow::ast::expressions {
         /// 每个脚本子类自己实现执行脚本时的功能
         /// </summary>
         /// <returns>返回指向结果的指针</returns>
-        virtual Object* execute(Context* context);
+        virtual Object* execute(executors::Context* context);
 
         virtual string getClassName() const;
 
         /// <summary>
         /// debug模式运行时的处理
         /// </summary>
-        virtual void debugProcess(Context* context);
+        virtual void debugProcess(executors::Context* context);
 
         /// <summary>
         /// 转换成脚本
         /// </summary>
         /// <returns></returns>
-        virtual string toScriptCode(Context* context);
+        virtual string toScriptCode(executors::Context* context);
 
         /// <summary>
         /// 表达式是否是变量。如果是变量，返回变量名字符串
@@ -76,5 +76,14 @@ namespace workflow::ast::expressions {
         /// </summary>
         /// <returns></returns>
         virtual std::string isName();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="slice"></param>
+        /// <returns></returns>
+        virtual bool isSubscript(std::string* name, int* slice);
+
     };
 }

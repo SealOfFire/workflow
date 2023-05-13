@@ -33,12 +33,12 @@ namespace workflow::ast::statements {
         /// 执行语句
         /// </summary>
         /// <param name="env"></param>
-        void run(Context* context);
+        void run(executors::Context* context);
 
         /// <summary>
         /// 每个脚本子类自己实现执行脚本时的功能
         /// </summary>
-        virtual void execute(Context* context);
+        virtual void execute(executors::Context* context);
 
         /// <summary>
         /// 获取对象名称
@@ -49,12 +49,12 @@ namespace workflow::ast::statements {
         /// <summary>
         /// debug模式运行时的处理
         /// </summary>
-        virtual void debugProcess(Context* context);
+        virtual void debugProcess(executors::Context* context);
 
         /// <summary>
         /// 转换成脚本
         /// </summary>
         /// <returns></returns>
-        virtual string toScriptCode(Context* context);
+        virtual string toScriptCode(executors::Context* context);
     };
 }

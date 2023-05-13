@@ -6,6 +6,7 @@
 #include <statements/assign.h>
 #include <statements/print.h>
 
+#include "../framework/executors/context.h"
 #include "../framework/executors/executeThread.h"
 #include "../framework/activities/pyActivity.h"
 #include "../framework/expressions/pyExpression.h"
@@ -41,7 +42,7 @@ void test1() {
     module1.addStatement(&module1_print_val1);
 
     // ¥Ú”°Ω≈±æ
-    Context context;
+    framework::executors::Context context;
     cout << module1.toScriptCode(&context);
 
     // ÷¥––∆˜

@@ -34,7 +34,7 @@ namespace workflow::ast::statements {
         /// 
         /// </summary>
         /// <param name="env"></param>
-        void execute(Context* context);
+        void execute(executors::Context* context);
 
         virtual string getClassName() const;
 
@@ -42,6 +42,6 @@ namespace workflow::ast::statements {
         /// 转换成脚本
         /// </summary>
         /// <returns></returns>
-        virtual string toScriptCode(Context* context);
+        virtual string toScriptCode(executors::Context* context);
     };
 }

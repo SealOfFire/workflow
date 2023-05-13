@@ -2,7 +2,7 @@
 #include <regex>
 #include <iostream>
 #include <Python.h>
-
+#include "../pyTools.h"
 
 using namespace std;
 
@@ -12,7 +12,10 @@ namespace workflow::framework::executors {
     /// 构造函数
     /// </summary>
     /// <param name="statement">需要执行的语句</param>
-    Executor::Executor(Statement* statement) :workflow::ast::executors::Executor(statement) { }
+    Executor::Executor(Statement* statement) :workflow::ast::executors::Executor(statement) { 
+        //this->context = new framework::executors::Context();
+        //ast::executors::Executor(statement);
+    }
 
     /// <summary>
     /// 初始化python运行环境
@@ -67,12 +70,25 @@ namespace workflow::framework::executors {
 
         // wchar_t* sysPath2 = Py_GetPath();
 
+        // 初始化python共同模块
+        this->moduleTestExpression = createTestExpressionModule();
+        this->functionTestExpression = PyObject_GetAttrString(this->moduleTestExpression, "test");
+        if (!this->functionTestExpression || !PyCallable_Check(this->functionTestExpression)) {
+            // TODO 函数错误
+            //PyErr_Print();
+            std::cout << "函数错误" << std::endl;
+        }
+
     }
 
     /// <summary>
     /// 
     /// </summary>
     void Executor::ReleasePython() {
+        // 释放共同模块
+        Py_DECREF(this->functionTestExpression);
+        Py_DECREF(this->moduleTestExpression);
+
         // TODO
         // 释放python
         Py_Finalize();

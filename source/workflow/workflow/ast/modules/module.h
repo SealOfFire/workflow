@@ -63,7 +63,7 @@ namespace workflow::ast::modules {
         /// <summary>
         /// 执行语句
         /// </summary>
-        virtual void execute(Context* context);
+        virtual void execute(executors::Context* context);
 
         /// <summary>
         /// 获取对象名称
@@ -88,7 +88,7 @@ namespace workflow::ast::modules {
         /// 转换成脚本
         /// </summary>
         /// <returns></returns>
-        virtual string toScriptCode(Context* context);
+        virtual string toScriptCode(executors::Context* context);
 
     };
 }

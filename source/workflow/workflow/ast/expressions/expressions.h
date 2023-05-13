@@ -9,6 +9,7 @@
 #define CLASS_NAME_CONSTANT "workflow::ast::expressions::Constant"
 #define CLASS_NAME_EXPRESSION "workflow::ast::expressions::Expression"
 #define CLASS_NAME_NAME "workflow::ast::expressions::Name"
+#define CLASS_NAME_EXPR_VALUE "workflow::ast::expressions::Value"
 #define CLASS_NAME_EXPR_LIST "workflow::ast::expressions::List"
 #define CLASS_NAME_EXPR_DICT "workflow::ast::expressions::Dictionary"
 #define CLASS_NAME_EXPR_SUBSCRIPT "workflow::ast::expressions::Subscript"

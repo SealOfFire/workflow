@@ -54,18 +54,6 @@ namespace workflow::framework::activities {
         /// <returns></returns>
         virtual std::string toScriptCode(Context* context);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        static PyObject* convertAstObjectToPyObject(workflow::ast::types::Object* value);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        static workflow::ast::types::Object* convertPyObjectToAstObject(PyObject* value);
-
     private:
 
         //typedef void (PyActivity::* changePropertiesFunction)(const char*, PyObject*);

@@ -24,6 +24,10 @@ namespace workflow::ast {
     namespace statements {
         class Statement;
     }
+
+    namespace executors {
+        class Executor;
+    }
 }
 
 using namespace std;
@@ -99,6 +103,8 @@ namespace workflow::ast::executors {
         /// 断点列表，语句
         /// </summary>
         vector< workflow::ast::statements::Statement*> breakpointStatements;
+
+        Executor* executor;
 
         /// <summary>
         /// 换行符

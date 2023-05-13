@@ -2,28 +2,32 @@
 
 #include "expression.h"
 
-using namespace std;
-using namespace workflow::ast::types;
-
 namespace workflow::ast::expressions {
 
     /// <summary>
-    /// 创建一个list数据对象
+    /// 直接返回object值的表达式
     /// </summary>
-    class SHARED_LIB_API List : public Expression {
+    class SHARED_LIB_API Value : public Expression {
     public:
-        static constexpr const char* className = CLASS_NAME_EXPR_LIST;
+        static constexpr const char* className = CLASS_NAME_EXPR_VALUE;
 
-        List();
+        /// <summary>
+        /// 变量的标识
+        /// </summary>
+        types::Object* value;
 
-        void push_back(Expression* expression);
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="id"></param>
+        Value(types::Object* value);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        virtual Object* execute(executors::Context* context);
+        virtual ast::types::Object* execute(executors::Context* context);
 
         virtual string getClassName() const;
 
@@ -32,13 +36,6 @@ namespace workflow::ast::expressions {
         /// </summary>
         /// <returns></returns>
         virtual string toScriptCode(executors::Context* context);
-
-    protected:
-        /// <summary>
-        /// 要添加到list中的表达式列表
-        /// </summary>
-        vector<Expression*> value;
-
     };
 
 }

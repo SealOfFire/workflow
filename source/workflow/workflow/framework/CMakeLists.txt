@@ -46,6 +46,9 @@ list(APPEND file_list expressions/test2.h)
 list(APPEND file_list types/astPyObject.cpp)
 list(APPEND headers types/astPyObject.h)
 
+list(APPEND file_list pyTools.cpp)
+list(APPEND headers pyTools.h)
+
 list(APPEND file_list test.cpp)
 list(APPEND file_list test.h)
 

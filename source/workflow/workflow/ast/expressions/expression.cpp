@@ -71,4 +71,14 @@ namespace workflow::ast::expressions {
     std::string Expression::isName() {
         return std::string();
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="slice"></param>
+    /// <returns></returns>
+    bool Expression::isSubscript(std::string* name, int* slice) {
+        return false;
+    }
 }

@@ -25,7 +25,7 @@ namespace workflow::ast::expressions {
         /// <param name="id"></param>
         Name(string id);
 
-        Object* execute(Context* context);
+        virtual Object* execute(executors::Context* context);
 
         virtual string getClassName() const;
 
@@ -33,7 +33,7 @@ namespace workflow::ast::expressions {
         /// 转换成脚本
         /// </summary>
         /// <returns></returns>
-        virtual string toScriptCode(Context* context);
+        virtual string toScriptCode(executors::Context* context);
 
         /// <summary>
         /// 表达式是否是变量。如果是变量，返回变量名字符串

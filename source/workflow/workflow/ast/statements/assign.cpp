@@ -26,6 +26,7 @@ namespace workflow::ast::statements {
     void Assign::execute(Context* context) {
         // 赋值。常量赋值给变量， 变量赋值给变量，计算的结果赋值给变量
         // 这里要考虑合适new 新的存储空间，何时传递指针
+        // TODO 赋值改变数据类型的变量的时候，应该delete旧的变量。防止泄露
 
         if (this->target->getClassName() == Name::className) {
             // target是变量名
@@ -66,7 +67,7 @@ namespace workflow::ast::statements {
                     }
                 }
 
-                Object::release(slice);
+                //Object::release(slice);
             }
             else {
                 // TODO 下标不是标记的变量

@@ -1,5 +1,9 @@
-﻿#include <expressions/name.h>
+﻿//#include <expressions/constant.h>
+#include <expressions/name.h>
+#include <expressions/subscript.h>
+#include <expressions/value.h>
 #include <modules/module.h>
+#include <statements/assign.h>
 #include <types/boolean.h>
 #include <types/dictionary.h>
 #include <types/float.h>
@@ -8,9 +12,12 @@
 #include <types/long.h>
 #include <types/null.h>
 #include <types/string.h>
-#include "../types/astPyObject.h"
 #include "pyActivity.h"
+#include "../pyTools.h"
+#include "../executors/executor.h"
 #include "../expressions/pyExpression.h"
+#include "../types/astPyObject.h"
+
 
 namespace workflow::framework::activities {
 
@@ -155,7 +162,7 @@ namespace workflow::framework::activities {
                         Object* result = this->properties[attributeName]->run(context); // python传出到局部变量的时候，不需要计算值
                         // 创建对应类型的参数数据;
                         // 参数表达式的计算结果，输入到python模块中
-                        PyObject* value = PyActivity::convertAstObjectToPyObject(result);
+                        PyObject* value = convertAstObjectToPyObject(result);
                         // 回调函数 设置或者读取属性
                         //(this->*callback)(attributeName.c_str(), value);
                         // Py_CLEAR(value);
@@ -165,8 +172,8 @@ namespace workflow::framework::activities {
                             std::cout << "设置值到python中出错" << std::endl;
                         }
 
-                        // 删除result;
-                        Object::release(result);
+                        // 删除result; TODO 这里可能有内存泄露
+                        // Object::release(result);
                         // 
                         Py_DECREF(value);
                         //Py_CLEAR(value);
@@ -174,24 +181,139 @@ namespace workflow::framework::activities {
                     else {
                         // python->ast
                         // 这里的属性值如果是个变量名。需要python脚本中的值修改组件属性值。把值从python脚本中传出到ast中
-                        std::string propertyName = this->properties[attributeName]->isName();
-                        if (propertyName.size() != 0) {
-                            // 表达式是个变量名。可以传出数值
-                            PyObject* value = PyDict_GetItemString(this->dict, attributeName.c_str()); // TODO 或者get
-                            if (!value) {
-                                // TODO 设置值出错
-                                std::cout << "从python获取值出错" << std::endl;
-                            }
-                            // TODO 字典和list时候的处理没有 
-                            // TODO 赋值前删掉旧值避免泄露。检查其他的地方map是否会泄露
-                            context->currentModule->variables[propertyName] = this->convertPyObjectToAstObject(value);
-                            // 返回数据中如果有list。这里调用Py_DECREF会报错
-                            //bool is = PyDict_Check(value);
+                        if (this->properties[attributeName]->getClassName() == ast::expressions::Name::className) {
+                            ast::expressions::Name* name = (ast::expressions::Name*)this->properties[attributeName];
+
+                            // 取出python中的值
+                            PyObject* value = PyDict_GetItemString(this->dict, attributeName.c_str());
+
+                            // 通过赋值语句设置变量
+                            ast::expressions::Name target(name->id);
+                            ast::expressions::Value expr(convertPyObjectToAstObject(value));
+                            ast::statements::Assign assign(&target, &expr);
+                            assign.run(context);
+ 
+                            // 释放python
                             if (value != NULL && !PyList_Check(value) && !PyDict_Check(value)) {
                                 Py_DECREF(value);
                             }
                         }
-                        propertyName.clear();
+                        else if (this->properties[attributeName]->getClassName() == ast::expressions::Subscript::className) {
+                            ast::expressions::Subscript* subscript = (ast::expressions::Subscript*)this->properties[attributeName];
+
+                            // 取出python中的值
+                            PyObject* value = PyDict_GetItemString(this->dict, attributeName.c_str());
+                            //context->currentModule->variables[propertyName] = convertPyObjectToAstObject(value);
+
+                            // 通过赋值语句设置变量
+                            ast::expressions::Value expr(convertPyObjectToAstObject(value));
+                            ast::statements::Assign assign(subscript, &expr);
+                            assign.run(context);
+                            
+                            // 释放python
+                            if (value != NULL && !PyList_Check(value) && !PyDict_Check(value)) {
+                                Py_DECREF(value);
+                            }
+                        }
+                        else if (this->properties[attributeName]->getClassName() == framework::expressions::PyExpression::className) {
+                            framework::expressions::PyExpression* pyExpression = (framework::expressions::PyExpression*)this->properties[attributeName];
+                            // 判断是变量，还是下标
+
+                            framework::executors::Executor* executor = (framework::executors::Executor*)context->executor;
+                            PyObject* args = PyTuple_New(2);
+                            PyTuple_SetItem(args, 0, PyUnicode_FromString(pyExpression->value.c_str()));
+                            PyObject* local = convertAstVariablesToPyDict(context->currentModule->variables);
+                            PyTuple_SetItem(args, 1, local); // 局部变量列表
+
+                            PyObject* result = PyEval_CallObject(executor->functionTestExpression, args);
+                            PyObject* p1 = PyTuple_GetItem(result, 0);
+                            PyObject* p2 = PyTuple_GetItem(result, 1);
+                            PyObject* p3 = PyTuple_GetItem(result, 2);
+                            PyObject* p4 = PyTuple_GetItem(result, 3);
+
+                            ast::types::Boolean* v1 = (ast::types::Boolean*)convertPyObjectToAstObject(p1);
+                            ast::types::Integer* v2 = (ast::types::Integer*)convertPyObjectToAstObject(p2);
+                            ast::types::String* v3 = (ast::types::String*)convertPyObjectToAstObject(p3);
+                            ast::types::Integer* v4 = (ast::types::Integer*)convertPyObjectToAstObject(p4);
+
+                            //Py_DECREF(local);
+
+                            if (v1->value) {
+                                // 取出python中的值
+                                PyObject* value = PyDict_GetItemString(this->dict, attributeName.c_str());
+                                switch (v2->value)
+                                {
+                                case 0: {
+                                    // 变量
+                                    ast::expressions::Name target(v3->value);
+                                    ast::expressions::Value expr(convertPyObjectToAstObject(value));
+                                    ast::statements::Assign assign(&target, &expr);
+                                    assign.run(context);
+                                    break;
+                                }
+                                case 1: {
+                                    // 下标
+                                    ast::expressions::Name target(v3->value);
+                                    ast::types::Integer slice(v4->value);
+                                    //ast::expressions::Constant constant(v4->value);
+                                    ast::expressions::Value sliceValue(&slice);
+                                    ast::expressions::Subscript subscript(&target, &sliceValue);
+                                    ast::expressions::Value expr(convertPyObjectToAstObject(value));
+                                    ast::statements::Assign assign(&subscript, &expr);
+                                    assign.run(context);
+                                    break;
+                                }
+                                default:
+                                    // TODO 未处理的数据类型
+                                    break;
+                                }
+                                // 变量
+                                //if (v2->value == 0) {
+                                //    // 变量
+                                //    // 通过赋值语句设置变量
+                                //    ast::expressions::Name target(v3->value);
+                                //    ast::expressions::Value expr(convertPyObjectToAstObject(value));
+                                //    ast::statements::Assign assign(&target, &expr);
+                                //    assign.run(context);
+
+                                //}
+                                //else if (v2->value == 1) {
+                                //    // 下标
+
+                                //}
+                                //else {
+                                //    // TODO 未处理的数据类型
+                                //}
+
+                                //if (value != NULL && !PyList_Check(value) && !PyDict_Check(value)) {
+                                //    Py_DECREF(value);
+                                //}
+                            }
+
+                        }
+                        else {
+                            // 其他的不处理
+                        }
+     
+
+                        //std::string propertyName = this->properties[attributeName]->isName();
+                        //if (propertyName.size() != 0) {
+                        //    // 表达式是个变量名。可以传出数值
+                        //    PyObject* value = PyDict_GetItemString(this->dict, attributeName.c_str()); // TODO 或者get
+                        //    if (!value) {
+                        //        // TODO 设置值出错
+                        //        std::cout << "从python获取值出错" << std::endl;
+                        //    }
+                        //    // TODO 字典和list时候的处理没有 
+                        //    // TODO 赋值前删掉旧值避免泄露。检查其他的地方map是否会泄露
+                        //    context->currentModule->variables[propertyName] = convertPyObjectToAstObject(value);
+                        //    // 返回数据中如果有list。这里调用Py_DECREF会报错
+                        //    //bool is = PyDict_Check(value);
+                        //    if (value != NULL && !PyList_Check(value) && !PyDict_Check(value)) {
+                        //        Py_DECREF(value);
+                        //    }
+                        //}
+                        //propertyName.clear();
                     }
                 }
             }
@@ -220,156 +342,12 @@ namespace workflow::framework::activities {
             for (int i = 0; i < paramsCount; i++) {
                 Object* result = this->functionParameters[i]->run(context);
                 // 变量添加到python参数列表中
-                PyTuple_SetItem(pArgs, i, PyActivity::convertAstObjectToPyObject(result));
+                PyTuple_SetItem(pArgs, i, convertAstObjectToPyObject(result));
                 //delete result;
                 Object::release(result);
             }
         }
         return pArgs;
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="value"></param>
-    /// <returns></returns>
-    PyObject* PyActivity::convertAstObjectToPyObject(workflow::ast::types::Object* value) {
-
-        PyObject* result = NULL;
-        if (value != nullptr) {
-            if (value->getClassName() == workflow::framework::types::AstPyObject::className) {
-                // 如果返回的是python对象。不转化。直接返回
-                return  ((workflow::framework::types::AstPyObject*)value)->value;
-            }
-            else if (value->getClassName() == workflow::ast::types::Integer::className) {
-                result = Py_BuildValue("i", ((workflow::ast::types::Integer*)value)->value);
-            }
-            // long
-            else  if (value->getClassName() == workflow::ast::types::Long::className) {
-                result = Py_BuildValue("l", ((workflow::ast::types::Long*)value)->value);
-            }
-            // str
-            else if (value->getClassName() == workflow::ast::types::String::className) {
-                result = Py_BuildValue("s", ((workflow::ast::types::String*)value)->value.c_str());
-                //result = Py_BuildValue("s", "中文"); // TODO 中文需要转成utf8
-            }
-            // float
-            else if (value->getClassName() == workflow::ast::types::Float::className) {
-                result = Py_BuildValue("d", ((workflow::ast::types::Float*)value)->value);
-            }
-            // null
-            else if (value->getClassName() == workflow::ast::types::Null::className) {
-                result = Py_BuildValue("z", NULL);
-            }
-            else if (value->getClassName() == workflow::ast::types::List::className) {
-                workflow::ast::types::List* list = (workflow::ast::types::List*)value;
-                PyObject* pyList = PyList_New(list->value.size());
-                for (int i = 0; i < list->value.size(); i++) {
-                    PyList_SetItem(pyList, i, PyActivity::convertAstObjectToPyObject(list->value[i]));
-                    //PyList_Append(pyList, PyActivity::convertAstObjectToPyObject(list->value[i]));
-                }
-                return pyList;
-            }
-            else if (value->getClassName() == workflow::ast::types::Dictionary::className) {
-                workflow::ast::types::Dictionary* dict = (workflow::ast::types::Dictionary*)value;
-                PyObject* pyDict = PyDict_New();
-                for (auto [key, val] : dict->value) {
-                    PyDict_SetItem(pyDict, PyUnicode_FromString(key.c_str()), PyActivity::convertAstObjectToPyObject(val));
-                }
-                return pyDict;
-            }
-            else {
-                // TODO 没法处理的数据类型
-                std::cout << "没法处理的数据类型" << std::endl;
-            }
-        }
-        else
-        {
-            // TODO 传入的参数是null
-            std::cout << "传入的参数是null" << std::endl;
-        }
-        return result;
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="value"></param>
-    /// <returns></returns>
-    Object* PyActivity::convertPyObjectToAstObject(PyObject* value) {
-        // TODO
-        if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_STRING) &&
-            (strncmp(value->ob_type->tp_name, PY_TYPE_STRING, strlen(PY_TYPE_STRING))) == 0) {
-            // 字符串类型
-            Py_ssize_t size;
-            const char* ptr = PyUnicode_AsUTF8AndSize(value, &size);
-            std::string str(ptr, size);
-            return new ast::types::String(str);
-        }
-        else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_INTEGER) &&
-            (strncmp(value->ob_type->tp_name, PY_TYPE_INTEGER, strlen(PY_TYPE_INTEGER))) == 0) {
-            // integer
-            return new ast::types::Integer(_PyLong_AsInt(value));
-        }
-        else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_FLOAT) &&
-            (strncmp(value->ob_type->tp_name, PY_TYPE_FLOAT, strlen(PY_TYPE_FLOAT))) == 0) {
-            // float
-            return new ast::types::Float(PyFloat_AsDouble(value));
-        }
-        else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_NONE) &&
-            (strncmp(value->ob_type->tp_name, PY_TYPE_NONE, strlen(PY_TYPE_NONE))) == 0) {
-            // none
-            //return new ast::types::List();
-            return new ast::types::Null();
-        }
-        else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_DICTIONARY) &&
-            (strncmp(value->ob_type->tp_name, PY_TYPE_DICTIONARY, strlen(PY_TYPE_DICTIONARY))) == 0) {
-            // dict
-            // TODO 递归
-            ast::types::Dictionary* result = new ast::types::Dictionary();
-            PyObject* keys = PyDict_Keys(value);
-            Py_ssize_t s = PyList_Size(keys);
-            for (int i = 0; i < s; ++i) {
-                // 模块的所有属性
-                PyObject* item = PyList_GetItem(keys, i);
-
-                // python对象类型转成c++数据类型字符串
-                std::string key(_PyUnicode_AsString(item));
-
-                PyObject* val = PyDict_GetItemString(value, key.c_str());
-                result->value[key] = PyActivity::convertPyObjectToAstObject(val);
-            }
-            return result;
-        }
-        else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_LIST) &&
-            (strncmp(value->ob_type->tp_name, PY_TYPE_LIST, strlen(PY_TYPE_LIST))) == 0) {
-            // list
-            ast::types::List* result = new ast::types::List();
-            for (int i = 0; i < PyList_Size(value); i++) {
-                PyObject* listVal = PyList_GetItem(value, i);
-                //PyObject* listVal = PySequence_GetItem(value, i);
-                result->value.push_back(PyActivity::convertPyObjectToAstObject(listVal));
-                //Py_DECREF(listVal);
-                //Py_CLEAR(listVal);
-            }
-            return result;
-        }
-        else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_BOOLEAN) &&
-            (strncmp(value->ob_type->tp_name, PY_TYPE_BOOLEAN, strlen(PY_TYPE_BOOLEAN))) == 0) {
-            // bool
-            return new ast::types::Boolean(PyBool_Check(value));
-        }
-        else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_TUPLE) &&
-            (strncmp(value->ob_type->tp_name, PY_TYPE_TUPLE, strlen(PY_TYPE_TUPLE))) == 0) {
-            // tuple
-            // TODO
-        }
-        else {
-            // 其他的python数据类型。直接保存为python数据
-            return new framework::types::AstPyObject(value);
-        }
-
-        return new ast::types::Object();
     }
 
 }
