@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <string>
+#include "errorMessage.h"
 #include "../../exportLib.h"
 
 using namespace std;

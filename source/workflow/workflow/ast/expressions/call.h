@@ -17,16 +17,6 @@ namespace workflow::ast::expressions {
         static constexpr const char* className = CLASS_NAME_CALL;
 
         /// <summary>
-        /// 模块名
-        /// </summary>
-        string modeuleName;
-
-        /// <summary>
-        /// 函数名
-        /// </summary>
-        string functionName;
-
-        /// <summary>
         /// 输入参数列表
         /// </summary>
         map<string, Expression*> arguments;
@@ -54,5 +44,19 @@ namespace workflow::ast::expressions {
         /// </summary>
         /// <returns></returns>
         virtual string toScriptCode(Context* context);
+
+    protected:
+        /// <summary>
+        /// 模块名
+        /// 模块名为空时获取当前模块
+        /// 有模块名时，获取当前模块下的子模块
+        /// </summary>
+        string modeuleName;
+
+        /// <summary>
+        /// 函数名
+        /// </summary>
+        string functionName;
+
     };
 }

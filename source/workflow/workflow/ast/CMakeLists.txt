@@ -8,8 +8,10 @@ project (ast)
 set(CMAKE_CXX_STANDARD 20)
 
 # 项目文件列表
+list(APPEND file_list exceptions/dataTypeException.cpp)
 list(APPEND file_list exceptions/exception.cpp)
 list(APPEND file_list exceptions/keyNotFoundException.cpp)
+list(APPEND file_list exceptions/notImplementedException.cpp)
 list(APPEND file_list exceptions/nullReferenceException.cpp)
 # 执行器
 list(APPEND file_list executors/executeThread.cpp)
@@ -51,12 +53,15 @@ list(APPEND file_list types/null.cpp)
 list(APPEND file_list types/object.cpp)
 list(APPEND file_list types/string.cpp)
 list(APPEND file_list types/void.cpp)
-#list(APPEND file_list ast.cpp)
+
+list(APPEND file_list ast.cpp)
 #list(APPEND file_list ast.h)
 #list(APPEND file_list common.h)
 #---------------------------------------------------------
+list(APPEND headers exceptions/dataTypeException.h)
 list(APPEND headers exceptions/exception.h)
-list(APPEND file_list exceptions/keyNotFoundException.h)
+list(APPEND headers exceptions/keyNotFoundException.h)
+list(APPEND headers exceptions/notImplementedException.h)
 list(APPEND headers exceptions/nullReferenceException.h)
 #
 list(APPEND headers executors/context.h)
@@ -103,6 +108,7 @@ list(APPEND headers types/string.h)
 list(APPEND headers types/types.h)
 list(APPEND headers types/void.h)
 
+list(APPEND headers ast.h)
 #add_definitions(-DSHARED_LIB_EXPORT="true")
 
 if(SHARED_LIB_BUILD)

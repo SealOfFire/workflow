@@ -1,4 +1,5 @@
 ﻿#include "call.h"
+#include "../ast.h"
 #include "../exceptions/keyNotFoundException.h"
 #include "../exceptions/nullReferenceException.h"
 #include "../modules/functionDefinition.h"
@@ -40,17 +41,23 @@ namespace workflow::ast::expressions {
         }
         else
         {
-            module = context->currentModule->modules[this->modeuleName];
+            if (context->currentModule->modules.count(this->modeuleName) == 0) {
+                // 模块名称不存在
+                throw ast::exceptions::KeyNotFoundException(this, this->modeuleName);
+            }
+            else {
+                module = context->currentModule->modules[this->modeuleName];
+            }
         }
 
         if (module == nullptr) {
             // 模块不存在
-            throw ast::exceptions::NullReferenceException(this, EXPECTION_MESSAGE_CALL_MODULE + this->modeuleName);
+            throw ast::exceptions::NullReferenceException(this, "module");
         }
 
         if (module->functions.count(this->functionName) == 0) {
             // 函数名称不存在
-            throw ast::exceptions::KeyNotFoundException(this, EXPECTION_MESSAGE_CALL_FUN_NAME + this->functionName);
+            throw ast::exceptions::KeyNotFoundException(this, functionName);
         }
 
         // 设置输入变量值
@@ -71,6 +78,8 @@ namespace workflow::ast::expressions {
         // 函数的返回值
         if (func->returns == nullptr) {
             // void 函数
+            // TODO 无返回值
+            return Manager::createVoid();
         }
         else {
             return func->returns;

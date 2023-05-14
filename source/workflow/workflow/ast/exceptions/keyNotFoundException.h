@@ -8,12 +8,16 @@ namespace workflow::ast::exceptions {
     /// </summary>
     class SHARED_LIB_API KeyNotFoundException : public Exception {
     public:
-
         /// <summary>
         /// 
         /// </summary>
         /// <param name="object"></param>
         /// <param name="message"></param>
-        KeyNotFoundException(void* object, std::string message);
+        KeyNotFoundException(void* object, std::string name);
+
+        virtual string what() const;
+
+    protected:
+        std::string name;
     };
 }

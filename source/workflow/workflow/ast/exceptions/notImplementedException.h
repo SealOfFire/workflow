@@ -4,17 +4,16 @@
 namespace workflow::ast::exceptions {
 
     /// <summary>
-    /// 对象为空异常
+    /// 
     /// </summary>
-    class SHARED_LIB_API NullReferenceException : public Exception {
-
+    class SHARED_LIB_API NotImplementedException : public Exception {
     public:
         /// <summary>
         /// 
         /// </summary>
         /// <param name="object"></param>
         /// <param name="message"></param>
-        NullReferenceException(void* object, std::string name);
+        NotImplementedException(void* object, std::string name);
 
         virtual string what() const;
 

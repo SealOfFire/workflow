@@ -23,7 +23,7 @@ namespace workflow::ast::executors {
         /// <summary>
         ///  执行环境
         /// </summary>
-        Context* context;
+        Context* context = nullptr;
 
         /// <summary>
         /// 执行的语句
@@ -46,6 +46,11 @@ namespace workflow::ast::executors {
         /// 析构函数
         /// </summary>
         ~Executor();
+
+        /// <summary>
+        /// 初始化上下文
+        /// </summary>
+        void initializerContext();
 
         /// <summary>
         /// 执行语句

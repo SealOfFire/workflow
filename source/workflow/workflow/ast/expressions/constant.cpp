@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <regex>
 #include "constant.h"
+#include "../exceptions/exception.h"
 #include "../types/boolean.h"
 #include "../types/float.h"
 #include "../types/integer.h"
@@ -69,12 +70,10 @@ namespace workflow::ast::expressions {
         // 匹配list
         // 匹配dict
 
-        int debug = 0;
-        debug++;
+        // 没法识别的常量。这里需要报错
+        throw exceptions::Exception(this, "没法识别的常量:" + this->value);
 
-        // TODO 没法识别的常量。这里需要报错
-
-        return nullptr;
+        // return nullptr;
     }
 
     string Constant::getClassName() const {

@@ -1,4 +1,8 @@
 ﻿#include "compare.h"
+#include "../ast.h"
+#include "../exceptions/dataTypeException.h"
+#include "../exceptions/notImplementedException.h"
+#include "../exceptions/nullReferenceException.h"
 #include "../types/boolean.h"
 
 using namespace std;
@@ -21,8 +25,22 @@ namespace workflow::ast::expressions {
     /// <param name="context"></param>
     /// <returns></returns>
     Object* Compare::execute(Context* context) {
+
+        if (this->left == nullptr) {
+            throw exceptions::NullReferenceException(this, "left");
+        }
         Object* leftResult = this->left->run(context);
+        if (leftResult->getClassName() != types::Boolean::className) {
+            throw exceptions::DataTypeException(this, "left", types::Boolean::className, leftResult->getClassName());
+        }
+
+        if (this->right == nullptr) {
+            throw exceptions::NullReferenceException(this, "right");
+        }
         Object* rightResult = this->right->run(context);
+        if (rightResult->getClassName() != types::Boolean::className) {
+            throw exceptions::DataTypeException(this, "right", types::Boolean::className, rightResult->getClassName());
+        }
 
         bool result(false);
         switch (this->compareOperator)
@@ -37,10 +55,16 @@ namespace workflow::ast::expressions {
             result = ((Boolean*)leftResult)->value >= ((Boolean*)rightResult)->value;
             break;
         case CompareOperator::In:
+            // TODO
+            throw exceptions::NotImplementedException(this, "比较运算的IN");
             break;
         case CompareOperator::Is:
+            // TODO
+            throw exceptions::NotImplementedException(this, "比较运算的IS");
             break;
         case CompareOperator::IsNot:
+            // TODO
+            throw exceptions::NotImplementedException(this, "比较运算的IS NOT");
             break;
         case CompareOperator::LessThen:
             result = ((Boolean*)leftResult)->value < ((Boolean*)rightResult)->value;
@@ -58,7 +82,8 @@ namespace workflow::ast::expressions {
         }
 
         //bool result = ((Boolean*)leftResult)->value && ((Boolean*)rightResult)->value;
-        return new Boolean(result);
+        //return new Boolean(result);
+        return Manager::createBoolean(result);
     }
 
     /// <summary>

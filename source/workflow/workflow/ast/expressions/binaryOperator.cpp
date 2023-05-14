@@ -24,13 +24,13 @@ namespace workflow::ast::expressions {
     /// <returns></returns>
     Object* BinaryOperator::execute(Context* context) {
         if (this->left == nullptr) {
-            throw ast::exceptions::NullReferenceException(this, EXPECTION_MESSAGE_BINARY_OP_LEFT);
+            throw exceptions::NullReferenceException(this, "left");
         }
         Object* leftResult = this->left->run(context);
 
 
         if (this->right == nullptr) {
-            throw ast::exceptions::NullReferenceException(this, EXPECTION_MESSAGE_BINARY_OP_RIGHT);
+            throw exceptions::NullReferenceException(this, "right");
         }
         Object* rightResult = this->right->run(context);
 

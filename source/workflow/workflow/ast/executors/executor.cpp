@@ -1,4 +1,6 @@
 ﻿#include "executor.h"
+#include "../exceptions/errorMessage.h"
+#include "../exceptions/nullReferenceException.h"
 #include "../modules/module.h"
 
 using namespace workflow::ast;
@@ -10,15 +12,16 @@ namespace workflow::ast::executors {
     /// <summary>
     /// 
     /// </summary>
-    Executor::Executor() {}
+    Executor::Executor() {
+        this->initializerContext();
+    }
 
     /// <summary>
     /// 构造函数
     /// </summary>
     /// <param name="statement">需要执行的语句</param>
     Executor::Executor(Statement* statement) : statement(statement) {
-        this->context = new Context();
-        this->context->executor = this;
+        this->initializerContext();
     }
 
     /// <summary>
@@ -26,6 +29,14 @@ namespace workflow::ast::executors {
     /// </summary>
     Executor::~Executor() {
         delete this->context;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    void Executor::initializerContext() {
+        this->context = new Context();
+        this->context->executor = this;
     }
 
     /// <summary>
@@ -42,8 +53,8 @@ namespace workflow::ast::executors {
         }
 
         if (this->statement == nullptr) {
-            // TODO 
-            std::cout << "没有可执行的语句" << std::endl;
+            throw exceptions::NullReferenceException(this, "statement");
+            //std::cout << "没有可执行的语句" << std::endl;
         }
         else
         {
@@ -51,6 +62,7 @@ namespace workflow::ast::executors {
             this->statement->run(this->context);
         }
 
+        // TODO 执行结束
         cout << "执行结束" << endl;
     }
 
