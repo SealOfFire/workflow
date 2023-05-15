@@ -45,9 +45,9 @@ namespace workflow::framework {
             }
             else if (value->getClassName() == workflow::ast::types::List::className) {
                 workflow::ast::types::List* list = (workflow::ast::types::List*)value;
-                PyObject* pyList = PyList_New(list->value.size());
-                for (int i = 0; i < list->value.size(); i++) {
-                    PyList_SetItem(pyList, i, convertAstObjectToPyObject(list->value[i]));
+                PyObject* pyList = PyList_New(list->count());
+                for (int i = 0; i < list->count(); i++) {
+                    PyList_SetItem(pyList, i, convertAstObjectToPyObject(list->elementAt(i)));
                     //PyList_Append(pyList, convertAstObjectToPyObject(list->value[i]));
                 }
                 return pyList;
@@ -130,7 +130,8 @@ namespace workflow::framework {
             for (int i = 0; i < PyList_Size(value); i++) {
                 PyObject* listVal = PyList_GetItem(value, i);
                 //PyObject* listVal = PySequence_GetItem(value, i);
-                result->value.push_back(convertPyObjectToAstObject(listVal));
+                //result->value.push_back(convertPyObjectToAstObject(listVal));
+                result->append(convertPyObjectToAstObject(listVal));
                 //Py_DECREF(listVal);
                 //Py_CLEAR(listVal);
             }

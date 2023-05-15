@@ -2,9 +2,9 @@
 
 #include "expression.h"
 
-using namespace std;
-using namespace workflow::ast::executors;
-using namespace workflow::ast::types;
+//namespace workflow::ast {
+//    class Manager;
+//}
 
 namespace workflow::ast::expressions {
 
@@ -21,19 +21,21 @@ namespace workflow::ast::expressions {
         /// <param name="value"></param>
         Constant(string value);
 
-        /// <summary>
-        /// 常量值
-        /// </summary>
-        string value;
+        virtual types::Object* execute(executors::Context* context);
 
-        virtual Object* execute(Context* context);
-
-        virtual string getClassName() const;
+        virtual std::string getClassName() const;
 
         /// <summary>
         /// 转换成脚本
         /// </summary>
         /// <returns></returns>
-        virtual string toScriptCode(Context* context);
+        virtual std::string toScriptCode(executors::Context* context);
+
+    protected:
+        /// <summary>
+        /// 常量值
+        /// </summary>
+        string value;
+
     };
 }

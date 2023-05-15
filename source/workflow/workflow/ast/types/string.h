@@ -20,6 +20,7 @@ namespace workflow::ast::types {
         /// </summary>
         /// <param name="value"></param>
         String(string value);
+        ~String();
 
         virtual string getClassName() const;
 

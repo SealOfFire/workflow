@@ -16,18 +16,18 @@ namespace workflow::ast::expressions {
     /// <returns></returns>
     Object* Name::execute(Context* context) {
 
-        if (context->currentModule == nullptr) {
-            // 模块不存在
-            throw ast::exceptions::NullReferenceException(this, EXPECTION_MESSAGE_NAME_MODULE);
-        }
+        //if (context->currentModule == nullptr) {
+        //    // 模块不存在
+        //    throw ast::exceptions::NullReferenceException(this, EXPECTION_MESSAGE_NAME_MODULE);
+        //}
 
-        if (context->currentModule->variables.count(this->id) == 0) {
-            // 变量不存在
-            throw ast::exceptions::KeyNotFoundException(this, EXPECTION_MESSAGE_NAME_ID + this->id);
-        }
+        //if (context->currentModule->variables.count(this->id) == 0) {
+        //    // 变量不存在
+        //    throw ast::exceptions::KeyNotFoundException(this, EXPECTION_MESSAGE_NAME_ID + this->id);
+        //}
 
-        return context->currentModule->variables[this->id];
-        //return context->variables.getValue(this->id);
+        //return context->currentModule->variables[this->id];
+        return context->getLocalVariable(this->id);
     }
 
     string Name::getClassName() const {

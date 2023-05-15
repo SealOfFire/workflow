@@ -10,6 +10,9 @@ namespace workflow::ast::types {
     /// <param name="value"></param>
     String::String(string value) : value(value) {}
 
+    String::~String() {
+        this->value.clear();
+    }
 
     string String::getClassName() const {
         //return "workflow::ast::String";

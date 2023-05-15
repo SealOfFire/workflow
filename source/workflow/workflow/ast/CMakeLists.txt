@@ -14,6 +14,7 @@ list(APPEND file_list exceptions/keyNotFoundException.cpp)
 list(APPEND file_list exceptions/notImplementedException.cpp)
 list(APPEND file_list exceptions/nullReferenceException.cpp)
 # 执行器
+list(APPEND file_list executors/context.cpp)
 list(APPEND file_list executors/executeThread.cpp)
 list(APPEND file_list executors/executor.cpp)
 list(APPEND file_list executors/variableStack.cpp)

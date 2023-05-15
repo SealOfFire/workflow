@@ -1,4 +1,5 @@
 ﻿#include "dictionary.h"
+#include "../exceptions/dataTypeException.h"
 #include "../types/dictionary.h"
 #include "../types/string.h"
 
@@ -15,10 +16,13 @@ namespace workflow::ast::expressions {
             Object* keyResult = key->run(context);
             Object* valueResult = value->run(context);
             if (keyResult->getClassName() == types::String::className) {
+                //keyResult->increaseReferenceCount();
+                //valueResult->increaseReferenceCount();
                 result->value[((types::String*)keyResult)->value] = valueResult;
             }
             else {
-                // TODO key不是字符串
+                // key不是字符串
+                throw exceptions::DataTypeException(this, "key", types::String::className, keyResult->getClassName());
             }
         }
         return result;

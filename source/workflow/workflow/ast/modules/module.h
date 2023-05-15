@@ -90,5 +90,10 @@ namespace workflow::ast::modules {
         /// <returns></returns>
         virtual string toScriptCode(executors::Context* context);
 
+        /// <summary>
+        /// 向模块添加变量
+        /// </summary>
+        void Add();
+
     };
 }

@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <regex>
 #include "constant.h"
+//#include "../ast.h"
 #include "../exceptions/exception.h"
 #include "../types/boolean.h"
 #include "../types/float.h"
@@ -9,9 +10,6 @@
 #include "../types/string.h"
 
 using namespace std;
-using namespace workflow::ast::executors;
-using namespace workflow::ast::expressions;
-using namespace workflow::ast::types;
 
 namespace workflow::ast::expressions {
 
@@ -25,7 +23,7 @@ namespace workflow::ast::expressions {
     /// 计算表达式
     /// </summary>
     /// <returns></returns>
-    Object* Constant::execute(Context* context) {
+    types::Object* Constant::execute(executors::Context* context) {
         //Expression::execute(env);
         // TODO 正则匹配的表达式改成静态常量
         // 判断数组类型是否是字符串
@@ -40,31 +38,39 @@ namespace workflow::ast::expressions {
             // 去掉前后的引号转义
             //std:string val2 = this->value.substr(1, this->value.size() - 2);
             return new String(this->value.substr(1, this->value.size() - 2));
+            //return Manager::createString(this->value.substr(1, this->value.size() - 2));
         }
 
         // 匹配null
         if (this->value == "null") {
             return new Null();
+            //return Manager::createNull();
         }
 
         // 匹配integer
         regex regexInt("^-?\\d+$");
         if (regex_match(this->value, regexInt)) {
             return new Integer(stoi(this->value));
+            //return Manager::createInteger(stoi(this->value));
         }
 
         // 匹配float
         regex regexFloat("[+-]?\\d+\\.\\d+");
         if (regex_match(this->value, regexFloat)) {
             return new Float(stof(this->value));
+            //return Manager::createFloat(stof(this->value));
         }
 
         // 匹配bool
         if (this->value == "true") {
-            return new Boolean(true);
+            types::Boolean* result = new Boolean(true);
+            //Manager::pushVariable(result);
+            return result;
+            //return Manager::createBoolean(true);
         }
         if (this->value == "false") {
             return new Boolean(false);
+            //return Manager::createBoolean(false);
         }
 
         // 匹配list
@@ -84,7 +90,7 @@ namespace workflow::ast::expressions {
     /// 转换成脚本
     /// </summary>
     /// <returns></returns>
-    string Constant::toScriptCode(Context* context) {
+    string Constant::toScriptCode(executors::Context* context) {
         //ring indent(context->indentCount * context->indentLevel, ' ');
         return this->value;
     }

@@ -1,5 +1,5 @@
 ﻿#include "compare.h"
-#include "../ast.h"
+//#include "../ast.h"
 #include "../exceptions/dataTypeException.h"
 #include "../exceptions/notImplementedException.h"
 #include "../exceptions/nullReferenceException.h"
@@ -82,8 +82,9 @@ namespace workflow::ast::expressions {
         }
 
         //bool result = ((Boolean*)leftResult)->value && ((Boolean*)rightResult)->value;
-        //return new Boolean(result);
-        return Manager::createBoolean(result);
+        return new Boolean(result);
+        //return Manager::createBoolean(result);
+
     }
 
     /// <summary>

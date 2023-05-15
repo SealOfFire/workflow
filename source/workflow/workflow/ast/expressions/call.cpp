@@ -1,9 +1,10 @@
 ﻿#include "call.h"
-#include "../ast.h"
+//#include "../ast.h"
 #include "../exceptions/keyNotFoundException.h"
 #include "../exceptions/nullReferenceException.h"
 #include "../modules/functionDefinition.h"
 #include "../modules/module.h"
+#include "../types/void.h"
 
 using namespace std;
 using namespace workflow::ast::modules;
@@ -15,7 +16,8 @@ namespace workflow::ast::expressions {
     /// 构造函数
     /// </summary>
     /// <param name="name">函数名</param>
-    Call::Call(string functionName, map<string, Expression*> arguments) :functionName(functionName), arguments(arguments) {
+    Call::Call(string functionName, map<string, Expression*> arguments)
+        :functionName(functionName), arguments(arguments) {
     }
 
     /// <summary>
@@ -24,7 +26,8 @@ namespace workflow::ast::expressions {
     /// <param name="modeuleName"></param>
     /// <param name="functionName"></param>
     /// <param name="arguments"></param>
-    Call::Call(string modeuleName, string functionName, map<string, Expression*> arguments) :modeuleName(modeuleName), functionName(functionName), arguments(arguments) {
+    Call::Call(string modeuleName, string functionName, map<string, Expression*> arguments)
+        :modeuleName(modeuleName), functionName(functionName), arguments(arguments) {
     }
 
     /// <summary>
@@ -79,7 +82,8 @@ namespace workflow::ast::expressions {
         if (func->returns == nullptr) {
             // void 函数
             // TODO 无返回值
-            return Manager::createVoid();
+            return new types::Void();
+            //return Manager::createVoid();
         }
         else {
             return func->returns;

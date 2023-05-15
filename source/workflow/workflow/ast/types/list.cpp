@@ -1,4 +1,5 @@
 ﻿#include "list.h"
+#include "../exceptions/exception.h"
 
 namespace workflow::ast::types {
 
@@ -6,6 +7,63 @@ namespace workflow::ast::types {
     /// 
     /// </summary>
     List::List() {}
+
+    List::~List() {
+        for (int i = 0; i < this->value.size(); i++) {
+            Object::release(this->value[i]);
+        }
+        this->value.clear();
+    }
+
+    void List::append(Object* item) {
+        item->increaseReferenceCount();
+        this->value.push_back(item);
+    }
+
+    size_t List::count() {
+        return this->value.size();
+    }
+
+    Object* List::elementAt(size_t index) {
+        return this->value[index];
+    }
+
+    void List::insert(size_t index, Object* item) {
+        // 原本索引处如果有数据，删除原有的数据
+        item->increaseReferenceCount();
+        if (this->value.size() > index) {
+            Object* oldValue = this->value[index];
+            oldValue->decreaseReferenceCount();
+            Object::release(oldValue);
+        }
+        this->value[index] = item;
+    }
+
+    void List::remove(Object* item) {
+        std::vector<types::Object*>::iterator iter = std::find(this->value.begin(), this->value.end(), item);
+        if (iter == this->value.end()) {
+            // 没找到
+            throw exceptions::Exception(this, item->toString() + "不在list中");
+        }
+        else {
+            // 找到
+            this->value.erase(iter);
+            item->decreaseReferenceCount();
+            Object::release(item);
+        }
+    }
+
+    void List::removeAt(size_t index) {
+        if (this->value.size() > index) {
+            Object* oldValue = this->value[index];
+            this->value.erase(this->value.begin() + index);
+            oldValue->decreaseReferenceCount();
+            Object::release(oldValue);
+        }
+        else {
+            throw exceptions::Exception(this, "索引超出范围");
+        }
+    }
 
     /// <summary>
    /// 
@@ -29,11 +87,4 @@ namespace workflow::ast::types {
         return output;
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="item"></param>
-    void List::append(Object* item) {
-        this->value.push_back(item);
-    }
 }

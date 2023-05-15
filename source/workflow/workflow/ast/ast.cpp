@@ -13,6 +13,38 @@ namespace workflow::ast {
         Manager::variables.push_back(result);
         return result;
     }
+    /*
+    types::Dictionary* Manager::createDictionary() {
+        types::Dictionary* result = new types::Dictionary();
+        Manager::variables.push_back(result);
+        return result;
+    }
+    */
+    /*
+    types::Float* Manager::createFloat(float value) {
+        types::Float* result = new types::Float(value);
+        Manager::variables.push_back(result);
+        return result;
+    }
+    */
+
+    //types::Integer* Manager::createInteger(int value) {
+    //    types::Integer* result = new types::Integer(value);
+    //    Manager::variables.push_back(result);
+    //    return result;
+    //}
+
+    //types::List* Manager::createList() {
+    //    types::List* result = new types::List();
+    //    Manager::variables.push_back(result);
+    //    return result;
+    //}
+
+    types::Null* Manager::createNull() {
+        types::Null* result = new types::Null();
+        Manager::variables.push_back(result);
+        return result;
+    }
 
     /// <summary>
     /// 
@@ -20,6 +52,17 @@ namespace workflow::ast {
     /// <returns></returns>
     types::Object* Manager::createObject() {
         types::Object* result = new types::Object();
+        Manager::variables.push_back(result);
+        return result;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    types::String* Manager::createString(std::string value) {
+        types::String* result = new types::String(value);
         Manager::variables.push_back(result);
         return result;
     }
@@ -53,5 +96,9 @@ namespace workflow::ast {
             Manager::variables.erase(iter);
             delete target;
         }
+    }
+
+    void Manager::pushVariable(types::Object* value) {
+        Manager::variables.push_back(value);
     }
 }

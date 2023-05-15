@@ -13,7 +13,7 @@ namespace workflow::ast::expressions {
     Object* List::execute(Context* context) {
         workflow::ast::types::List* result = new workflow::ast::types::List();
         for (int i = 0; i < this->value.size(); i++) {
-            result->value.push_back(this->value[i]->run(context));
+            result->append(this->value[i]->run(context));
         }
         return result;
     }

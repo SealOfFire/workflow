@@ -10,9 +10,8 @@ namespace workflow::ast::types {
     public:
         static constexpr const char* className = CLASS_NAME_LIST;
 
-        std::vector<Object*> value;
-
         List();
+        ~List();
 
         virtual string getClassName() const;
 
@@ -22,5 +21,19 @@ namespace workflow::ast::types {
         /// 添加数据
         /// </summary>
         void append(Object* item);
+
+        size_t count();
+
+        Object* elementAt(size_t index);
+
+        void insert(size_t index, Object* item);
+
+        void remove(Object* item);
+
+        void removeAt(size_t index);
+
+    protected:
+        std::vector<Object*> value;
+
     };
 }

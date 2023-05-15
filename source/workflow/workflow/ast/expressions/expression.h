@@ -73,17 +73,10 @@ namespace workflow::ast::expressions {
         /// <summary>
         /// 表达式是否是变量。如果是变量，返回变量名字符串
         /// 不是变量返回null
+        /// TODO 删除
         /// </summary>
         /// <returns></returns>
         virtual std::string isName();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="slice"></param>
-        /// <returns></returns>
-        virtual bool isSubscript(std::string* name, int* slice);
 
     };
 }

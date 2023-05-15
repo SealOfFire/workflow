@@ -1,4 +1,7 @@
 ﻿#include "subscript.h"
+#include "../exceptions/dataTypeException.h"
+#include "../exceptions/exception.h"
+#include "../exceptions/keyNotFoundException.h"
 #include "../types/dictionary.h"
 #include "../types/integer.h"
 #include "../types/list.h"
@@ -23,7 +26,6 @@ namespace workflow::ast::expressions {
         Object* resultValue = this->value->run(context);
         Object* resultSlice = this->slice->run(context);
         if (resultValue->getClassName() == types::Dictionary::className) {
-            // TODO
             // dict下标处理
             types::Dictionary* dict = (types::Dictionary*)resultValue;
             if (resultSlice->getClassName() == types::String::className) {
@@ -33,11 +35,13 @@ namespace workflow::ast::expressions {
                     return result;
                 }
                 else {
-                    // TODO key不存在
+                    // key不存在
+                    throw exceptions::KeyNotFoundException(this, key->value);
                 }
             }
             else {
-                // TODO 字典的key不是字符串
+                // 字典的key不是字符串
+                throw exceptions::DataTypeException(this, "slice", types::String::className, resultSlice->getClassName());
             }
         }
         else if (resultValue->getClassName() == types::List::className) {
@@ -45,24 +49,25 @@ namespace workflow::ast::expressions {
             // list下标处理
             if (resultSlice->getClassName() == types::Integer::className) {
                 int index = ((types::Integer*)resultSlice)->value;
-                if (index < list->value.size())
+                if (index < list->count())
                 {
-                    Object* result = list->value[index];
+                    Object* result = list->elementAt(index);
                     return result;
                 }
                 else {
-                    // TODO 索引下标越界。最大下标为list.value.size()。获取的下表为index
+                    // 索引下标越界。最大下标为list.value.size()。获取的下表为index
+                    throw exceptions::Exception(this, "索引下标越界");
                 }
             }
             else {
-                // TODO 下标数据类型不是integer
+                // 下标数据类型不是integer
+                throw exceptions::DataTypeException(this, "slice", types::Integer::className, resultSlice->getClassName());
             }
         }
         else {
-            // TODO 变量的数据类型不是list或dict
+            // 变量的数据类型不是list或dict
+            throw exceptions::DataTypeException(this, "data type", types::List::className, resultValue->getClassName());
         }
-
-        return nullptr;
     }
 
     /// <summary>

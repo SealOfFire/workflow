@@ -60,7 +60,8 @@ namespace workflow::ast::statements {
                 }
                 else if (target->getClassName() == types::List::className) {
                     if (slice->getClassName() == types::Integer::className) {
-                        ((types::List*)target)->value[((types::Integer*)slice)->value] = result;
+                        ((types::List*)target)->insert(((types::Integer*)slice)->value, result);
+                        //((types::List*)target)->value[((types::Integer*)slice)->value] = result;
                     }
                     else {
                         // TODO  下标不是整形

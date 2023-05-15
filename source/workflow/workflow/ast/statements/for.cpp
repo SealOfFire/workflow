@@ -23,14 +23,14 @@ namespace workflow::ast::statements {
         if (iterationResult->getClassName() == types::List::className) {
             types::List* list = (types::List*)iterationResult;
 
-            for (int i = 0; i < list->value.size(); i++) {
+            for (int i = 0; i < list->count(); i++) {
                 // 
-                context->currentModule->variables[name] = list->value[i];
+                context->currentModule->variables[name] = list->elementAt(i);
                 this->body->run(context);
             }
 
             // 删除局部变量
-            if (list->value.size() > 0) {
+            if (list->count() > 0) {
                 context->currentModule->variables.erase(name);
             }
         }

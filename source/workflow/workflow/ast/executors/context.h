@@ -126,5 +126,12 @@ namespace workflow::ast::executors {
         // 条件变量
         std::condition_variable conditionVariable;
 
+        /// <summary>
+        /// 获取当前的局域变量
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        Object* getLocalVariable(string name);
+
     };
 }
