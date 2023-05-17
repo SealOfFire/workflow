@@ -13,6 +13,11 @@ namespace workflow::framework::executors {
         this->executor = new Executor(statement);
     }
 
+    ExecuteThread::~ExecuteThread() {
+        // TODO 这里delete会报错
+        //delete this->executor;
+    }
+
     void ExecuteThread::appendPythonPath(std::string path) {
         ((Executor*)this->executor)->pythonPaths.push_back(path);
     }

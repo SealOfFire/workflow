@@ -11,14 +11,14 @@ namespace workflow::ast::expressions {
     /// <param name="context"></param>
     /// <returns></returns>
     Object* Dictionary::execute(Context* context) {
-        workflow::ast::types::Dictionary* result = new workflow::ast::types::Dictionary();
+        //workflow::ast::types::Dictionary* result = new workflow::ast::types::Dictionary();
+        types::Dictionary* result = types::Dictionary::create();
         for (auto [key, value] : this->values) {
             Object* keyResult = key->run(context);
             Object* valueResult = value->run(context);
             if (keyResult->getClassName() == types::String::className) {
-                //keyResult->increaseReferenceCount();
-                //valueResult->increaseReferenceCount();
-                result->value[((types::String*)keyResult)->value] = valueResult;
+                result->set((String*)keyResult, valueResult);
+                //result->value[((types::String*)keyResult)->value] = valueResult;
             }
             else {
                 // key不是字符串

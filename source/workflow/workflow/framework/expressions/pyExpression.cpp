@@ -36,8 +36,8 @@ namespace workflow::framework::expressions {
         PyObject* code = Py_CompileString(this->value.c_str(), "<string>", Py_eval_input);
         PyObject* global_dict = PyDict_New();
 
-
-        PyObject* local_dict = convertAstVariablesToPyDict(context->currentModule->variables);
+        ast::Variables* variables = context->currentModule->getVariables();
+        PyObject* local_dict = convertAstVariablesToPyDict(variables);
 
         //PyObject* local_dict = PyDict_New(); // TODO 需要把模块的变量列表全部转成python变量
         //for (auto [name, value] : context->currentModule->variables) {

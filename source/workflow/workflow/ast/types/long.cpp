@@ -9,6 +9,12 @@ namespace workflow::ast::types {
     /// <param name="value"></param>
     Long::Long(long value) : value(value) {}
 
+    Long* Long::create(long value) {
+        Long* result = new Long(value);
+        result->autoRelease = false;
+        return result;
+    }
+
     /// <summary>
     /// 
     /// </summary>

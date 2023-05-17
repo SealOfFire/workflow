@@ -5,18 +5,28 @@
 
 namespace workflow::ast::executors {
 
-	types::Object* Context::getLocalVariable(std::string name) {
-		if (this->currentModule == nullptr) {
-			// 模块不存在
-			throw ast::exceptions::NullReferenceException(this, "module");
-		}
+    types::Object* Context::getLocalVariable(std::string name) {
+        if (this->currentModule == nullptr) {
+            // 模块不存在
+            throw ast::exceptions::NullReferenceException(this, "module");
+        }
 
-		if (this->currentModule->variables.count(name) == 0) {
-			// 变量不存在
-			throw ast::exceptions::KeyNotFoundException(this, name);
-		}
+        //if (this->currentModule->variables.count(name) == 0) {
+        //	// 变量不存在
+        //	throw ast::exceptions::KeyNotFoundException(this, name);
+        //}
 
-		return this->currentModule->variables[name];
-	}
+        //return this->currentModule->variables[name];
 
+        return this->currentModule->getVariable(name);
+    }
+
+    void Context::setLocalVariable(std::string name, types::Object* value) {
+        if (this->currentModule == nullptr) {
+            // 模块不存在
+            throw ast::exceptions::NullReferenceException(this, "module");
+        }
+
+        this->currentModule->setVariable(name, value);
+    }
 }

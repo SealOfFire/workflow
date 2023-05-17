@@ -11,7 +11,8 @@ namespace workflow::ast::expressions {
     /// <param name="context"></param>
     /// <returns></returns>
     Object* List::execute(Context* context) {
-        workflow::ast::types::List* result = new workflow::ast::types::List();
+        //workflow::ast::types::List* result = new workflow::ast::types::List();
+        types::List* result = types::List::create();
         for (int i = 0; i < this->value.size(); i++) {
             result->append(this->value[i]->run(context));
         }

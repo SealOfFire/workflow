@@ -4,9 +4,9 @@
 #include <map>
 #include <string>
 #include <Python.h>
+#include <variables.h>
 #include <types/object.h>
 
-#pragma once
 #define PY_TYPE_STRING "str"
 #define PY_TYPE_INTEGER "int"
 #define PY_TYPE_FLOAT "float"
@@ -60,7 +60,8 @@ namespace workflow::framework {
     /// </summary>
     /// <param name="variables"></param>
     /// <returns></returns>
-    PyObject* convertAstVariablesToPyDict(std::map<std::string, ast::types::Object*> variables);
+    //PyObject* convertAstVariablesToPyDict(std::map<std::string, ast::types::Object*> variables);
+    PyObject* convertAstVariablesToPyDict(ast::Variables* variables);
 
     /// <summary>
     /// 判断当前的脚本结果是不是一个变量，如果是变量要和外部做数据交换

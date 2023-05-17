@@ -59,15 +59,23 @@ namespace workflow::ast::types {
         /// <summary>
         /// 
         /// </summary>
+        /// <returns></returns>
+        static Object* create();
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="object"></param>
         static void release(Object* object);
 
-    private:
+    protected:
 
         /// <summary>
         /// 引用计数
         /// </summary>
         int referenceCount = 0;
+
+        bool autoRelease = true;
 
     };
 }

@@ -27,7 +27,7 @@ using namespace workflow::framework::expressions;
 /// </summary>
 void test2() {
     // 模块1
-    Module module1("module1");
+    modules::Module module1("module1");
 
     // 模块添加list类型局域变量
     ast::expressions::List module1_list1;
@@ -84,6 +84,11 @@ void test2() {
     ast::statements::Print module1_print_dict1_key1(&subscript1);// 打印
     module1.addStatement(&module1_print_dict1_key1);
 
+    // 打印
+    ast::expressions::Constant module1_constant_text1("\"subscript\"");
+    ast::statements::Print module1_print1(&module1_constant_text1);// 打印
+    module1.addStatement(&module1_print1);
+
     // 修改下标值list[0]=5
     ast::expressions::Constant module1_constant_3("1");
     ast::expressions::Subscript subscript2(&module1_name1_list1, &module1_constant_3);
@@ -97,6 +102,11 @@ void test2() {
     ast::expressions::Constant module1_constant_6("\"val111\"");
     ast::statements::Assign module1_assign1_val4(&subscript3, &module1_constant_6); // 赋值 val1=0
     module1.addStatement(&module1_assign1_val4);
+
+    // 打印
+    ast::expressions::Constant module1_constant_text2("\"python\"");
+    ast::statements::Print module1_print2(&module1_constant_text2);// 打印
+    module1.addStatement(&module1_print2);
 
     // list传入传出python
     // 执行python组件

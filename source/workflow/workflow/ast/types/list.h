@@ -32,6 +32,8 @@ namespace workflow::ast::types {
 
         void removeAt(size_t index);
 
+        static List* create();
+
     protected:
         std::vector<Object*> value;
 

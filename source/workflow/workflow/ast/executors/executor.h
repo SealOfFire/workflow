@@ -76,7 +76,7 @@ namespace workflow::ast::executors {
         /// 进入断点后。获取当前局域变量列表
         /// </summary>
         /// <returns></returns>
-        map<string, Object*> getVariables();
+        //map<string, Object*> getVariables();
 
         void operator()(Statement* statement);
 

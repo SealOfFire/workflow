@@ -55,9 +55,13 @@ namespace workflow::framework {
             else if (value->getClassName() == workflow::ast::types::Dictionary::className) {
                 workflow::ast::types::Dictionary* dict = (workflow::ast::types::Dictionary*)value;
                 PyObject* pyDict = PyDict_New();
-                for (auto [key, val] : dict->value) {
-                    PyDict_SetItem(pyDict, PyUnicode_FromString(key.c_str()), convertAstObjectToPyObject(val));
+                for (auto it = dict->begin(); it != dict->end(); it++)
+                {
+                    PyDict_SetItem(pyDict, PyUnicode_FromString(it->first.c_str()), convertAstObjectToPyObject(it->second));
                 }
+                //for (auto [key, val] : dict->value) {
+                //    PyDict_SetItem(pyDict, PyUnicode_FromString(key.c_str()), convertAstObjectToPyObject(val));
+                //}
                 return pyDict;
             }
             else {
@@ -119,7 +123,8 @@ namespace workflow::framework {
                 std::string key(_PyUnicode_AsString(item));
 
                 PyObject* val = PyDict_GetItemString(value, key.c_str());
-                result->value[key] = convertPyObjectToAstObject(val);
+                //result->value[key] = convertPyObjectToAstObject(val);
+                result->set(key, convertPyObjectToAstObject(val));
             }
             return result;
         }
@@ -155,16 +160,42 @@ namespace workflow::framework {
         return new ast::types::Object();
     }
 
+    ///// <summary>
+    ///// 
+    ///// </summary>
+    ///// <param name="variables"></param>
+    ///// <returns></returns>
+    //PyObject* convertAstVariablesToPyDict(std::map<std::string, ast::types::Object*> variables) {
+
+    //    int pyResult = -1;
+    //    PyObject* local_dict = PyDict_New(); // TODO 需要把模块的变量列表全部转成python变量
+    //    for (auto [name, value] : variables) {
+    //        PyObject* object = convertAstObjectToPyObject(value);
+    //        PyObject* key = Py_BuildValue("s", name.c_str());
+    //        pyResult = PyDict_SetItem(local_dict, key, object);
+    //        if (pyResult < 0) {
+    //            // TODO 添加局域变量出错
+    //            std::cout << "添加局域变量出错" << std::endl;
+    //        }
+
+    //        Py_DECREF(key);
+    //        Py_DECREF(object);
+
+    //        //Py_CLEAR(key);
+    //        //Py_CLEAR(object);
+    //    }
+    //    return local_dict;
+    //}
+
     /// <summary>
     /// 
     /// </summary>
     /// <param name="variables"></param>
     /// <returns></returns>
-    PyObject* convertAstVariablesToPyDict(std::map<std::string, ast::types::Object*> variables) {
-
+    PyObject* convertAstVariablesToPyDict(ast::Variables* variables) {
         int pyResult = -1;
         PyObject* local_dict = PyDict_New(); // TODO 需要把模块的变量列表全部转成python变量
-        for (auto [name, value] : variables) {
+        for (auto [name, value] : *variables) {
             PyObject* object = convertAstObjectToPyObject(value);
             PyObject* key = Py_BuildValue("s", name.c_str());
             pyResult = PyDict_SetItem(local_dict, key, object);

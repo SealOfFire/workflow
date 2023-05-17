@@ -2,58 +2,31 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <vector>
 
 #include "modules.h"
 #include "functionDefinition.h"
+#include "../variables.h"
 #include "../statements/statement.h"
 #include "../types/object.h"
 #include "../../exportLib.h"
 
-using namespace std;
-using namespace workflow::ast::modules;
-using namespace workflow::ast::statements;
-using namespace workflow::ast::types;
-
+//using namespace workflow::ast::modules;
 
 namespace workflow::ast::modules {
     /// <summary>
     /// 模块
     /// </summary>
-    class SHARED_LIB_API Module :public Statement {
+    class SHARED_LIB_API Module :public statements::Statement {
 
     public:
         static constexpr const char* className = CLASS_NAME_MODULE;
 
         /// <summary>
-        /// 模块名称
-        /// </summary>
-        string name;
-
-        /// <summary>
-        /// 模块变量列表
-        /// </summary>
-        map<string, Object*> variables;
-
-        /// <summary>
-        /// 模块中的语句
-        /// </summary>
-        Statement* body = nullptr;
-
-        /// <summary>
-        /// 函数列表
-        /// </summary>
-        map<string, FunctionDefinition*> functions;
-
-        /// <summary>
-        /// 包含的子模块列表
-        /// </summary>
-        map<string, Module*> modules;
-
-        /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="name"></param>
-        Module(string name);
+        Module(std::string name);
 
         /// <summary>
         /// 析构函数
@@ -75,7 +48,7 @@ namespace workflow::ast::modules {
         /// 向模块中添加语句
         /// </summary>
         /// <param name="statement"></param>
-        void addStatement(Statement* statement);
+        void addStatement(statements::Statement* statement);
 
         /// <summary>
         /// 向模块中添加函数
@@ -91,9 +64,58 @@ namespace workflow::ast::modules {
         virtual string toScriptCode(executors::Context* context);
 
         /// <summary>
-        /// 向模块添加变量
+        /// 
         /// </summary>
-        void Add();
+        /// <param name="name"></param>
+        /// <returns></returns>
+        bool hasChildModule(std::string name);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        Module* getChildModule(std::string name);
+
+
+        bool hasFunction(std::string name);
+        FunctionDefinition* getFunction(std::string name);
+        void setFunction(std::string name, FunctionDefinition* function);
+
+        bool hasVariable(std::string name);
+        types::Object* getVariable(std::string name);
+        void setVariable(std::string name, types::Object* value);
+        void removeVariable(std::string name);
+        Variables* getVariables();
+
+    protected:
+
+        /// <summary>
+        /// 模块名称
+        /// </summary>
+        std::string name;
+
+        /// <summary>
+        /// 模块变量列表
+        /// </summary>
+        //std::map<std::string, types::Object*> variables;
+        Variables variables;
+
+        /// <summary>
+        /// 模块中的语句
+        /// </summary>
+        //statements::Statement* body = nullptr;
+        std::vector<statements::Statement*> body;
+
+        /// <summary>
+        /// 包含的子模块列表
+        /// </summary>
+        std::map<std::string, Module*> childModules;
+
+        /// <summary>
+        /// 函数列表
+        /// </summary>
+        std::map<std::string, FunctionDefinition*> functions;
 
     };
 }

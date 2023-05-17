@@ -37,40 +37,39 @@ namespace workflow::ast::expressions {
             // 字符串常量
             // 去掉前后的引号转义
             //std:string val2 = this->value.substr(1, this->value.size() - 2);
-            return new String(this->value.substr(1, this->value.size() - 2));
-            //return Manager::createString(this->value.substr(1, this->value.size() - 2));
+            //return new String(this->value.substr(1, this->value.size() - 2));
+            return String::create(this->value.substr(1, this->value.size() - 2));
         }
 
         // 匹配null
         if (this->value == "null") {
-            return new Null();
-            //return Manager::createNull();
+            //return new Null();
+            return Null::create();
         }
 
         // 匹配integer
         regex regexInt("^-?\\d+$");
         if (regex_match(this->value, regexInt)) {
-            return new Integer(stoi(this->value));
-            //return Manager::createInteger(stoi(this->value));
+            //return new Integer(stoi(this->value));
+            return Integer::create(stoi(this->value));
         }
 
         // 匹配float
         regex regexFloat("[+-]?\\d+\\.\\d+");
         if (regex_match(this->value, regexFloat)) {
-            return new Float(stof(this->value));
-            //return Manager::createFloat(stof(this->value));
+            //return new Float(stof(this->value));
+            return Float::create(stof(this->value));
         }
 
         // 匹配bool
         if (this->value == "true") {
-            types::Boolean* result = new Boolean(true);
-            //Manager::pushVariable(result);
-            return result;
-            //return Manager::createBoolean(true);
+            //types::Boolean* result = new Boolean(true);
+            //return result;
+            return Boolean::create(true);
         }
         if (this->value == "false") {
-            return new Boolean(false);
-            //return Manager::createBoolean(false);
+            //return new Boolean(false);
+            return Boolean::create(false);
         }
 
         // 匹配list

@@ -24,5 +24,8 @@ namespace workflow::ast::types {
         virtual string getClassName() const;
 
         virtual string toString();
+
+        static Integer* create(int value);
+
     };
 }

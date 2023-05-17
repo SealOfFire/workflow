@@ -3,6 +3,13 @@
 using namespace std;
 
 namespace workflow::ast::types {
+
+    Void* Void::create() {
+        Void* result = new Void();
+        result->autoRelease = false;
+        return result;
+    }
+
     /// <summary>
     /// 
     /// </summary>

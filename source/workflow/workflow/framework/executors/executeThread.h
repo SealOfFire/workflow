@@ -11,6 +11,7 @@ namespace workflow::framework::executors {
     class ExecuteThread : public workflow::ast::executors::ExecuteThread {
     public:
         ExecuteThread(Statement* statement);
+        ~ExecuteThread();
 
         /// <summary>
         /// 添加python运行时路径

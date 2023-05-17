@@ -25,4 +25,10 @@ namespace workflow::ast::types {
             return "false";
         }
     }
+
+    Boolean* Boolean::create(bool value) {
+        Boolean* result = new Boolean(value);
+        result->autoRelease = false;
+        return result;
+    }
 }

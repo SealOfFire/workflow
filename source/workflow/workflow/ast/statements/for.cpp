@@ -25,13 +25,16 @@ namespace workflow::ast::statements {
 
             for (int i = 0; i < list->count(); i++) {
                 // 
-                context->currentModule->variables[name] = list->elementAt(i);
+                //context->currentModule->variables[name] = list->elementAt(i);
+                context->setLocalVariable(name, list->elementAt(i));
+
                 this->body->run(context);
             }
 
             // 删除局部变量
             if (list->count() > 0) {
-                context->currentModule->variables.erase(name);
+                //context->currentModule->variables.erase(name);
+                context->currentModule->removeVariable(name);
             }
         }
         else {

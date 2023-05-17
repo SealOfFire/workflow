@@ -14,6 +14,12 @@ namespace workflow::ast::types {
         this->value.clear();
     }
 
+    String* String::create(string value) {
+        String* result = new String(value);
+        result->autoRelease = false;
+        return result;
+    }
+
     string String::getClassName() const {
         //return "workflow::ast::String";
         return String::className;

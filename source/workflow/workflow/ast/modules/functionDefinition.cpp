@@ -1,10 +1,10 @@
 ﻿#include "functionDefinition.h"
 #include "module.h"
+#include "../exceptions/exception.h"
 #include "../statements/container.h"
 #include "../statements/return.h"
 #include "../types/void.h"
 
-using namespace std;
 using namespace workflow::ast::expressions;
 using namespace workflow::ast::statements;
 using namespace workflow::ast::types;
@@ -15,27 +15,30 @@ namespace workflow::ast::modules {
     /// 
     /// </summary>
     /// <param name="name"></param>
-    FunctionDefinition::FunctionDefinition(string name) : name(name) {
-    }
-
-    FunctionDefinition::~FunctionDefinition() {
+    FunctionDefinition::FunctionDefinition(std::string name) : name(name) {
     }
 
     /// <summary>
     /// 
     /// </summary>
+    FunctionDefinition::~FunctionDefinition() {
+    }
+
+    /// <summary>
+    /// 函数执行
+    /// </summary>
     /// <param name="context"></param>
     void FunctionDefinition::call(Context* context) {
         // 当前模块的变量列表
         //context->variables = this->variables;
-        context->variables.push(this->variables);
+        //context->variables.push(this->variables);
 
-        for (Statement* child : this->body) {
+        for (statements::Statement* child : this->body) {
             if (child->getClassName() == Return::className) {
                 // 遇到返回语句的时候
                 if (((Return*)child)->value == nullptr) {
                     // void 函数
-                    //return new Void();
+                    this->returns = Void::create();
                 }
                 else {
                     // 返回值
@@ -60,17 +63,31 @@ namespace workflow::ast::modules {
     /// </summary>
     void FunctionDefinition::execute(Context* context) {
 
-        // 把变量对象指针添加到上下文中
-        // TODO 添加到父类模块的函数列表中
-        context->functions[this->name] = this;
-        if (this->parent != nullptr) {
-            if (this->parent->getClassName() == Module::className) {
-                ((Module*)this->parent)->functions[this->name] = this;
-            }
+        // 处理函数定义
+
+        // 添加到父类模块的函数列表中
+        if (context->currentModule == nullptr) {
+            throw exceptions::Exception(this, "函数定义不是在module中");
         }
+        else {
+            context->currentModule->setFunction(this->name, this);
+        }
+
+        //if (this->parent != nullptr) {
+        //    if (this->parent->getClassName() == Module::className) {
+        //        //((Module*)this->parent)->functions[this->name] = this;
+        //        ((Module*)this->parent)->setFunction(this->name, this);
+        //    }
+        //    else {
+        //        throw exceptions::Exception(this, "函数定义不是在module中");
+        //    }
+        //}
+        //else {
+        //    throw exceptions::Exception(this, "函数定义不是在module中");
+        //}
     }
 
-    string FunctionDefinition::getClassName() const {
+    std::string FunctionDefinition::getClassName() const {
         return FunctionDefinition::className;
     }
 
@@ -78,10 +95,10 @@ namespace workflow::ast::modules {
         this->body.push_back(statement);
     }
 
-    string FunctionDefinition::toScriptCode(Context* context) {
-        string indent(context->indentCount * context->indentLevel, ' ');
+    std::string FunctionDefinition::toScriptCode(Context* context) {
+        std::string indent(context->indentCount * context->indentLevel, ' ');
 
-        string output = indent + "FUNCTION " + this->name + context->newline;
+        std::string output = indent + "FUNCTION " + this->name + context->newline;
         output += indent + "{" + context->newline;
         context->indentLevel++;
 
@@ -95,4 +112,23 @@ namespace workflow::ast::modules {
 
         return output;
     }
+
+    //bool FunctionDefinition::hasVariable(std::string name) {
+    //    if (this->variables.count(name) == 0) {
+    //        return false;
+    //    }
+    //    else {
+    //        return true;
+    //    }
+    //}
+
+    //void FunctionDefinition::setVariable(std::string name, types::Object* value) {
+    //    if (this->hasVariable(name)) {
+    //        Object* oldValue = this->variables[name];
+    //        oldValue->decreaseReferenceCount();
+    //        Object::release(oldValue);
+    //    }
+    //    value->increaseReferenceCount();
+    //    this->variables[name] = value;
+    //}
 }

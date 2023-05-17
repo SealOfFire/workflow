@@ -5,53 +5,38 @@
 #include <map>
 #include <vector>
 #include "modules.h"
+#include "../variables.h"
 #include "../expressions/expression.h"
 #include "../statements/statement.h"
 #include "../types/object.h"
 #include "../../exportLib.h"
-
-using namespace std;
-using namespace workflow::ast::expressions;
-using namespace workflow::ast::statements;
 
 namespace workflow::ast::modules {
 
     /// <summary>
     /// 函数定义
     /// </summary>
-    class SHARED_LIB_API FunctionDefinition : public Statement {
+    class SHARED_LIB_API FunctionDefinition : public statements::Statement {
     public:
         static constexpr const char* className = CLASS_NAME_FUNCTION_DEF;
 
         /// <summary>
-        /// 函数名称
-        /// </summary>
-        string name;
-
-        /// <summary>
         /// 模块变量列表
         /// </summary>
-        map<string, Object*> variables;
-
-        /// <summary>
-        /// 模块中的语句
-        /// </summary>
-        vector<Statement*> body;
+        Variables variables;
 
         /// <summary>
         /// 返回值表达式
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        Object* returns = nullptr;
-
-        //Module* parent = nullptr;
+        types::Object* returns = nullptr;
 
         /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="name"></param>
-        FunctionDefinition(string name);
+        FunctionDefinition(std::string name);
 
         /// <summary>
         /// 析构函数
@@ -60,31 +45,53 @@ namespace workflow::ast::modules {
 
         /// <summary>
         /// 执行语句
+        /// 定义函数
         /// </summary>
-        virtual void execute(Context* context);
+        virtual void execute(executors::Context* context);
 
         /// <summary>
         /// 函数被调用时的执行
         /// </summary>
         /// <param name="context"></param>
-        virtual void call(Context* context);
+        virtual void call(executors::Context* context);
 
         /// <summary>
         /// 获取对象名称
         /// </summary>
         /// <returns></returns>
-        virtual string getClassName() const;
+        virtual std::string getClassName() const;
 
         /// <summary>
         /// 向模块中添加语句
         /// </summary>
         /// <param name="statement"></param>
-        void addStatement(Statement* statement);
+        void addStatement(statements::Statement* statement);
 
         /// <summary>
         /// 转换成脚本
         /// </summary>
         /// <returns></returns>
-        virtual string toScriptCode(Context* context);
+        virtual string toScriptCode(executors::Context* context);
+
+        //bool hasVariable(std::string name);
+        //void setVariable(std::string name, types::Object* value);
+
+    protected:
+
+        /// <summary>
+        /// 函数名称
+        /// </summary>
+        std::string name;
+
+        /// <summary>
+        /// 模块变量列表
+        /// </summary>
+        //std::map<std::string, types::Object*> variables;
+
+
+        /// <summary>
+        /// 模块中的语句
+        /// </summary>
+        std::vector<statements::Statement*> body;
     };
 }

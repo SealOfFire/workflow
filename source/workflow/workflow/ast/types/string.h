@@ -28,5 +28,7 @@ namespace workflow::ast::types {
 
         static std::string stringToUTF8(const std::string str);
         static std::string UTF8ToString(const std::string str);
+
+        static String* create(string value);
     };
 }

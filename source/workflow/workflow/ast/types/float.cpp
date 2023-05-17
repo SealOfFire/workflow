@@ -10,6 +10,11 @@ namespace workflow::ast::types {
     /// <param name="value"></param>
     Float::Float(float value) : value(value) {}
 
+    Float* Float::create(float value) {
+        Float* result = new Float(value);
+        result->autoRelease = false;
+        return result;
+    }
 
     string Float::getClassName() const {
         return Float::className;

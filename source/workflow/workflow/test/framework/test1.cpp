@@ -19,7 +19,7 @@ using namespace workflow::framework::expressions;
 void test1() {
 
     // 模块1
-    Module module1("module1");
+    modules::Module module1("module1");
 
     // 模块添加局域变量
     // val1 = "111";

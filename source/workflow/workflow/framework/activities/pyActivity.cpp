@@ -222,7 +222,8 @@ namespace workflow::framework::activities {
                             framework::executors::Executor* executor = (framework::executors::Executor*)context->executor;
                             PyObject* args = PyTuple_New(2);
                             PyTuple_SetItem(args, 0, PyUnicode_FromString(pyExpression->value.c_str()));
-                            PyObject* local = convertAstVariablesToPyDict(context->currentModule->variables);
+                            ast::Variables* variables = context->currentModule->getVariables();
+                            PyObject* local = convertAstVariablesToPyDict(variables);
                             PyTuple_SetItem(args, 1, local); // 局部变量列表
 
                             PyObject* result = PyEval_CallObject(executor->functionTestExpression, args);
@@ -231,10 +232,12 @@ namespace workflow::framework::activities {
                             PyObject* p3 = PyTuple_GetItem(result, 2);
                             PyObject* p4 = PyTuple_GetItem(result, 3);
 
-                            ast::types::Boolean* v1 = (ast::types::Boolean*)convertPyObjectToAstObject(p1);
-                            ast::types::Integer* v2 = (ast::types::Integer*)convertPyObjectToAstObject(p2);
-                            ast::types::String* v3 = (ast::types::String*)convertPyObjectToAstObject(p3);
-                            ast::types::Integer* v4 = (ast::types::Integer*)convertPyObjectToAstObject(p4);
+                            ast::types::Boolean* v1 = (ast::types::Boolean*)convertPyObjectToAstObject(p1); // true是变量名
+                            ast::types::Integer* v2 = (ast::types::Integer*)convertPyObjectToAstObject(p2); // 0变量名，1下标
+                            ast::types::String* v3 = (ast::types::String*)convertPyObjectToAstObject(p3); // 变量名
+                            // dict的话v4是string。list的话v4是string
+                            ast::types::Object* v4 = convertPyObjectToAstObject(p4); // 下标
+                            //ast::types::Integer* v4 = (ast::types::Integer*)convertPyObjectToAstObject(p4);
 
                             //Py_DECREF(local);
 
@@ -254,13 +257,23 @@ namespace workflow::framework::activities {
                                 case 1: {
                                     // 下标
                                     ast::expressions::Name target(v3->value);
-                                    ast::types::Integer slice(v4->value);
+                                    ast::types::Object* slice;
+                                    if (v4->getClassName() == ast::types::Integer::className) {
+                                        slice = ast::types::Integer::create(((ast::types::Integer*)v4)->value);
+                                    }
+                                    else if (v4->getClassName() == ast::types::String::className) {
+                                        slice = ast::types::String::create(((ast::types::String*)v4)->value);
+                                    }
+                                    else {
+                                        // TODO 下标数据类型错误
+                                    }
                                     //ast::expressions::Constant constant(v4->value);
-                                    ast::expressions::Value sliceValue(&slice);
+                                    ast::expressions::Value sliceValue(slice);
                                     ast::expressions::Subscript subscript(&target, &sliceValue);
                                     ast::expressions::Value expr(convertPyObjectToAstObject(value));
                                     ast::statements::Assign assign(&subscript, &expr);
                                     assign.run(context);
+                                    Object::release(slice);
                                     break;
                                 }
                                 default:

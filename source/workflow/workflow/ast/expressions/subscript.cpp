@@ -30,8 +30,10 @@ namespace workflow::ast::expressions {
             types::Dictionary* dict = (types::Dictionary*)resultValue;
             if (resultSlice->getClassName() == types::String::className) {
                 types::String* key = (types::String*)resultSlice;
-                if (dict->value.count(key->value) != 0) {
-                    Object* result = dict->value[key->value];
+                //if (dict->value.count(key->value) != 0) {
+                if (dict->hasKey(key)) {
+                    //Object* result = dict->value[key->value];
+                    Object* result = dict->get(key);
                     return result;
                 }
                 else {

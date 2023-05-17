@@ -51,6 +51,16 @@ namespace workflow::ast::types {
     /// <summary>
     /// 
     /// </summary>
+    /// <returns></returns>
+    Object* Object::create() {
+        Object* result = new Object();
+        result->autoRelease = false;
+        return result;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
     void Object::decreaseReferenceCount() {
         if (this->referenceCount == 0) {
             // TODO 减少报错
@@ -63,7 +73,7 @@ namespace workflow::ast::types {
     /// </summary>
     /// <param name="object"></param>
     void Object::release(Object* object) {
-        if (object->getReferenceCount() <= 0) {
+        if (object->getReferenceCount() <= 0 && !object->autoRelease) {
             delete object;
         }
     }

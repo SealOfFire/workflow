@@ -44,35 +44,39 @@ namespace workflow::ast::expressions {
         }
         else
         {
-            if (context->currentModule->modules.count(this->modeuleName) == 0) {
-                // 模块名称不存在
-                throw ast::exceptions::KeyNotFoundException(this, this->modeuleName);
-            }
-            else {
-                module = context->currentModule->modules[this->modeuleName];
-            }
+            //if (context->currentModule->hasChildModule(this->modeuleName)) {
+            //    module = context->currentModule->modules[this->modeuleName];
+            //}
+            //else {
+            //    // 模块名称不存在
+            //    throw ast::exceptions::KeyNotFoundException(this, this->modeuleName);
+            //}
+
+            module = context->currentModule->getChildModule(this->modeuleName);
         }
 
-        if (module == nullptr) {
-            // 模块不存在
-            throw ast::exceptions::NullReferenceException(this, "module");
-        }
+        //if (module == nullptr) {
+        //    // 模块不存在
+        //    throw ast::exceptions::NullReferenceException(this, "module");
+        //}
 
-        if (module->functions.count(this->functionName) == 0) {
-            // 函数名称不存在
-            throw ast::exceptions::KeyNotFoundException(this, functionName);
-        }
+        //if (module->functions.count(this->functionName) == 0) {
+        //    // 函数名称不存在
+        //    throw ast::exceptions::KeyNotFoundException(this, functionName);
+        //}
 
         // 设置输入变量值
         //FunctionDefinition* func = context->functions[this->functionName];
-        FunctionDefinition* func = module->functions[this->functionName];
+        //FunctionDefinition* func = module->functions[this->functionName];
+        FunctionDefinition* func = module->getFunction(this->functionName);
 
         // 循环入参的表达式列表，计算入参
         // 计算输入参数列表
         for (auto [name, expr] : this->arguments) {
             // TODO expr空判断
             // 计算结果直接放入函数的局域变量列表
-            func->variables[name] = expr->run(context);
+            //func->variables[name] = expr->run(context);
+            func->variables.set(name, expr->run(context));
         }
 
         // 执行函数
@@ -81,9 +85,8 @@ namespace workflow::ast::expressions {
         // 函数的返回值
         if (func->returns == nullptr) {
             // void 函数
-            // TODO 无返回值
-            return new types::Void();
-            //return Manager::createVoid();
+            //return new types::Void();
+            return types::Void::create();
         }
         else {
             return func->returns;

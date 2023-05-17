@@ -82,8 +82,8 @@ namespace workflow::ast::expressions {
         }
 
         //bool result = ((Boolean*)leftResult)->value && ((Boolean*)rightResult)->value;
-        return new Boolean(result);
-        //return Manager::createBoolean(result);
+        //return new Boolean(result);
+        return types::Boolean::create(result);
 
     }
 

@@ -56,6 +56,7 @@ list(APPEND file_list types/string.cpp)
 list(APPEND file_list types/void.cpp)
 
 list(APPEND file_list ast.cpp)
+list(APPEND file_list variables.cpp)
 #list(APPEND file_list ast.h)
 #list(APPEND file_list common.h)
 #---------------------------------------------------------
@@ -110,6 +111,7 @@ list(APPEND headers types/types.h)
 list(APPEND headers types/void.h)
 
 list(APPEND headers ast.h)
+list(APPEND headers variables.h)
 #add_definitions(-DSHARED_LIB_EXPORT="true")
 
 if(SHARED_LIB_BUILD)

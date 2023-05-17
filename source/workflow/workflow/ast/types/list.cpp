@@ -10,32 +10,52 @@ namespace workflow::ast::types {
 
     List::~List() {
         for (int i = 0; i < this->value.size(); i++) {
+            this->value[i]->decreaseReferenceCount();
             Object::release(this->value[i]);
         }
         this->value.clear();
     }
 
+    List* List::create() {
+        List* result = new List();
+        result->autoRelease = false;
+        return result;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="item"></param>
     void List::append(Object* item) {
         item->increaseReferenceCount();
         this->value.push_back(item);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     size_t List::count() {
         return this->value.size();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
     Object* List::elementAt(size_t index) {
         return this->value[index];
     }
 
     void List::insert(size_t index, Object* item) {
         // 原本索引处如果有数据，删除原有的数据
-        item->increaseReferenceCount();
         if (this->value.size() > index) {
             Object* oldValue = this->value[index];
             oldValue->decreaseReferenceCount();
             Object::release(oldValue);
         }
+        item->increaseReferenceCount();
         this->value[index] = item;
     }
 

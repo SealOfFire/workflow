@@ -9,6 +9,11 @@ namespace workflow::ast::types {
     /// <param name="value"></param>
     Integer::Integer(int value) : value(value) {}
 
+    Integer* Integer::create(int value) {
+        Integer* result = new Integer(value);
+        result->autoRelease = false;
+        return result;
+    }
 
     string Integer::getClassName() const {
         return Integer::className;

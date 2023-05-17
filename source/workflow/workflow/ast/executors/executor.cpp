@@ -80,19 +80,19 @@ namespace workflow::ast::executors {
         this->context->breakpointExpressions.push_back(expression);
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
-    map<string, Object*> Executor::getVariables() {
-        if (this->context->currentModule != nullptr) {
-            return this->context->currentModule->variables;
-        }
-        else
-        {
-            // TODO
-        }
-    }
+    ///// <summary>
+    ///// 
+    ///// </summary>
+    ///// <returns></returns>
+    //map<string, Object*> Executor::getVariables() {
+    //    if (this->context->currentModule != nullptr) {
+    //        return this->context->currentModule->variables;
+    //    }
+    //    else
+    //    {
+    //        // TODO
+    //    }
+    //}
 
     void Executor::operator()(Statement* statement) {
         this->statement = statement;

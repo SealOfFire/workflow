@@ -102,12 +102,12 @@ namespace workflow::ast::executors {
         this->executor->addBreakpoint(expression);
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
-    map<string, Object*> ExecuteThread::getVariables() {
-        return this->executor->getVariables();
-    }
+    ///// <summary>
+    ///// 
+    ///// </summary>
+    ///// <returns></returns>
+    //map<string, Object*> ExecuteThread::getVariables() {
+    //    return this->executor->getVariables();
+    //}
 
 }

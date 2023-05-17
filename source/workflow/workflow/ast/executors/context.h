@@ -133,5 +133,6 @@ namespace workflow::ast::executors {
         /// <returns></returns>
         Object* getLocalVariable(string name);
 
+        void setLocalVariable(std::string name, types::Object* value);
     };
 }
