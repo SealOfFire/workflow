@@ -1,0 +1,38 @@
+{
+    "name": "com.my_company.my_app",
+    "version": "0.0.0.1",
+    "manifest_version": 3,
+    "description": "An extension to display the NASA picture of the day.",
+    "icons": {
+        "16": "icons/nasapod16x16.png",
+        "32": "icons/nasapod32x32.png",
+        "48": "icons/nasapod48x48.png",
+        "128": "icons/nasapod128x128.png"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "scripts/libs/jquery.min.js",
+                "scripts/content/handles/commands.js",
+                "scripts/content/handles/hover.js",
+                "scripts/content/handles/pickUp.js",
+                "scripts/content/content.js"
+            ],
+            "css": [
+                "scripts/content/style.css"
+            ]
+        }
+    ],
+    "background": {
+        "service_worker": "scripts/service/service-worker.js"
+    },
+    "web_accessible_resources": [],
+    "permissions": [
+        "management",
+        "tabs",
+        "nativeMessaging"
+    ]
+}

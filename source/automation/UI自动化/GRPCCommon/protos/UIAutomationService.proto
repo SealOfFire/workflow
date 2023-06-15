@@ -1,0 +1,232 @@
+﻿syntax = "proto3";
+
+// https://learn.microsoft.com/zh-cn/aspnet/core/grpc/?view=aspnetcore-7.0
+//import "google/protobuf/empty.proto";
+
+package GRPCCommon;
+
+service UIAutomation {
+	// 鼠标悬浮高亮
+	rpc Hover (HoverRequest) returns (HoverResponse);
+
+	// 拾取元素
+	rpc PickUp (PickUpRequest) returns (PickUpResponse);
+
+	// 高亮
+	rpc Highlight(HighlightRequest) returns (HighlightResponse);
+}
+
+// 请求的统一格式
+message Request{
+	string id=1; // guid格式的id
+
+	string command = 2; // 命令
+
+	// UIA模式
+	AutomationType automationType=3;
+
+	int32 millisecondsTimeout  = 4; // 本条命令的执行超时时间（单位：毫秒）
+
+	// 实际执行命令参数
+	// 鼠标位置
+	optional Position position=10;
+
+	// 高亮的参数
+	optional Highlight highlight=11;
+
+	// 属性列表
+	optional Attribute attribute=12;
+
+	// 错误消息
+	optional Error error=999;
+}
+
+// 返回值的统一格式
+message Response{
+	// guid格式的id
+	string id=1;
+
+	// 执行是否成功
+	bool success =2;
+
+	 // 命令
+	string command = 3;
+
+	// 属性列表
+	optional Attribute attribute=4;
+
+	// 错误消息
+	optional Error error=999;
+}
+
+// 鼠标悬浮高亮的请求
+message HoverRequest{
+	// guid格式的id
+	string id=1;
+
+	string command = 2; // 命令
+
+	// UIA模式
+	AutomationType automationType=3;
+
+	 // 本条命令的执行超时时间（单位：毫秒）
+	int32 millisecondsTimeout=4;
+
+	// 鼠标位置
+	Position position=5;
+
+	// 高亮的参数
+	Highlight highlight=6;
+}
+
+// 鼠标悬浮高亮的回复
+message HoverResponse{
+	// guid格式的id
+	string id=1;
+
+	// 命令
+	string command = 2;
+
+	// 执行是否成功
+	bool success = 3;
+
+	// 属性列表
+	optional Attribute attribute=4;
+
+	// 错误消息
+	optional Error error=999;
+}
+
+// 元素拾取
+message PickUpRequest{
+	// guid格式的id
+	string id=1;
+
+	string command = 2; // 命令
+
+	// UIA模式
+	AutomationType automationType=3;
+
+	 // 本条命令的执行超时时间（单位：毫秒）
+	int32 millisecondsTimeout=4;
+
+	// 鼠标位置
+	Position position=5;
+}
+
+//
+message PickUpResponse{
+	// guid格式的id
+	string id=1;
+
+	// 命令
+	string command = 2;
+
+	// 执行是否成功
+	bool success = 3;
+
+	// 属性列表
+	optional Attribute attribute=4;
+
+	// 错误消息
+	optional Error error=999;
+}
+
+// 高亮
+message HighlightRequest{
+	// guid格式的id
+	string id=1;
+
+	string command = 2; // 命令
+
+	// UIA模式
+	AutomationType automationType=3;
+
+	 // 本条命令的执行超时时间（单位：毫秒）
+	int32 millisecondsTimeout=4;
+
+	// 属性列表
+	optional Attribute attribute=5;
+
+	// 高亮的参数
+	Highlight highlight=6;
+}
+
+// 高亮
+message HighlightResponse{
+	// guid格式的id
+	string id=1;
+
+	string command = 2; // 命令
+
+	// 执行是否成功
+	bool success = 3;
+
+	// 错误消息
+	optional Error error=999;
+}
+
+// UIA库
+enum AutomationType{
+	UIA2=0;
+	UIA3=1;
+}
+
+// 鼠标位置信息
+message Position{
+	int32 x=1;
+	int32 y=2;
+}
+
+// 高亮参数
+message Highlight{
+	// 高亮的颜色 #FF0000为红色
+	string color =1;
+
+	// 高亮的时常，单位毫秒
+	int32 duration=2;
+}
+
+// 错误消息
+message Error{
+	string message=1;
+}
+
+// 元素类型
+enum ElementType{
+	// 未知
+	unknow=0;
+
+	// 窗口元素
+	form=1;
+
+	// html元素
+	html=2;
+}
+
+// 属性
+message Attribute{
+	
+	// 元素类别
+	ElementType elementType=1;
+
+	// 属性列表
+	map<string, string> values=2;
+
+	// 元素的位置
+	optional BoundingRectangle boundingRectangle=3;
+
+	// 父级属性列表
+	optional Attribute parent=4;
+
+	// 子级别属性列表
+	repeated Attribute children=5;
+}
+
+// 边框范围
+message BoundingRectangle{
+	int32 x=1;
+	int32 y=2;
+	int32 width=3;
+	int32 height=4;
+}

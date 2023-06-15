@@ -1,4 +1,5 @@
 ﻿#include "pyTools.h"
+#include <exceptions/notImplementedException.h>
 #include <types/boolean.h>
 #include <types/dictionary.h>
 #include <types/float.h>
@@ -90,29 +91,33 @@ namespace workflow::framework {
             Py_ssize_t size;
             const char* ptr = PyUnicode_AsUTF8AndSize(value, &size);
             std::string str(ptr, size);
-            return new ast::types::String(str);
+            //return new ast::types::String(str);
+            return ast::types::String::create(str);
         }
         else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_INTEGER) &&
             (strncmp(value->ob_type->tp_name, PY_TYPE_INTEGER, strlen(PY_TYPE_INTEGER))) == 0) {
             // integer
-            return new ast::types::Integer(_PyLong_AsInt(value));
+            //return new ast::types::Integer(_PyLong_AsInt(value));
+            return ast::types::Integer::create(_PyLong_AsInt(value));
         }
         else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_FLOAT) &&
             (strncmp(value->ob_type->tp_name, PY_TYPE_FLOAT, strlen(PY_TYPE_FLOAT))) == 0) {
             // float
-            return new ast::types::Float(PyFloat_AsDouble(value));
+            //return new ast::types::Float(PyFloat_AsDouble(value));
+            return ast::types::Float::create(PyFloat_AsDouble(value));
         }
         else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_NONE) &&
             (strncmp(value->ob_type->tp_name, PY_TYPE_NONE, strlen(PY_TYPE_NONE))) == 0) {
             // none
-            //return new ast::types::List();
-            return new ast::types::Null();
+            //return new ast::types::Null();
+            return ast::types::Null::create();
         }
         else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_DICTIONARY) &&
             (strncmp(value->ob_type->tp_name, PY_TYPE_DICTIONARY, strlen(PY_TYPE_DICTIONARY))) == 0) {
             // dict
             // TODO 递归
-            ast::types::Dictionary* result = new ast::types::Dictionary();
+            //ast::types::Dictionary* result = new ast::types::Dictionary();
+            ast::types::Dictionary* result = ast::types::Dictionary::create();
             PyObject* keys = PyDict_Keys(value);
             Py_ssize_t s = PyList_Size(keys);
             for (int i = 0; i < s; ++i) {
@@ -125,13 +130,16 @@ namespace workflow::framework {
                 PyObject* val = PyDict_GetItemString(value, key.c_str());
                 //result->value[key] = convertPyObjectToAstObject(val);
                 result->set(key, convertPyObjectToAstObject(val));
+                Py_DECREF(item);
             }
+            Py_DECREF(keys);
             return result;
         }
         else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_LIST) &&
             (strncmp(value->ob_type->tp_name, PY_TYPE_LIST, strlen(PY_TYPE_LIST))) == 0) {
             // list
-            ast::types::List* result = new ast::types::List();
+            //ast::types::List* result = new ast::types::List();
+            ast::types::List* result = ast::types::List::create();
             for (int i = 0; i < PyList_Size(value); i++) {
                 PyObject* listVal = PyList_GetItem(value, i);
                 //PyObject* listVal = PySequence_GetItem(value, i);
@@ -145,19 +153,22 @@ namespace workflow::framework {
         else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_BOOLEAN) &&
             (strncmp(value->ob_type->tp_name, PY_TYPE_BOOLEAN, strlen(PY_TYPE_BOOLEAN))) == 0) {
             // bool
-            return new ast::types::Boolean(PyBool_Check(value));
+            //return new ast::types::Boolean(PyBool_Check(value));
+            return ast::types::Boolean::create(PyBool_Check(value));
         }
         else if (strlen(value->ob_type->tp_name) == strlen(PY_TYPE_TUPLE) &&
             (strncmp(value->ob_type->tp_name, PY_TYPE_TUPLE, strlen(PY_TYPE_TUPLE))) == 0) {
             // tuple
             // TODO
+            throw new exceptions::NotImplementedException(nullptr, "python tuple to ast object");
         }
         else {
             // 其他的python数据类型。直接保存为python数据
-            return new framework::types::AstPyObject(value);
+            //return new framework::types::AstPyObject(value);
+            return framework::types::AstPyObject::create(value);
         }
 
-        return new ast::types::Object();
+        //return new ast::types::Object();
     }
 
     ///// <summary>

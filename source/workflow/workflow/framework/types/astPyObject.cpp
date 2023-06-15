@@ -17,4 +17,11 @@ namespace workflow::framework::types {
     std::string AstPyObject::getClassName() const {
         return  AstPyObject::className;
     }
+
+    AstPyObject* AstPyObject::create(PyObject* value) {
+        AstPyObject* result = new AstPyObject(value);
+        result->autoRelease = false;
+        return result;
+    }
+
 }

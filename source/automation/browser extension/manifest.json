@@ -1,0 +1,9 @@
+﻿{
+    "name": "com.my_company.my_application",
+    "description": "My App",
+    "path": "D:\\MyProgram\\github\\workflow\\source\\automation\\UI自动化\\NativeMessageHost\\bin\\Debug\\net6.0\\NativeMessageHost.exe",
+    "type": "stdio",
+    "allowed_origins": [
+        "chrome-extension://dahkkjnfmcmnocpinpbhkhcladplfbnj/"
+    ]
+}

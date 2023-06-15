@@ -8,6 +8,10 @@ namespace workflow::ast::expressions {
     /// <param name="value"></param>
     Value::Value(types::Object* value) : value(value) {}
 
+    Value::~Value() {
+        types::Object::release(this->value);
+    }
+
     /// <summary>
     /// 
     /// </summary>

@@ -1,0 +1,189 @@
+﻿using FlaUI.Core;
+using FlaUI.Core.AutomationElements;
+using FlaUI.Core.Conditions;
+using FlaUI.Core.Definitions;
+using System.Drawing;
+using UIAutomation.Models;
+
+namespace UIAutomation.Elements
+{
+    /// <summary>
+    /// 窗口元素
+    /// </summary>
+    internal class WindowElement : ElementBase
+    {
+        private AutomationElement automationElement;
+        private string automationId = string.Empty;
+        private string className = string.Empty;
+        private string name = string.Empty;
+        private ControlType controlType;
+        private string nativeWindowHandle = string.Empty;
+        private Rectangle boundingRectangle;
+
+        #region 属性
+
+        public string Name
+        {
+            get { return this.name; }
+        }
+
+        public ControlType ControlType
+        {
+            get { return this.ControlType; }
+        }
+
+        public string AutomationId
+        {
+            get { return this.automationId; }
+        }
+
+        public string ClassName
+        {
+            get { return this.className; }
+        }
+
+        public Rectangle BoundingRectangle
+        {
+            get { return this.boundingRectangle; }
+        }
+
+        #endregion
+
+        #region 构造函数
+
+        public WindowElement(AutomationElement automationElement)
+        {
+            this.automationElement = automationElement;
+        }
+
+        #endregion
+
+        #region 重写方法
+
+        internal override ElementBase[] FindAllChildren(Dictionary<string, object> condition)
+        {
+            ConditionBase conditionBase = ConvertConditionBase(condition, this.automationElement.Automation.ConditionFactory);
+            AutomationElement[] automationElements = this.automationElement.FindAll(TreeScope.Children, conditionBase);
+            //ElementBase[] result = new ElementBase[automationElements.Length];
+            ElementBase[] result = WindowElement.Create(automationElements);
+            return result;
+        }
+
+        internal override void Highlight(Color color, TimeSpan duration)
+        {
+            Task.Run(() =>
+            {
+                this.automationElement.DrawHighlight(false, color, duration);
+            });
+        }
+
+        internal override ElementSelector ToElementSelector()
+        {
+            ElementSelector1 elementSelector = new ElementSelector1();
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        internal void LoadDetails()
+        {
+            CacheRequest cacheRequest = new CacheRequest();
+            cacheRequest.TreeScope = TreeScope.Element;
+            cacheRequest.Add(automationElement.Automation.PropertyLibrary.Element.AutomationId);
+            cacheRequest.Add(automationElement.Automation.PropertyLibrary.Element.ClassName);
+            cacheRequest.Add(automationElement.Automation.PropertyLibrary.Element.ControlType);
+            cacheRequest.Add(automationElement.Automation.PropertyLibrary.Element.FrameworkId);
+            //没有FrameworkType
+            cacheRequest.Add(automationElement.Automation.PropertyLibrary.Element.LocalizedControlType);
+            cacheRequest.Add(automationElement.Automation.PropertyLibrary.Element.HelpText);
+            cacheRequest.Add(automationElement.Automation.PropertyLibrary.Element.Name);
+            cacheRequest.Add(automationElement.Automation.PropertyLibrary.Element.ProcessId);
+            // text
+            // value
+            cacheRequest.Add(automationElement.Automation.PropertyLibrary.Element.BoundingRectangle);
+            cacheRequest.Add(automationElement.Automation.PropertyLibrary.Element.NativeWindowHandle);
+            cacheRequest.Add(automationElement.Automation.PropertyLibrary.Element.IsEnabled);
+            cacheRequest.Add(automationElement.Automation.PropertyLibrary.Element.IsOffscreen);
+            cacheRequest.Add(automationElement.Automation.PropertyLibrary.Element.IsPassword);
+
+            using (cacheRequest.Activate())
+            {
+                var elementCached = automationElement.FindFirst(FlaUI.Core.Definitions.TreeScope.Element, TrueCondition.Default);
+                if (elementCached != null)
+                {
+                    this.automationId = elementCached.Properties.AutomationId.ValueOrDefault;
+                    this.className = elementCached.Properties.ClassName.ValueOrDefault;
+                    this.name = elementCached.Properties.Name.ValueOrDefault;
+                    this.controlType = elementCached.Properties.ControlType.ValueOrDefault;
+
+                    //elementSelector.properties.Add("AutomationId", elementCached.Properties.AutomationId.ValueOrDefault);
+                    //elementSelector.properties.Add("Name", elementCached.Properties.Name.ValueOrDefault);
+                    //elementSelector.properties.Add("ClassName", elementCached.Properties.ClassName.ValueOrDefault);
+                    //elementSelector.properties.Add("ControlType", elementCached.Properties.ControlType.ValueOrDefault);
+                    //elementSelector.properties.Add("LocalizedControlType", elementCached.Properties.LocalizedControlType.ValueOrDefault);
+                    //elementSelector.properties.Add("FrameworkType", elementCached.FrameworkType);
+                    //elementSelector.properties.Add("FrameworkId", elementCached.Properties.FrameworkId.ValueOrDefault);
+                    //elementSelector.properties.Add("ProcessId", elementCached.Properties.ProcessId.ValueOrDefault);
+                    //elementSelector.properties.Add("IsEnabled", elementCached.Properties.IsEnabled.ValueOrDefault);
+                    //elementSelector.properties.Add("IsOffscreen", elementCached.Properties.IsOffscreen.ValueOrDefault); // TODO 不支持
+                    //elementSelector.properties.Add("BoundingRectangle", elementCached.Properties.BoundingRectangle.ValueOrDefault);
+                    //elementSelector.properties.Add("HelpText", elementCached.Properties.HelpText.ValueOrDefault);
+                    //elementSelector.properties.Add("IsPassword", elementCached.Properties.IsPassword.ValueOrDefault); // TODO 不支持
+
+                    var boundingRectangle = elementCached.Properties.BoundingRectangle;
+                    var nativeWindowHandle = elementCached.Properties.NativeWindowHandle.ValueOrDefault;
+                    var nativeWindowHandleString = "Not Supported";
+                    if (nativeWindowHandle != default(IntPtr))
+                    {
+                        nativeWindowHandleString = String.Format("{0} ({0:X8})", nativeWindowHandle.ToInt32());
+                        this.nativeWindowHandle = nativeWindowHandleString;
+                    }
+                }
+            }
+        }
+
+        #region 静态方法
+
+        internal static ConditionBase ConvertConditionBase(Dictionary<string, object> condition, ConditionFactory cf)
+        {
+            List<PropertyCondition> properties = new List<PropertyCondition>();
+            //ConditionFactory cf = this.automationElement.Automation.ConditionFactory;
+            // 转换查询条件啊
+            string name = "AutomationId";
+            if (condition.Keys.Contains(name) && !string.IsNullOrEmpty((string)condition[name]))
+                properties.Add(cf.ByAutomationId((string)condition[name]));
+
+            name = "Name";
+            if (condition.Keys.Contains(name) && !string.IsNullOrEmpty((string)condition[name]))
+                properties.Add(cf.ByName((string)condition[name]));
+
+            name = "ClassName";
+            if (condition.Keys.Contains(name) && !string.IsNullOrEmpty((string)condition[name]))
+                properties.Add(cf.ByClassName((string)condition[name]));
+
+            name = "ControlType";
+            if (condition.Keys.Contains(name))
+                properties.Add(cf.ByControlType((ControlType)condition[name]));
+
+            ConditionBase conditionBase = properties[0];
+            for (int i = 1; i < properties.Count; i++)
+            {
+                conditionBase = conditionBase.And(properties[i]);
+            }
+            return conditionBase;
+        }
+
+        internal static WindowElement[] Create(AutomationElement[] automationElements)
+        {
+            WindowElement[] result = new WindowElement[automationElements.Length];
+            int index = 0;
+            foreach (AutomationElement automationElement in automationElements)
+            {
+                result[index++] = new WindowElement(automationElement);
+            }
+            return result;
+        }
+
+        #endregion
+    }
+}

@@ -303,6 +303,10 @@ namespace workflow::framework::activities {
                                 //}
                             }
 
+                            ast::types::Object::release(v1);
+                            ast::types::Object::release(v2);
+                            ast::types::Object::release(v3);
+                            ast::types::Object::release(v4);
                         }
                         else {
                             // 其他的不处理

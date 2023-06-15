@@ -1,0 +1,121 @@
+﻿syntax = "proto3";
+
+//import "google/protobuf/empty.proto";
+
+package UIAutomationServer;
+
+service SelectorService {
+	rpc HoverElement(HoverRequest) returns(SelectorReponse) {}
+	rpc PickUpElement(HoverRequest) returns (SelectorReponse) {}
+	rpc Highlight(SelectorRequest) returns (SelectorReponse) {}
+}
+
+enum ControlType{
+	Unknown=0;
+	AppBar=1;
+	Button=2;
+	Calendar=3;
+	CheckBox=4;
+	ComboBox=5;
+	Custom=6;
+	DataGrid=7;
+	DataItem=8;
+	Document=9;
+	Edit=10;
+	Group=11;
+	Header=12;
+	HeaderItem=13;
+	Hyperlink=14;
+	Image=15;
+	List=16;
+	ListItem=17;
+	MenuBar=18;
+	Menu=19;
+	MenuItem=20;
+	Pane=21;
+	ProgressBar=22;
+	RadioButton=23;
+	ScrollBar=24;
+	SemanticZoom=25;
+	Separator=26;
+	Slider=27;
+	Spinner=28;
+	SplitButton=29;
+	StatusBar=30;
+	Tab=31;
+	TabItem=32;
+	Table=33;
+	Text=34;
+	Thumb=36;
+	TitleBar=37;
+	ToolBar=38;
+	ToolTip=39;
+	Tree=40;
+	TreeItem=41;
+	Window=42;
+}
+
+ enum FrameworkType {
+    None=0;
+    Unknown2=1;
+    Wpf=2;
+    WinForms=3;
+    Win32=4;
+    Xaml=5;
+    Qt=6;
+}
+
+enum UIAType{
+	UIA2=0;
+	UIA3=1;
+}
+
+message Element {
+	optional string automationId=1;
+	string className=2;
+	ControlType controlType=3;
+    string frameworkId=4;
+    FrameworkType frameworkType=5;
+	optional string helpText=6;
+    string localizedControlType=7;
+    string name=8;
+    int32 processId=9;
+    string text=10;
+    string value=11;
+	Element parent=12;
+	repeated Element children=13;
+}
+
+// 元素属性
+message ElementProperties{
+	// 属性列表
+	map<string, string> stringProperties=1;
+	map<string,int32> intgerProperties=2;
+	map<string,bool> boolProperties=3;
+	map<string,string> patterns=4;
+}
+
+// 元素选择器
+message ElementSelector{
+	Element window = 1; // 选择的窗口
+	Element element = 2; // 选择的元素
+}
+
+message HoverRequest{
+	int32 x=1; // 鼠标位置
+	int32 y=2; // 鼠标位置
+	UIAType type=3; // 元素识别版本
+	string color=4; // 高亮的颜色
+	int32 duration=5; // 高亮的时常
+}
+
+message SelectorRequest{
+	Element selector = 1;
+	UIAType type=2; //
+	string color=3; // 高亮的颜色
+	int32 duration=4; // 高亮的时常
+}
+
+message SelectorReponse{
+	Element selector = 1;
+}

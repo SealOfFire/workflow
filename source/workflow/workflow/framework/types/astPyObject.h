@@ -32,6 +32,7 @@ namespace workflow::framework::types {
         /// <returns></returns>
         virtual string getClassName() const;
 
+        static AstPyObject* create(PyObject* value);
     };
 
 }

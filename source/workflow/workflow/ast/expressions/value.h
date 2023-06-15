@@ -21,6 +21,7 @@ namespace workflow::ast::expressions {
         /// </summary>
         /// <param name="id"></param>
         Value(types::Object* value);
+        ~Value();
 
         /// <summary>
         /// 

@@ -1,0 +1,72 @@
+﻿syntax = "proto3";
+
+// https://learn.microsoft.com/zh-cn/aspnet/core/grpc/?view=aspnetcore-7.0
+//import "google/protobuf/empty.proto";
+
+package ProcessCommunication;
+
+// 线程通信数据
+message ProcessMessage{
+	string id=1; // guid格式的id
+
+	bool success =2; // 执行是否成功
+
+	string command = 3; // 命令
+
+	int32 millisecondsTimeout  = 4; // 本条命令的执行超时时间（单位：毫秒）
+
+	optional BoundingRectangle boundingRectangle=5; // 元素的位置和大小
+
+	// 实际执行命令参数
+	// 鼠标位置
+	optional Position position=10;
+
+	// 高亮的参数
+	optional Highlight highlight=11;
+
+	// 属性列表
+	optional Attribute attribute=12;
+
+	// 错误消息
+	optional Error error=999;
+}
+
+// 错误消息
+message Error{
+	string message=1;
+}
+
+// 鼠标位置信息
+message Position{
+	int32 x=1;
+	int32 y=2;
+}
+
+// 高亮参数
+message Highlight{
+	// 高亮的颜色 #FF0000为红色
+	string color =1;
+
+	// 高亮的时常，单位毫秒
+	int32 duration=2;
+}
+
+// 属性
+message Attribute{
+	// 属性列表
+	map<string, string> values=1;
+
+	// 父级属性列表
+	optional Attribute parent=2;
+
+	// 子级别属性列表
+	repeated Attribute children=3;
+}
+
+// 边框范围
+message BoundingRectangle{
+	int32 x=1;
+	int32 y=2;
+	int32 width=3;
+	int32 height=4;
+}
