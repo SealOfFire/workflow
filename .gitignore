@@ -15,3 +15,26 @@
 
 */__pycache__
 /source/workflow/workflow/scripts/__pycache__
+/source/automation/UI自动化/.vs
+/source/automation/UI自动化/Common/obj
+/source/automation/UI自动化/Common/bin/Debug/net6.0
+/source/automation/UI自动化/GRPCCommon/bin/Debug/net6.0
+/source/automation/UI自动化/GRPCCommon/obj
+/source/automation/UI自动化/NativeMessageHost/bin/Debug/net6.0
+/source/automation/UI自动化/NativeMessageHost/obj
+/source/automation/UI自动化/packages
+/source/automation/UI自动化/Test/TestUIAutomation/bin/Debug/net6.0-windows
+/source/automation/UI自动化/Test/TestUIAutomation/obj
+/source/automation/UI自动化/UIAutomation/bin/Debug/net6.0-windows
+/source/automation/UI自动化/UIAutomation/obj
+/source/automation/UI自动化/UIAutomationHost/bin/Debug
+/source/automation/UI自动化/UIAutomationHost/obj
+/source/automation/UI自动化/UIAutomationServer/obj
+/source/automation/UI自动化/UI自动化/obj
+/source/automation/UI自动化/WebApplication1/bin/Debug
+/source/automation/UI自动化/WebApplication1/obj
+/source/automation/UI自动化/WpfApp1/bin/Debug/net6.0-windows
+/source/automation/UI自动化/WpfApp1/obj
+/source/_backup
+/source/automation/UI自动化/UIAutomationServer/bin/Debug/net6.0-windows
+/source/automation/UI自动化/UI自动化/bin/Debug/net6.0-windows
