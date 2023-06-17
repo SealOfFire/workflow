@@ -1,0 +1,85 @@
+﻿syntax = "proto3";
+
+// https://learn.microsoft.com/zh-cn/aspnet/core/grpc/?view=aspnetcore-7.0
+//import "google/protobuf/empty.proto";
+import "common.proto";
+
+// 插件和元素识别服务之间的通信数据
+package GRPCCommon.protobuf.NativeMessage;
+
+
+service NativeMessage {
+
+	// 通过鼠标位置获取元素
+	rpc FromPoint(FromPointRequest) returns (FromPointResponse);
+
+	// 高亮
+	rpc Highlight(HighlightRequest) returns (HighlightResponse);
+}
+
+// 
+message FromPointRequest{
+		string id=1; // guid格式的id
+
+	string command = 2; // 命令
+
+	// UIA模式
+	common.FlaUIType automationType=3;
+
+	int32 millisecondsTimeout  = 4; // 本条命令的执行超时时间（单位：毫秒）
+
+	// 鼠标位置
+	optional common.Position position=5;
+
+	// 深度 根据深度返回父级的层级，深度小于0时返回完整的父级
+	int32 parentDepth=6;
+}
+
+//
+message FromPointResponse{
+	// guid格式的id
+	string id=1;
+
+	// 执行是否成功
+	bool success =2;
+
+	 // 命令
+	string command = 3;
+
+	// 属性列表
+	optional common.Attribute attribute=4;
+
+	// 错误消息
+	optional common.Error error=999;
+}
+
+// 高亮
+message HighlightRequest{
+	// guid格式的id
+	string id=1;
+
+	string command = 2; // 命令
+
+	 // 本条命令的执行超时时间（单位：毫秒）
+	int32 millisecondsTimeout=3;
+
+	// 高亮的参数
+	common.Highlight highlight=4;
+
+	// 缓存id
+	string cacheId=5;
+}
+
+// 高亮
+message HighlightResponse{
+	// guid格式的id
+	string id=1;
+
+	string command = 2; // 命令
+
+	// 执行是否成功
+	bool success = 3;
+
+	// 错误消息
+	optional common.Error error=999;
+}

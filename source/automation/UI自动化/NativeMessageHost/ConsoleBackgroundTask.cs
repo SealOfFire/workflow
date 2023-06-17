@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using ProcessCommunication;
 using System.Text;
 
 namespace NativeMessageHost
@@ -57,15 +56,15 @@ namespace NativeMessageHost
                                     //dynamic? result = JsonConvert.DeserializeObject(text);
                                     //ProcessMessage? result = System.Text.Json.JsonSerializer.Deserialize<ProcessMessage>(text);
                                     //ProcessMessage? result = System.Text.Json.JsonSerializer.Deserialize<ProcessMessage>(text);
-                                    ProcessMessage? result = JsonConvert.DeserializeObject<ProcessMessage>(text);
+                                    //ProcessMessage? result = JsonConvert.DeserializeObject<ProcessMessage>(text);
                                     JObject? jobject = JsonConvert.DeserializeObject<JObject>(text);
-
                                     //Message message = new Message { Direction= MessageDirection.ConsoleToPip, Data=result };
                                     //await this.backgroundMessageQueue.QueueBackgroundWorkItemAsync(message);
-                                    if (result !=null)
+                                    if (jobject !=null)
                                     {
+                                        string id = jobject.GetValue("Id").Value<string>();
                                         //string id = ((IDictionary<string, object>)result)["Id"].ToString();
-                                        if (this.jsonDictionary.ContainsKey(result.Id))
+                                        if (this.jsonDictionary.ContainsKey(id))
                                         {
                                             // 消息id重复
                                             this.logger.LogError("控制台后台服务读取到的id重复");
@@ -73,7 +72,7 @@ namespace NativeMessageHost
                                         else
                                         {
                                             //this.consoleProcessMessage.Add(result.Id, result);
-                                            this.jsonDictionary.Add(jobject.GetValue("Id").Value<string>(), jobject);
+                                            this.jsonDictionary.Add(id, jobject);
 
                                             //this.consoleProcessMessage.Add(id, new ExpandoObject());
                                             //int debug = 0;

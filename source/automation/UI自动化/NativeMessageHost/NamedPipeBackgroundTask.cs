@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf;
+using GRPCCommon.Protobuf.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NativeMessageHost.Handles;
@@ -77,7 +78,7 @@ namespace NativeMessageHost
                                 readLength= this.pipeServerStream.Read(dataBuffer, 0, length);
 
                                 //ProcessMessage processMessage = ProcessMessage.Parser.ParseFrom(dataBuffer);
-                                GRPCCommon.Request request = GRPCCommon.Request.Parser.ParseFrom(dataBuffer);
+                                Request request = Request.Parser.ParseFrom(dataBuffer);
                                 if (string.IsNullOrEmpty(request.Id))
                                 {
                                     request.Id = Guid.NewGuid().ToString();
@@ -110,19 +111,19 @@ namespace NativeMessageHost
                                     {
                                         // 回写回管道
                                         this.logger.LogWarning($"管道后台服务写入管道[{request}]");
-                                        GRPCCommon.Error? error;
-                                        GRPCCommon.Response? response = this.handleManager.ToNamedPip<GRPCCommon.Response>(result, out error);
+                                        GRPCCommon.Protobuf.Common.Error? error;
+                                        Response? response = this.handleManager.ToNamedPip<Response>(result, out error);
                                         if (response == null)
                                         {
                                             string message = $"管道后台服务转换json失败";
                                             this.logger.LogWarning(message);
-                                            response = new GRPCCommon.Response();
-                                            response.Error=new GRPCCommon.Error { Message=message };
+                                            response = new Response();
+                                            response.Error=new GRPCCommon.Protobuf.Common.Error { Message=message };
                                             this.Write(response);
                                         }
                                         else
                                         {
-                                            response.Attribute.ElementType= GRPCCommon.ElementType.Html;
+                                            response.Attribute.ElementType= GRPCCommon.Protobuf.Common.ElementType.Html;
                                             this.Write(response);
                                             this.logger.LogInformation($"管道后台服务写入管道完成");
                                         }
@@ -132,8 +133,8 @@ namespace NativeMessageHost
                                         // 处理超时，返回错误信息 ProcessMessage
                                         string message = $"管道后台服务[{request.MillisecondsTimeout}]毫秒内，没有从控制台获取到返回的任务{request.Id},{request.Command}";
                                         this.logger.LogWarning(message);
-                                        GRPCCommon.Response response = new GRPCCommon.Response();
-                                        response.Error=new GRPCCommon.Error { Message=message };
+                                        Response response = new();
+                                        response.Error=new GRPCCommon.Protobuf.Common.Error { Message=message };
                                         this.Write(response);
                                     }
                                 }
@@ -141,8 +142,8 @@ namespace NativeMessageHost
                                 {
                                     string message = $"管道后台服务没有处理[{request.Command}]的方法";
                                     this.logger.LogWarning(message);
-                                    GRPCCommon.Response response = new GRPCCommon.Response();
-                                    response.Error=new GRPCCommon.Error { Message=message };
+                                    Response response = new();
+                                    response.Error=new GRPCCommon.Protobuf.Common.Error { Message=message };
                                     this.Write(response);
                                 }
                             }
@@ -166,7 +167,7 @@ namespace NativeMessageHost
             }
         }
 
-        private void Write(GRPCCommon.Response response)
+        private void Write(Response response)
         {
             byte[] buffer = response.ToByteArray();
             byte[] lengthBuffer = BitConverter.GetBytes(buffer.Length);

@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
-using ProcessCommunication;
+﻿using GRPCCommon.Protobuf.Common;
+using Microsoft.Extensions.Logging;
 using System.IO.Pipes;
 
 namespace UIAutomation.BrowserExtensions
@@ -38,32 +38,32 @@ namespace UIAutomation.BrowserExtensions
         /// 单线程执行，会在这里等待服务器的回复
         /// </summary>
         /// <param name="processMessage"></param>
-        public ProcessMessage Send(string pipeName, ProcessMessage processMessage)
-        {
-            //this.namedPipeClientStream.Connect();
-            if (this.namedPipeClientStream !=null)
-            {
-                GRPCCommon.GRPCCommonTools.Send(this.namedPipeClientStream, processMessage);
+        //public ProcessMessage Send(string pipeName, ProcessMessage processMessage)
+        //{
+        //    //this.namedPipeClientStream.Connect();
+        //    if (this.namedPipeClientStream !=null)
+        //    {
+        //        GRPCCommon.GRPCCommonTools.Send(this.namedPipeClientStream, processMessage);
 
-                // 等待回复
-                Console.WriteLine("等待服务器发送的数据");
+        //        // 等待回复
+        //        Console.WriteLine("等待服务器发送的数据");
 
-                ProcessMessage? result = GRPCCommon.GRPCCommonTools.Read2(this.namedPipeClientStream);
-                Console.WriteLine("服务器数据传入成功");
+        //        ProcessMessage? result = GRPCCommon.GRPCCommonTools.Read2(this.namedPipeClientStream);
+        //        Console.WriteLine("服务器数据传入成功");
 
-                return result;
-            }
-            else
-            {
-                throw new ArgumentNullException("NamedPipeClientStream");
-            }
-            //// 这里会无线循环
-            //Thread.Sleep(2000);
-            //this.Send(processMessage);
-        }
+        //        return result;
+        //    }
+        //    else
+        //    {
+        //        throw new ArgumentNullException("NamedPipeClientStream");
+        //    }
+        //    //// 这里会无线循环
+        //    //Thread.Sleep(2000);
+        //    //this.Send(processMessage);
+        //}
 
 
-        public GRPCCommon.Response Send(string pipeName, GRPCCommon.Request request)
+        public Response Send(string pipeName, Request request)
         {
             //this.namedPipeClientStream.Connect();
             if (this.namedPipeClientStream !=null)
@@ -73,7 +73,7 @@ namespace UIAutomation.BrowserExtensions
                 // 等待回复
                 Console.WriteLine("等待服务器发送的数据");
 
-                GRPCCommon.Response? result = GRPCCommon.GRPCCommonTools.Read(this.namedPipeClientStream);
+                Response? result = GRPCCommon.GRPCCommonTools.Read(this.namedPipeClientStream);
                 Console.WriteLine("服务器数据传入成功");
 
                 return result;
@@ -92,52 +92,52 @@ namespace UIAutomation.BrowserExtensions
         /// </summary>
         /// <param name="processMessage"></param>
         /// <returns></returns>
-        public ProcessMessage? Send(ProcessMessage processMessage)
-        {
-            this.Write(processMessage);
-            ProcessMessage? result = this.Read2();
-            return result;
-        }
+        //public ProcessMessage? Send(ProcessMessage processMessage)
+        //{
+        //    this.Write(processMessage);
+        //    ProcessMessage? result = this.Read2();
+        //    return result;
+        //}
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="processMessage"></param>
         /// <returns></returns>
-        public GRPCCommon.Response? Send(GRPCCommon.Request request)
+        public Response? Send(Request request)
         {
             this.Write(request);
-            GRPCCommon.Response? result = this.Read();
+            Response? result = this.Read();
             return result;
         }
 
-        public ProcessMessage? Read2()
-        {
-            if (this.namedPipeClientStream !=null)
-            {
-                ProcessMessage? processMessage = GRPCCommon.GRPCCommonTools.Read2(this.namedPipeClientStream);
-                if (processMessage == null)
-                {
-                    this.logger.LogError("从管道读取数据出错");
-                    return null;
-                }
-                else
-                {
-                    return processMessage;
-                }
-            }
-            else
-            {
-                this.logger.LogError("没有管道");
-                return null;
-            }
-        }
+        //public ProcessMessage? Read2()
+        //{
+        //    if (this.namedPipeClientStream !=null)
+        //    {
+        //        ProcessMessage? processMessage = GRPCCommon.GRPCCommonTools.Read2(this.namedPipeClientStream);
+        //        if (processMessage == null)
+        //        {
+        //            this.logger.LogError("从管道读取数据出错");
+        //            return null;
+        //        }
+        //        else
+        //        {
+        //            return processMessage;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        this.logger.LogError("没有管道");
+        //        return null;
+        //    }
+        //}
 
-        public GRPCCommon.Response? Read()
+        public Response? Read()
         {
             if (this.namedPipeClientStream !=null)
             {
-                GRPCCommon.Response? response = GRPCCommon.GRPCCommonTools.Read(this.namedPipeClientStream);
+                Response? response = GRPCCommon.GRPCCommonTools.Read(this.namedPipeClientStream);
                 if (response == null)
                 {
                     this.logger.LogError("从管道读取数据出错");
@@ -155,30 +155,30 @@ namespace UIAutomation.BrowserExtensions
             }
         }
 
-        public void Write(ProcessMessage processMessage)
-        {
-            if (this.namedPipeClientStream !=null)
-            {
-                if (!this.namedPipeClientStream.IsConnected)
-                {
-                    this.namedPipeClientStream.Connect();
-                }
-                byte[] buffer = GRPCCommon.GRPCCommonTools.ToBytes(processMessage);
-                this.namedPipeClientStream.Write(buffer, 0, buffer.Length);
-                this.namedPipeClientStream.Flush();
+        //public void Write(ProcessMessage processMessage)
+        //{
+        //    if (this.namedPipeClientStream !=null)
+        //    {
+        //        if (!this.namedPipeClientStream.IsConnected)
+        //        {
+        //            this.namedPipeClientStream.Connect();
+        //        }
+        //        byte[] buffer = GRPCCommon.GRPCCommonTools.ToBytes(processMessage);
+        //        this.namedPipeClientStream.Write(buffer, 0, buffer.Length);
+        //        this.namedPipeClientStream.Flush();
 
-                //byte[] lengthBuffer = new byte[4];
-                //this.namedPipeClientStream.Read(lengthBuffer, 0, lengthBuffer.Length);
-                //int debug = 0;
-                //debug++;
-            }
-            else
-            {
-                this.logger.LogError("没有管道");
-            }
-        }
+        //        //byte[] lengthBuffer = new byte[4];
+        //        //this.namedPipeClientStream.Read(lengthBuffer, 0, lengthBuffer.Length);
+        //        //int debug = 0;
+        //        //debug++;
+        //    }
+        //    else
+        //    {
+        //        this.logger.LogError("没有管道");
+        //    }
+        //}
 
-        public void Write(GRPCCommon.Request request)
+        public void Write(Request request)
         {
             if (this.namedPipeClientStream !=null)
             {

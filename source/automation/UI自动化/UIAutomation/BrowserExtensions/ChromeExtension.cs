@@ -1,7 +1,6 @@
 ﻿using FlaUI.Core.AutomationElements;
 using FlaUI.Core.Exceptions;
 using Microsoft.Extensions.Logging;
-using ProcessCommunication;
 using UIAutomation.Elements;
 
 namespace UIAutomation.BrowserExtensions
@@ -26,13 +25,6 @@ namespace UIAutomation.BrowserExtensions
         internal override ElementBase FromPoint(int x, int y)
         {
             // 通过浏览器插件获取浏览器中元素信息
-            ProcessMessage processMessage = new ProcessMessage
-            {
-                Id = Guid.NewGuid().ToString(),
-                Command="FromPoint",
-                Position = new Position { X=x, Y= y }
-            };
-            ProcessMessage response = this.nativeMessageClient.Send(ChromeExtension.PIPE_NAME, processMessage);
             //this.Test();
             throw new NotImplementedException();
         }

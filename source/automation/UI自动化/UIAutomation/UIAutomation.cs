@@ -4,11 +4,14 @@ using FlaUI.Core.Conditions;
 using FlaUI.Core.Definitions;
 using FlaUI.UIA2;
 using FlaUI.UIA3;
+using GRPCCommon.Protobuf.Common;
+using GRPCCommon.Protobuf.NativeMessage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Drawing;
 using UIAutomation.BrowserExtensions;
 using UIAutomation.Elements;
+using UIAutomation.Exceptions;
 
 namespace UIAutomation
 {
@@ -36,6 +39,72 @@ namespace UIAutomation
             this.serviceProvider = serviceProvider;
         }
 
+        #region 新版
+
+        internal ElementBase 通过鼠标位置获取元素(int x, int y, AutomationType automationType = AutomationType.UIA2)
+        {
+            // 返回单一元素，桌面或者html
+            // 获取html元素的时候，创建一个元素的缓存，返回一个元素的临时id
+            this.logger.LogInformation("UIAutomation From Point");
+            AutomationBase automationBase = this.GetAutomation(automationType);
+
+            Point point = new Point(x, y);
+            AutomationElement automationElement = automationBase.FromPoint(point);
+
+            // 判断是否是浏览器中
+            BrowserExtension? browserExtension;
+            AutomationElement? document;
+            if (this.InBrowser(automationElement, out browserExtension, out document))
+            {
+                // 浏览器元素
+                FromPointRequest request = new FromPointRequest
+                {
+                    Position = new Position
+                    {
+                        X= x,
+                        Y=y
+                    }
+                };
+                SetRelativePosition(request.Position, document);
+                FromPointResponse response = browserExtension.FromPoint(request);
+                if (response.Success)
+                {
+                    return new HTMLElement(response.Attribute, browserExtension);
+                }
+                else
+                {
+                    throw new BrowserExtensionException(response.Error.Message);
+                }
+            }
+            else
+            {
+                // 桌面元素
+                return new WindowElement(automationElement);
+            }
+        }
+
+        internal void 设置元素高亮()
+        {
+            // 传入元素 调用元素的高亮方法
+            // 桌面元素，直接高亮
+            // html元素，调用通过临时id高亮元素的插件接口
+        }
+
+        internal void 查找元素()
+        {
+            // 传入完整的元素父子结构
+            // 桌面元素直接返回
+            // 浏览器元素，找到元素后，创建一个浏览器的临时id。返回浏览器元素
+            // 临时id是为了高亮。后续的click等操作使用的
+        }
+
+        internal void 拾取元素()
+        {
+            // 传入鼠标坐标。返回完整的元素识别列表
+            // 拾取元素运行速度会比鼠标悬浮慢。
+            // 通过传入的参数来判断返回单一元素，还是返回完整元素列表
+        }
+
         internal AutomationBase GetAutomation(AutomationType automationType = AutomationType.UIA2)
         {
             switch (automationType)
@@ -48,142 +117,104 @@ namespace UIAutomation
             throw new Exception($"uia类型错误:{automationType}");
         }
 
-        /// <summary>
-        /// 鼠标悬浮高亮
-        /// </summary>
-        /// <param name="request"></param>
-        internal GRPCCommon.HoverResponse Hover(GRPCCommon.HoverRequest request)
-        {
-            this.logger.LogInformation("Hover");
-            AutomationBase automationBase = this.GetAutomation((AutomationType)request.AutomationType);
+        ///// <summary>
+        ///// 鼠标悬浮高亮
+        ///// </summary>
+        ///// <param name="request"></param>
+        //internal GRPCCommon.Protobuf.HoverResponse Hover(GRPCCommon.Protobuf.HoverRequest request)
+        //{
+        //    this.logger.LogInformation("Hover");
+        //    AutomationBase automationBase = this.GetAutomation((AutomationType)request.AutomationType);
 
-            Point point = new Point(request.Position.X, request.Position.Y);
-            AutomationElement automationElement = automationBase.FromPoint(point);
+        //    Point point = new Point(request.Position.X, request.Position.Y);
+        //    AutomationElement automationElement = automationBase.FromPoint(point);
 
-            // 返回值
-            GRPCCommon.HoverResponse? response = null;
+        //    // 返回值
+        //    GRPCCommon.Protobuf.HoverResponse? response = null;
 
-            // 判断是否是浏览器中
-            BrowserExtension? browserExtension;
-            AutomationElement? document;
-            if (this.InBrowser(automationElement, out browserExtension, out document))
-            {
-                // 浏览器元素
-                SetRelativePosition(request.Position, document);
-                response = browserExtension.Hover(request);
-            }
-            else
-            {
-                // 桌面元素
-                // 返回的元素是桌面元素
-                response = new GRPCCommon.HoverResponse
-                {
-                    Id=request.Id,
-                    Command="hover",
-                    Success=true,
-                    Attribute = LoadAttributes(automationElement)  // 设置返回元素的属性值
-                };
+        //    // 判断是否是浏览器中
+        //    BrowserExtension? browserExtension;
+        //    AutomationElement? document;
+        //    if (this.InBrowser(automationElement, out browserExtension, out document))
+        //    {
+        //        // 浏览器元素
+        //        SetRelativePosition(request.Position, document);
+        //        response = browserExtension.Hover(request);
+        //    }
+        //    else
+        //    {
+        //        // 桌面元素
+        //        // 返回的元素是桌面元素
+        //        response = new GRPCCommon.Protobuf.HoverResponse
+        //        {
+        //            Id=request.Id,
+        //            Command="hover",
+        //            Success=true,
+        //            Attribute = LoadAttributes(automationElement)  // 设置返回元素的属性值
+        //        };
 
-                // 设置桌面元素的高亮
-                Color color = ColorTranslator.FromHtml(request.Highlight.Color);
-                TimeSpan duration = TimeSpan.FromMilliseconds(request.Highlight.Duration);
-                Task.Run(() =>
-                {
-                    automationElement.DrawHighlight(false, color, duration);
-                });
-            }
+        //        // 设置桌面元素的高亮
+        //        Color color = ColorTranslator.FromHtml(request.Highlight.Color);
+        //        TimeSpan duration = TimeSpan.FromMilliseconds(request.Highlight.Duration);
+        //        Task.Run(() =>
+        //        {
+        //            automationElement.DrawHighlight(false, color, duration);
+        //        });
+        //    }
 
+        //    return response;
+        //}
 
-            //// 把自动注入的类添加到处理列表里面
-            //IEnumerable<BrowserExtension> extensions = this.serviceProvider.GetServices<BrowserExtension>();
-            //foreach (BrowserExtension extension in extensions)
-            //{
-            //    // html部分的根容器
-            //    AutomationElement? document;
-            //    if (extension.InBrowserDocument(automationElement, out document) && document != null)
-            //    {
-            //        // 获取鼠标在html中的位置
-            //        //Point position = AutomationElementRelativePosition(request.Position.X, request.Position.Y, document);
-            //        //request.Position.X = position.X;
-            //        //request.Position.Y = position.Y;
-            //        SetRelativePosition(request.Position, document);
-            //        response = extension.Hover(request);
-            //        // 符合浏览器插件条件，执行完退出循环。不遍历其他浏览器条件了
-            //        break;
-            //    }
-            //}
+        ///// <summary>
+        ///// 鼠标拾取
+        ///// </summary>
+        //internal GRPCCommon.Protobuf.PickUpResponse PickUp(GRPCCommon.Protobuf.PickUpRequest request)
+        //{
+        //    this.logger.LogInformation("PickUp");
+        //    AutomationBase automationBase = this.GetAutomation((AutomationType)request.AutomationType);
 
-            //if (response == null)
-            //{
-            //    // 返回的元素是桌面元素
-            //    response = new GRPCCommon.HoverResponse
-            //    {
-            //        Id=request.Id,
-            //        Command="hover",
-            //        Success=true,
-            //        Attribute = LoadAttributes(automationElement)  // 设置返回元素的属性值
-            //    };
+        //    Point point = new Point(request.Position.X, request.Position.Y);
+        //    AutomationElement automationElement = automationBase.FromPoint(point);
 
-            //    // 设置桌面元素的高亮
-            //    Color color = ColorTranslator.FromHtml(request.Highlight.Color);
-            //    TimeSpan duration = TimeSpan.FromMilliseconds(request.Highlight.Duration);
-            //    Task.Run(() =>
-            //    {
-            //        automationElement.DrawHighlight(false, color, duration);
-            //    });
+        //    // 返回值
+        //    GRPCCommon.Protobuf.PickUpResponse? response = null;
 
-            //}
-            return response;
-        }
+        //    // 判断是否是浏览器中
+        //    BrowserExtension? browserExtension;
+        //    AutomationElement? document;
+        //    if (this.InBrowser(automationElement, out browserExtension, out document))
+        //    {
+        //        // 浏览器元素
+        //        SetRelativePosition(request.Position, document);
+        //        response = browserExtension.PickUp(request);
+        //    }
+        //    else
+        //    {
+        //        // 桌面元素
+        //        // 返回的元素是桌面元素
+        //        response = new GRPCCommon.Protobuf.PickUpResponse
+        //        {
+        //            Id=request.Id,
+        //            Command="hover",
+        //            Success=true,
+        //            Attribute = LoadAttributes(automationElement)  // 设置返回元素的属性值
+        //        };
 
-        /// <summary>
-        /// 鼠标拾取
-        /// </summary>
-        internal GRPCCommon.PickUpResponse PickUp(GRPCCommon.PickUpRequest request)
-        {
-            this.logger.LogInformation("PickUp");
-            AutomationBase automationBase = this.GetAutomation((AutomationType)request.AutomationType);
+        //    }
 
-            Point point = new Point(request.Position.X, request.Position.Y);
-            AutomationElement automationElement = automationBase.FromPoint(point);
+        //    return response;
+        //}
 
-            // 返回值
-            GRPCCommon.PickUpResponse? response = null;
+        ///// <summary>
+        ///// 高亮元素
+        ///// </summary>
+        //internal GRPCCommon.Protobuf.HighlightResponse Highlight(GRPCCommon.Protobuf.HighlightRequest request)
+        //{
+        //    // TODO 查找元素。需要做一个共同功能。
+        //    throw new NotImplementedException();
+        //}
 
-            // 判断是否是浏览器中
-            BrowserExtension? browserExtension;
-            AutomationElement? document;
-            if (this.InBrowser(automationElement, out browserExtension, out document))
-            {
-                // 浏览器元素
-                SetRelativePosition(request.Position, document);
-                response = browserExtension.PickUp(request);
-            }
-            else
-            {
-                // 桌面元素
-                // 返回的元素是桌面元素
-                response = new GRPCCommon.PickUpResponse
-                {
-                    Id=request.Id,
-                    Command="hover",
-                    Success=true,
-                    Attribute = LoadAttributes(automationElement)  // 设置返回元素的属性值
-                };
-
-            }
-
-            return response;
-        }
-
-        /// <summary>
-        /// 高亮元素
-        /// </summary>
-        internal GRPCCommon.HighlightResponse Highlight(GRPCCommon.HighlightRequest request)
-        {
-            // TODO 查找元素。需要做一个共同功能。
-            throw new NotImplementedException();
-        }
+        #endregion
 
         #region 旧版
 
@@ -309,6 +340,8 @@ namespace UIAutomation
 
         #endregion
 
+        #region 私有方法
+        
         /// <summary>
         /// 判断是否在浏览器中
         /// </summary>
@@ -341,7 +374,7 @@ namespace UIAutomation
         /// <summary>
         /// 
         /// </summary>
-        private static void SetRelativePosition(GRPCCommon.Position position, AutomationElement document)
+        private static void SetRelativePosition(Position position, AutomationElement document)
         {
             int newX = position.X- document.BoundingRectangle.Left;
             int newY = position.Y- document.BoundingRectangle.Top;
@@ -365,16 +398,18 @@ namespace UIAutomation
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
-        private static GRPCCommon.Attribute LoadAttributes(AutomationElement automationElement)
+        private static GRPCCommon.Protobuf.Common.Attribute LoadAttributes(AutomationElement automationElement)
         {
-            GRPCCommon.Attribute attribute = new GRPCCommon.Attribute();
+            GRPCCommon.Protobuf.Common.Attribute attribute = new();
             attribute.Values.Add("ClassName", $"{automationElement.ClassName}");
             attribute.Values.Add("ControlType", $"{automationElement.ControlType}");
             attribute.Values.Add("AutomationId", $"{automationElement.AutomationId}");
             attribute.Values.Add("Name", $"{automationElement.Name}");
-            attribute.ElementType = GRPCCommon.ElementType.Form;
+            attribute.ElementType = ElementType.Form;
             return attribute;
         }
+
+        #endregion
 
         /// <summary>
         /// 获取元素的属性

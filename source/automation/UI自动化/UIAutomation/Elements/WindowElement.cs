@@ -2,6 +2,7 @@
 using FlaUI.Core.AutomationElements;
 using FlaUI.Core.Conditions;
 using FlaUI.Core.Definitions;
+using GRPCCommon.Protobuf;
 using System.Drawing;
 using UIAutomation.Models;
 
@@ -69,8 +70,10 @@ namespace UIAutomation.Elements
             return result;
         }
 
-        internal override void Highlight(Color color, TimeSpan duration)
+        internal override void Highlight(GRPCCommon.Protobuf.Common.Highlight highlight)
         {
+            Color color = ColorTranslator.FromHtml(highlight.Color);
+            TimeSpan duration = TimeSpan.FromMilliseconds(highlight.Duration);
             Task.Run(() =>
             {
                 this.automationElement.DrawHighlight(false, color, duration);
@@ -182,6 +185,11 @@ namespace UIAutomation.Elements
                 result[index++] = new WindowElement(automationElement);
             }
             return result;
+        }
+
+        internal override void Click()
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

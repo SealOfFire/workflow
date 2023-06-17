@@ -1,5 +1,8 @@
 ﻿using FlaUI.Core;
+using GRPCCommon.Protobuf.Common;
+using GRPCCommon.Protobuf.UIAutomation;
 using Microsoft.Extensions.Logging;
+using System.Drawing;
 using UIAutomation.Elements;
 
 namespace UIAutomation.Managers
@@ -15,20 +18,43 @@ namespace UIAutomation.Managers
             this.uiAutomation = uiAutomation;
         }
 
-        public GRPCCommon.HoverResponse Hover(GRPCCommon.HoverRequest request)
+        public HoverResponse Hover(HoverRequest request)
         {
-            return this.uiAutomation.Hover(request);
+            try
+            {
+                // 查找元素
+                ElementBase elementBase = this.uiAutomation.通过鼠标位置获取元素(request.Position.X, request.Position.Y,
+                    (AutomationType)request.AutomationType);
+
+                // 高亮元素
+                Color color = ColorTranslator.FromHtml(request.Highlight.Color);
+                TimeSpan duration = TimeSpan.FromMilliseconds(request.Highlight.Duration);
+                elementBase.Highlight(request.Highlight);
+
+                // 
+                HoverResponse response = new HoverResponse { Success=true };
+                return response;
+            }
+            catch (Exception ex)
+            {
+                HoverResponse response = new HoverResponse
+                {
+                    Success=false,
+                    Error = new Error { Message= ex.Message }
+                };
+                return response;
+            }
         }
 
-        public GRPCCommon.PickUpResponse PickUp(GRPCCommon.PickUpRequest request)
-        {
-            return this.uiAutomation.PickUp(request);
-        }
+        //public GRPCCommon.Protobuf.PickUpResponse PickUp(GRPCCommon.Protobuf.PickUpRequest request)
+        //{
+        //    return this.uiAutomation.PickUp(request);
+        //}
 
-        public GRPCCommon.HighlightResponse Highlight(GRPCCommon.HighlightRequest request)
-        {
-            return this.uiAutomation.Highlight(request);
-        }
+        //public GRPCCommon.Protobuf.HighlightResponse Highlight(GRPCCommon.Protobuf.HighlightRequest request)
+        //{
+        //    return this.uiAutomation.Highlight(request);
+        //}
 
         /// <summary>
         /// 鼠标悬浮
@@ -45,7 +71,7 @@ namespace UIAutomation.Managers
         {
             //
             ElementBase elementBase = this.uiAutomation.FromPoint(x, y, automationType);
-            elementBase.Highlight(color, duration);
+            //elementBase.Highlight(color, duration);
 
         }
 
@@ -73,13 +99,7 @@ namespace UIAutomation.Managers
             TimeSpan duration,
             AutomationType automationType = AutomationType.UIA2)
         {
-            Dictionary<string, object>[] conditions = new Dictionary<string, object>[1];
-
-            ElementBase? elementBase = this.uiAutomation.FindElement(conditions, automationType);
-            if (elementBase != null)
-            {
-                elementBase.Highlight(color, duration);
-            }
+            throw new NotImplementedException();
         }
 
     }

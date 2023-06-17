@@ -47,6 +47,7 @@ namespace NativeMessageHost
             services.TryAddSingleton<NamedPipeBackgroundTask>();
             // Grpc服务注入
             services.TryAddScoped<UIAutomation>();
+            services.TryAddScoped<NativeMessageService>();
             services.TryAddSingleton<GrpcService>();
             //services.TryAddSingleton<ConsoleBackgroundService>();
             //services.TryAddSingleton<NamedPipeBackgroundService>();

@@ -1,6 +1,6 @@
 ﻿using Grpc.Core;
 using GRPCCommon.Protobuf.Common;
-using GRPCCommon.Protobuf.UIAutomation;
+using GRPCCommon.Protobuf.NativeMessage;
 using Microsoft.Extensions.Logging;
 using NativeMessageHost.Handles;
 using Newtonsoft.Json.Linq;
@@ -8,14 +8,14 @@ using System.Reflection;
 
 namespace NativeMessageHost
 {
-    internal class UIAutomation : GRPCCommon.Protobuf.UIAutomation.UIAutomation.UIAutomationBase
+    internal class NativeMessageService : NativeMessage.NativeMessageBase
     {
-        private readonly ILogger<UIAutomation> logger;
+        private readonly ILogger<NativeMessageService> logger;
         private readonly JsonDictionary jsonDictionary;
         private readonly HandleManager handleManager;
         private readonly ConsoleBackgroundTask consoleBackgroundTask;
 
-        public UIAutomation(ILogger<UIAutomation> logger,
+        public NativeMessageService(ILogger<NativeMessageService> logger,
             JsonDictionary jsonDictionary,
             HandleManager handleManager,
             ConsoleBackgroundTask consoleBackgroundTask)
@@ -127,20 +127,14 @@ namespace NativeMessageHost
             return response;
         }
 
-        /// <summary>
-        /// 鼠标高亮
-        /// </summary>
-        /// <param name="request"></param>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        public override Task<HoverResponse> Hover(HoverRequest request, ServerCallContext context)
+        public override Task<FromPointResponse> FromPoint(FromPointRequest request, ServerCallContext context)
         {
-            this.logger.LogWarning($"grpc Hover");
-            string command = "hover";
+            this.logger.LogWarning($"grpc FromPoint");
+            string command = "fromPoint";
 
             Error? error;
 
-            HoverResponse response = this.Common<HoverRequest, HoverResponse>(command, request, out error);
+            FromPointResponse response = this.Common<FromPointRequest, FromPointResponse>(command, request, out error);
             if (error !=null)
             {
                 response.Error = error;
@@ -149,52 +143,20 @@ namespace NativeMessageHost
             return Task.FromResult(response);
         }
 
-        //public override Task<PickUpResponse> PickUp(PickUpRequest request, ServerCallContext context)
-        //{
-        //    this.logger.LogWarning($"grpc PickUp");
-        //    string command = "pickUp";
+        public override Task<HighlightResponse> Highlight(HighlightRequest request, ServerCallContext context)
+        {
+            this.logger.LogWarning($"grpc Highlight");
+            string command = "highlight";
 
-        //    Error? error;
+            Error? error;
 
-        //    PickUpResponse response = this.Common<PickUpRequest, PickUpResponse>(command, request, out error);
-        //    if (error !=null)
-        //    {
-        //        response.Error = error;
-        //    }
+            HighlightResponse response = this.Common<HighlightRequest, HighlightResponse>(command, request, out error);
+            if (error !=null)
+            {
+                response.Error = error;
+            }
 
-        //    return Task.FromResult(response);
-        //}
-
-        //public override Task<FromPointResponse> FromPoint(FromPointRequest request, ServerCallContext context)
-        //{
-        //    this.logger.LogWarning($"grpc FromPoint");
-        //    string command = "fromPoint";
-
-        //    Error? error;
-
-        //    FromPointResponse response = this.Common<FromPointRequest, FromPointResponse>(command, request, out error);
-        //    if (error !=null)
-        //    {
-        //        response.Error = error;
-        //    }
-
-        //    return Task.FromResult(response);
-        //}
-
-        //public override Task<HighlightResponse> Highlight(HighlightRequest request, ServerCallContext context)
-        //{
-        //    this.logger.LogWarning($"grpc Highlight");
-        //    string command = "highlight";
-
-        //    Error? error;
-
-        //    HighlightResponse response = this.Common<HighlightRequest, HighlightResponse>(command, request, out error);
-        //    if (error !=null)
-        //    {
-        //        response.Error = error;
-        //    }
-
-        //    return Task.FromResult(response);
-        //}
+            return Task.FromResult(response);
+        }
     }
 }

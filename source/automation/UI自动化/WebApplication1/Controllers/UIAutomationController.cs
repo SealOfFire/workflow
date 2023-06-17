@@ -1,4 +1,5 @@
 ﻿using FlaUI.Core;
+using GRPCCommon.Protobuf.UIAutomation;
 using Microsoft.AspNetCore.Mvc;
 using System.Drawing;
 using UIAutomation.Managers;
@@ -30,32 +31,32 @@ namespace WebApplication1.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
-        public GRPCCommon.HoverResponse Hover(GRPCCommon.HoverRequest request)
+        public HoverResponse Hover(HoverRequest request)
         {
             return this.uiManager.Hover(request);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public GRPCCommon.PickUpResponse PickUp(GRPCCommon.PickUpRequest request)
-        {
-            return this.uiManager.PickUp(request);
-        }
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="request"></param>
+        ///// <returns></returns>
+        //[HttpPost]
+        //public PickUpResponse PickUp(.Protobu.PickUpRequest request)
+        //{
+        //    return this.uiManager.PickUp(request);
+        //}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public GRPCCommon.HighlightResponse Highlight(GRPCCommon.HighlightRequest request)
-        {
-            return this.uiManager.Highlight(request);
-        }
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="request"></param>
+        ///// <returns></returns>
+        //[HttpPost]
+        //public HighlightResponse Highlight(GRPCCommon.Protobuf.HighlightRequest request)
+        //{
+        //    return this.uiManager.Highlight(request);
+        //}
 
         /// <summary>
         /// 

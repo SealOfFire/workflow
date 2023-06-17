@@ -1,6 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using GRPCCommon.Protobuf.Common;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using ProcessCommunication;
 using System.Text;
 
 namespace NativeMessageHost.Handles
@@ -21,28 +21,28 @@ namespace NativeMessageHost.Handles
 
         //public abstract Task RunAsync(ProcessMessage processMessage);
 
-        public virtual byte[] ToConsole(ProcessMessage processMessage)
-        {
-            //JsonSerializerOptions options = new()
-            //{
-            //    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-            //};
-            //string json = JsonSerializer.Serialize(processMessage, options);
+        //public virtual byte[] ToConsole(ProcessMessage processMessage)
+        //{
+        //    //JsonSerializerOptions options = new()
+        //    //{
+        //    //    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        //    //};
+        //    //string json = JsonSerializer.Serialize(processMessage, options);
 
 
-            JsonSerializerSettings jSetting = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
-            String json = JsonConvert.SerializeObject(processMessage, jSetting);
+        //    JsonSerializerSettings jSetting = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
+        //    String json = JsonConvert.SerializeObject(processMessage, jSetting);
 
-            byte[] buffer = Encoding.UTF8.GetBytes(json);
+        //    byte[] buffer = Encoding.UTF8.GetBytes(json);
 
-            byte[] lengthBuffer = BitConverter.GetBytes(buffer.Length);
-            byte[] result = new byte[buffer.Length+lengthBuffer.Length];
+        //    byte[] lengthBuffer = BitConverter.GetBytes(buffer.Length);
+        //    byte[] result = new byte[buffer.Length+lengthBuffer.Length];
 
-            lengthBuffer.CopyTo(result, 0);
-            buffer.CopyTo(result, lengthBuffer.Length);
+        //    lengthBuffer.CopyTo(result, 0);
+        //    buffer.CopyTo(result, lengthBuffer.Length);
 
-            return result;
-        }
+        //    return result;
+        //}
 
         public virtual byte[] ToConsole<T>(T value)
         {
@@ -60,10 +60,10 @@ namespace NativeMessageHost.Handles
             return result;
         }
 
-        public virtual GRPCCommon.Response ToNamedPipe(JObject json)
+        public virtual Response ToNamedPipe(JObject json)
         {
             //GRPCCommon.Response? response = System.Text.Json.JsonSerializer.Deserialize<GRPCCommon.Response>(json);
-            GRPCCommon.Response? response = json.ToObject<GRPCCommon.Response>();
+            Response? response = json.ToObject<Response>();
             return response;
         }
 

@@ -1,36 +1,41 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="protos\ProcessCommunication.proto" />
-    <None Remove="protos\SelectorService.proto" />
-    <None Remove="protos\UIAutomationService.proto" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="protos\common.proto" />
+		<None Remove="protos\NativeMessageService.proto" />
+		<None Remove="protos\SelectorService.proto" />
+		<None Remove="protos\UIAutomationService.proto" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Protobuf Include="protos\UIAutomationService.proto" GrpcServices="Both" />
-  </ItemGroup>
+	<ItemGroup>
+		<Protobuf Include="protos\common.proto" ProtoRoot="protos" />
+		<Protobuf Include="protos\NativeMessageService.proto" ProtoRoot="protos" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Google.Protobuf" Version="3.23.2" />
-    <PackageReference Include="Grpc.Core" Version="2.46.6" />
-    <PackageReference Include="Grpc.Tools" Version="2.54.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+	<ItemGroup>
+		<Protobuf Include="protos\UIAutomationService.proto" GrpcServices="Both" ProtoRoot="protos" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Protobuf Include="protos\ProcessCommunication.proto" />
-    <Protobuf Include="protos\SelectorService.proto">
-      <Access>Public</Access>
-      <GrpcServices>Both</GrpcServices>
-    </Protobuf>
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Google.Protobuf" Version="3.23.2" />
+		<PackageReference Include="Grpc.Core" Version="2.46.6" />
+		<PackageReference Include="Grpc.Tools" Version="2.54.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Protobuf Include="protos\SelectorService.proto">
+			<Access>Public</Access>
+			<GrpcServices>Both</GrpcServices>
+		</Protobuf>
+	</ItemGroup>
 
 </Project>

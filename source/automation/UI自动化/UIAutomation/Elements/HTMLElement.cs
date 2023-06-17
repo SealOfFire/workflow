@@ -1,20 +1,35 @@
-﻿using System.Drawing;
+﻿using GRPCCommon.Protobuf.Common;
+using GRPCCommon.Protobuf.NativeMessage;
+using UIAutomation.BrowserExtensions;
+using UIAutomation.Exceptions;
 using UIAutomation.Models;
 
 namespace UIAutomation.Elements
 {
     internal class HTMLElement : ElementBase
     {
+        private BrowserExtension browserExtension;
+
         #region 属性
+
+        public string Tag { get; set; }
+
+        public string CacheId { get; set; }
 
         /// <summary>
         /// 属性列表
         /// </summary>
-        public Dictionary<string, string?> Attributes { get; set; } = new Dictionary<string, string?>();
+        public GRPCCommon.Protobuf.Common.Attribute Attribute { get; set; }
 
         #endregion
 
-        public HTMLElement() { }
+        public HTMLElement(GRPCCommon.Protobuf.Common.Attribute attribute, BrowserExtension browserExtension)
+        {
+            this.browserExtension = browserExtension;
+            this.Attribute = attribute;
+            this.Tag=attribute.Values["tag"];
+            this.CacheId=attribute.Values["cacheId"];
+        }
 
         #region 重写方法
 
@@ -23,12 +38,21 @@ namespace UIAutomation.Elements
             throw new NotImplementedException();
         }
 
-        internal override void Highlight(Color color, TimeSpan duration)
+        internal override void Highlight(Highlight highlight)
+        {
+            HighlightResponse response = this.browserExtension.Highlight(this.CacheId, highlight);
+            if (response.Success==false)
+            {
+                throw new BrowserExtensionException(response.Error.Message);
+            }
+        }
+
+        internal override ElementSelector ToElementSelector()
         {
             throw new NotImplementedException();
         }
 
-        internal override ElementSelector ToElementSelector()
+        internal override void Click()
         {
             throw new NotImplementedException();
         }

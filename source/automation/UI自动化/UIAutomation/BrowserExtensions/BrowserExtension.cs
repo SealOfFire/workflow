@@ -1,4 +1,6 @@
 ﻿using FlaUI.Core.AutomationElements;
+using GRPCCommon.Protobuf.Common;
+using GRPCCommon.Protobuf.NativeMessage;
 using Microsoft.Extensions.Logging;
 using System.IO.Pipes;
 using UIAutomation.Elements;
@@ -32,44 +34,89 @@ namespace UIAutomation.BrowserExtensions
         internal abstract ElementBase FromPoint(int x, int y);
 
         /// <summary>
-        /// 高亮元素
+        /// 通过鼠标位置获取元素
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        internal virtual GRPCCommon.HoverResponse Hover(GRPCCommon.HoverRequest request)
+        internal virtual FromPointResponse FromPoint(FromPointRequest request)
         {
             try
             {
-                return this.grpcNativeMessageClient.Hover(request);
+                return this.grpcNativeMessageClient.FromPoint(request);
             }
             catch (Grpc.Core.RpcException e)
             {
-                GRPCCommon.HoverResponse response = new GRPCCommon.HoverResponse();
+                FromPointResponse response = new FromPointResponse();
                 response.Success=false;
-                response.Error = new GRPCCommon.Error { Message=e.Message };
+                response.Error = new Error { Message=e.Message };
                 return response;
             }
         }
 
         /// <summary>
-        /// 选取元素
+        /// 高亮
         /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        internal virtual GRPCCommon.PickUpResponse PickUp(GRPCCommon.PickUpRequest request)
+        /// <param name="cacheId"></param>
+        internal virtual HighlightResponse Highlight(string cacheId,
+            Highlight highlight)
         {
             try
             {
-                return this.grpcNativeMessageClient.PickUp(request);
+                HighlightRequest request = new HighlightRequest
+                {
+                    CacheId=cacheId,
+                    Highlight =highlight,
+                };
+                return this.grpcNativeMessageClient.Highlight(request);
             }
             catch (Grpc.Core.RpcException e)
             {
-                GRPCCommon.PickUpResponse response = new GRPCCommon.PickUpResponse();
+                HighlightResponse response = new HighlightResponse();
                 response.Success=false;
-                response.Error = new GRPCCommon.Error { Message=e.Message };
+                response.Error = new Error { Message=e.Message };
                 return response;
             }
         }
+
+        ///// <summary>
+        ///// 高亮元素
+        ///// </summary>
+        ///// <param name="request"></param>
+        ///// <returns></returns>
+        //internal virtual GRPCCommon.Protobuf.HoverResponse Hover(GRPCCommon.Protobuf.HoverRequest request)
+        //{
+        //    try
+        //    {
+        //        return this.grpcNativeMessageClient.Hover(request);
+        //    }
+        //    catch (Grpc.Core.RpcException e)
+        //    {
+        //        GRPCCommon.Protobuf.HoverResponse response = new GRPCCommon.Protobuf.HoverResponse();
+        //        response.Success=false;
+        //        response.Error = new Error { Message=e.Message };
+        //        return response;
+        //    }
+        //}
+
+        ///// <summary>
+        ///// 选取元素
+        ///// </summary>
+        ///// <param name="request"></param>
+        ///// <returns></returns>
+        //internal virtual GRPCCommon.Protobuf.PickUpResponse PickUp(GRPCCommon.Protobuf.PickUpRequest request)
+        //{
+        //    try
+        //    {
+        //        return this.grpcNativeMessageClient.PickUp(request);
+        //    }
+        //    catch (Grpc.Core.RpcException e)
+        //    {
+        //        GRPCCommon.Protobuf.PickUpResponse response = new GRPCCommon.Protobuf.PickUpResponse();
+        //        response.Success=false;
+        //        response.Error = new Error { Message=e.Message };
+        //        return response;
+        //    }
+        //}
 
         internal abstract ElementBase[] FindElement();
 

@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using GRPCCommon.Protobuf.Common;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
-using ProcessCommunication;
 
 namespace NativeMessageHost.Handles
 {
@@ -35,14 +35,14 @@ namespace NativeMessageHost.Handles
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public bool HasHandle(string command, out GRPCCommon.Error? error)
+        public bool HasHandle(string command, out Error? error)
         {
             error =null;
             if (this.handles.Keys.Contains(command))
             {
                 return true;
             }
-            error = new GRPCCommon.Error { Message=$"浏览器插件native中没有注册处理[{command}]的类" };
+            error = new Error { Message=$"浏览器插件native中没有注册处理[{command}]的类" };
             return false;
         }
 
@@ -52,7 +52,7 @@ namespace NativeMessageHost.Handles
         /// <param name="processMessage"></param>
         /// <returns></returns>
         /// <exception cref="MessageException"></exception>
-        public byte[] ToConsole(GRPCCommon.Request request)
+        public byte[] ToConsole(Request request)
         {
             if (this.handles.Keys.Contains(request.Command))
             {
@@ -73,7 +73,7 @@ namespace NativeMessageHost.Handles
         /// <param name="value"></param>
         /// <param name="error"></param>
         /// <returns></returns>
-        public byte[] ToConsole<T>(string command, T value, out GRPCCommon.Error? error)
+        public byte[] ToConsole<T>(string command, T value, out Error? error)
         {
             error=null;
             if (this.handles.Keys.Contains(command))
@@ -82,7 +82,7 @@ namespace NativeMessageHost.Handles
             }
             else
             {
-                error = new GRPCCommon.Error { Message =  $"处理ToConsole[{command}]的handle不存在" };
+                error = new Error { Message =  $"处理ToConsole[{command}]的handle不存在" };
                 this.logger.LogError(error.Message);
                 return new byte[0];
             }
@@ -110,13 +110,13 @@ namespace NativeMessageHost.Handles
         //    }
         //}
 
-        public T? ToNamedPip<T>(JObject value, out GRPCCommon.Error? error) where T : class
+        public T? ToNamedPip<T>(JObject value, out Error? error) where T : class
         {
             error=null;
             string? command = value.GetValue("Command")?.Value<string>();
             if (string.IsNullOrEmpty(command))
             {
-                error= new GRPCCommon.Error { Message ="处理ToNamedPip属性值[Command]不存在" };
+                error= new Error { Message ="处理ToNamedPip属性值[Command]不存在" };
                 this.logger.LogError(error.Message);
                 return null;
             }
@@ -128,7 +128,7 @@ namespace NativeMessageHost.Handles
                 }
                 else
                 {
-                    error= new GRPCCommon.Error { Message =$"处理ToNamedPip[{command}]的handle不存在" };
+                    error= new Error { Message =$"处理ToNamedPip[{command}]的handle不存在" };
                     this.logger.LogError(error.Message);
                     return null;
                 }
