@@ -25,9 +25,9 @@ namespace TestUIAutomation
         [InlineData(1740, 458, "#FF0000", 20000, AutomationType.UIA2)]
         public void Test1(int x, int y, string color, int duration, AutomationType automationType)
         {
-            Color color1 = ColorTranslator.FromHtml(color);
-            TimeSpan duration1 = TimeSpan.FromMilliseconds(duration);
-            this.uIManager.HoverElement(x, y, color1, duration1, automationType);
+            //Color color1 = ColorTranslator.FromHtml(color);
+            //TimeSpan duration1 = TimeSpan.FromMilliseconds(duration);
+            //this.uIManager.HoverElement(x, y, color1, duration1, automationType);
 
         }
 

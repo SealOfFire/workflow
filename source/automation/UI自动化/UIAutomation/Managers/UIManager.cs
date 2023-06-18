@@ -23,7 +23,7 @@ namespace UIAutomation.Managers
             try
             {
                 // 查找元素
-                ElementBase elementBase = this.uiAutomation.通过鼠标位置获取元素(request.Position.X, request.Position.Y,
+                ElementBase elementBase = this.uiAutomation.FromPoint(request.Position.X, request.Position.Y, 1,
                     (AutomationType)request.AutomationType);
 
                 // 高亮元素
@@ -32,7 +32,11 @@ namespace UIAutomation.Managers
                 elementBase.Highlight(request.Highlight);
 
                 // 
-                HoverResponse response = new HoverResponse { Success=true };
+                HoverResponse response = new HoverResponse
+                {
+                    Success=true,
+                    Attribute = elementBase.Attribute,
+                };
                 return response;
             }
             catch (Exception ex)
@@ -46,60 +50,59 @@ namespace UIAutomation.Managers
             }
         }
 
-        //public GRPCCommon.Protobuf.PickUpResponse PickUp(GRPCCommon.Protobuf.PickUpRequest request)
-        //{
-        //    return this.uiAutomation.PickUp(request);
-        //}
-
-        //public GRPCCommon.Protobuf.HighlightResponse Highlight(GRPCCommon.Protobuf.HighlightRequest request)
-        //{
-        //    return this.uiAutomation.Highlight(request);
-        //}
-
-        /// <summary>
-        /// 鼠标悬浮
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="color"></param>
-        /// <param name="duration"></param>
-        /// <param name="automationType"></param>
-        public void HoverElement(int x, int y,
-            System.Drawing.Color color,
-            TimeSpan duration,
-            AutomationType automationType = AutomationType.UIA2)
+        public PickUpResponse PickUp(PickUpRequest request)
         {
-            //
-            ElementBase elementBase = this.uiAutomation.FromPoint(x, y, automationType);
-            //elementBase.Highlight(color, duration);
+            try
+            {
+                ElementBase elementBase = this.uiAutomation.FromPoint(request.Position.X, request.Position.Y, -1,
+                   (AutomationType)request.AutomationType);
 
+                // 
+                PickUpResponse response = new PickUpResponse
+                {
+                    Success=true,
+                    Attribute = elementBase.Attribute,
+                };
+                return response;
+            }
+            catch (Exception ex)
+            {
+                PickUpResponse response = new PickUpResponse
+                {
+                    Success=false,
+                    Error = new Error { Message= ex.Message }
+                };
+                return response;
+            }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="automationType"></param>
-        public Models.ElementSelector PickUpElement(int x, int y, AutomationType automationType = AutomationType.UIA2)
+        public HighlightResponse Highlight(HighlightRequest request)
         {
-            ElementBase elementBase = this.uiAutomation.FromPoint(x, y, automationType);
-            return elementBase.ToElementSelector();
-        }
+            try
+            {
+                ElementBase elementBase = this.uiAutomation.Find(request.Attribute, (AutomationType)request.AutomationType);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="conditions"></param>
-        /// <param name="color"></param>
-        /// <param name="duration"></param>
-        /// <param name="automationType"></param>
-        public void Highlight(Models.ElementSelector elementSelector,
-            System.Drawing.Color color,
-            TimeSpan duration,
-            AutomationType automationType = AutomationType.UIA2)
-        {
-            throw new NotImplementedException();
+                // 高亮元素
+                Color color = ColorTranslator.FromHtml(request.Highlight.Color);
+                TimeSpan duration = TimeSpan.FromMilliseconds(request.Highlight.Duration);
+                elementBase.Highlight(request.Highlight);
+
+                // 
+                HighlightResponse response = new HighlightResponse
+                {
+                    Success=true,
+                };
+                return response;
+            }
+            catch (Exception ex)
+            {
+                HighlightResponse response = new HighlightResponse
+                {
+                    Success=false,
+                    Error = new Error { Message= ex.Message }
+                };
+                return response;
+            }
         }
 
     }

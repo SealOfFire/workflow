@@ -9,26 +9,25 @@ namespace UIAutomation.Elements
     internal class HTMLElement : ElementBase
     {
         private BrowserExtension browserExtension;
-
+        private GRPCCommon.Protobuf.Common.Attribute attribute;
         #region 属性
 
         public string Tag { get; set; }
 
         public string CacheId { get; set; }
-
-        /// <summary>
-        /// 属性列表
-        /// </summary>
-        public GRPCCommon.Protobuf.Common.Attribute Attribute { get; set; }
+        internal override GRPCCommon.Protobuf.Common.Attribute Attribute
+        {
+            get => this.attribute;
+        }
 
         #endregion
 
         public HTMLElement(GRPCCommon.Protobuf.Common.Attribute attribute, BrowserExtension browserExtension)
         {
             this.browserExtension = browserExtension;
-            this.Attribute = attribute;
+            this.attribute = attribute;
             this.Tag=attribute.Values["tag"];
-            this.CacheId=attribute.Values["cacheId"];
+            this.CacheId = attribute.CacheId;
         }
 
         #region 重写方法

@@ -19,14 +19,18 @@ service NativeMessage {
 
 // 
 message FromPointRequest{
-		string id=1; // guid格式的id
 
-	string command = 2; // 命令
+	// guid格式的id
+	string id=1;
+
+	// 命令
+	string command = 2;
 
 	// UIA模式
 	common.FlaUIType automationType=3;
 
-	int32 millisecondsTimeout  = 4; // 本条命令的执行超时时间（单位：毫秒）
+	// 本条命令的执行超时时间（单位：毫秒）
+	int32 millisecondsTimeout  = 4;
 
 	// 鼠标位置
 	optional common.Position position=5;

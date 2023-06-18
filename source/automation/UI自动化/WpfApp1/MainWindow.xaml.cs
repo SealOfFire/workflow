@@ -1,5 +1,7 @@
 ﻿using Gma.System.MouseKeyHook;
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using GRPCCommon.Protobuf.Common;
 using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
@@ -112,38 +114,29 @@ namespace WpfApp1
             }
         }
 
-        private async Task HoverElement(int x, int y, string color, int duration, int automationType)
+        private async Task PickUp(int x, int y, int automationType)
         {
-            var request = new { X = x, Y = y, Color = color, Duration = duration, AutomationType = automationType };
-            HttpResponseMessage response = await httpClient.PostAsJsonAsync("UIAutomation/HoverElement", request);
-            //response.EnsureSuccessStatusCode();
+            GRPCCommon.Protobuf.UIAutomation.PickUpRequest request = new GRPCCommon.Protobuf.UIAutomation.PickUpRequest
+            {
+                Position = new Position { X=x, Y=y }
+            };
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync("UIAutomation/PickUp", request);
             if (response.IsSuccessStatusCode)
             {
                 //product = await response.Content.ReadAsAsync<Product>();
             }
         }
 
-        private async Task Highlight()
+        private async Task Highlight(GRPCCommon.Protobuf.Common.Attribute attribute)
         {
-            //var request = new { X = x, Y = y, Color = color, Duration = duration, AutomationType = automationType };
-            HttpResponseMessage response = await httpClient.PostAsync("UIAutomation/Highlight", null);
-            //response.EnsureSuccessStatusCode();
+            GRPCCommon.Protobuf.UIAutomation.HighlightRequest request = new GRPCCommon.Protobuf.UIAutomation.HighlightRequest
+            {
+                Attribute = attribute,
+            };
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync("UIAutomation/Highlight", request);
             if (response.IsSuccessStatusCode)
             {
-                var selector = await response.Content.ReadAsStringAsync();
-                this.selector.Text = selector;
-            }
-        }
-
-        private async Task PickUpElement(int x, int y, int automationType)
-        {
-            var request = new { X = x, Y = y, AutomationType = automationType, Color = "", Duration = 0 };
-            HttpResponseMessage response = await httpClient.PostAsJsonAsync("UIAutomation/PickUpElement", request);
-            //response.EnsureSuccessStatusCode();
-            if (response.IsSuccessStatusCode)
-            {
-                var selector = await response.Content.ReadAsStringAsync();
-                this.selector.Text = selector;
+                //product = await response.Content.ReadAsAsync<Product>();
             }
         }
 
@@ -171,7 +164,7 @@ namespace WpfApp1
                 Element? element = JsonConvert.DeserializeObject<Element>(this.selector.Text);
                 if (element != null)
                 {
-                    await this.Highlight();
+                    await this.Highlight(new GRPCCommon.Protobuf.Common.Attribute());
 
                     //SelectorRequest request = new SelectorRequest();
                     //request.Selector = element;
@@ -334,7 +327,8 @@ namespace WpfApp1
             {
                 this.StopMouseSampling();
                 // 安装ctrl+鼠标左键拾取
-                await this.PickUpElement(this.x, this.y, this.uiaTypa);
+                //await this.PickUpElement(this.x, this.y, this.uiaTypa);
+                await this.PickUp(this.x, this.y, this.uiaTypa);
 
                 //UIAutomationServer.SelectorReponse reponse = this.selectorClient.PickUpElement(new HoverRequest
                 //{

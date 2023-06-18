@@ -12,16 +12,10 @@ service UIAutomation {
 	rpc Hover (HoverRequest) returns (HoverResponse);
 
 	// 拾取元素
-	//rpc PickUp (PickUpRequest) returns (PickUpResponse);
-
-	// 通过鼠标位置获取元素
-	//rpc FromPoint(FromPointRequest) returns (FromPointResponse);
-
-	// 查找元素,找到后高亮
-	//rpc Find(common.Request) returns (common.Response);
+	rpc PickUp (PickUpRequest) returns (PickUpResponse);
 
 	// 高亮
-	//rpc Highlight(HighlightRequest) returns (HighlightResponse);
+	rpc Highlight(HighlightRequest) returns (HighlightResponse);
 
 }
 
@@ -30,7 +24,8 @@ message HoverRequest{
 	// guid格式的id
 	string id=1;
 
-	string command = 2; // 命令
+	// 命令
+	string command = 2;
 
 	// UIA模式
 	common.FlaUIType automationType=3;
@@ -62,7 +57,7 @@ message HoverResponse{
 	// 错误消息
 	optional common.Error error=999;
 }
-/*
+
 // 元素拾取
 message PickUpRequest{
 	// guid格式的id
@@ -108,11 +103,15 @@ message HighlightRequest{
 	 // 本条命令的执行超时时间（单位：毫秒）
 	int32 millisecondsTimeout=3;
 
-	// 高亮的参数
-	common.Highlight highlight=4;
+		// UIA模式
+	common.FlaUIType automationType=4;
 
-	// 缓存id
-	string cacheId=5;
+	// 查找元素
+	optional common.Attribute attribute=5;
+
+	// 高亮的参数
+	common.Highlight highlight=6;
+
 }
 
 // 高亮
@@ -128,40 +127,3 @@ message HighlightResponse{
 	// 错误消息
 	optional common.Error error=999;
 }
-
-// 
-message FromPointRequest{
-		string id=1; // guid格式的id
-
-	string command = 2; // 命令
-
-	// UIA模式
-	common.FlaUIType automationType=3;
-
-	int32 millisecondsTimeout  = 4; // 本条命令的执行超时时间（单位：毫秒）
-
-	// 鼠标位置
-	optional common.Position position=5;
-
-	// 深度 根据深度返回父级的层级，深度小于0时返回完整的父级
-	int32 parentDepth=6;
-}
-
-//
-message FromPointResponse{
-	// guid格式的id
-	string id=1;
-
-	// 执行是否成功
-	bool success =2;
-
-	 // 命令
-	string command = 3;
-
-	// 属性列表
-	optional common.Attribute attribute=4;
-
-	// 错误消息
-	optional common.Error error=999;
-}
-*/

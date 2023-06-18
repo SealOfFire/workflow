@@ -2,7 +2,6 @@
 using FlaUI.Core.AutomationElements;
 using FlaUI.Core.Conditions;
 using FlaUI.Core.Definitions;
-using GRPCCommon.Protobuf;
 using System.Drawing;
 using UIAutomation.Models;
 
@@ -47,6 +46,8 @@ namespace UIAutomation.Elements
         {
             get { return this.boundingRectangle; }
         }
+
+        internal override GRPCCommon.Protobuf.Common.Attribute Attribute => throw new NotImplementedException();
 
         #endregion
 

@@ -29,13 +29,14 @@ commands["fromPoint"] = (data) => {
 
         const cacheId = "temp";
 
+        /*
         // 返回元素
         data.Attribute = {
             ElementType: 2, // 2是html元素
             Values:
             {
                 tag: element.tagName,
-                innerHTML: element.innerHTML,
+                //innerHTML: element.innerHTML,
                 cacheId: cacheId,
             },
             Children: []
@@ -45,10 +46,52 @@ commands["fromPoint"] = (data) => {
             var attr = element.attributes[i];
             data.Attribute.Values[attr.name] = attr.value
         }
+        */
+        // 遍历父元素
+        parentElement = element;
+        allAttr = null;
+        let index = 0;
+        while (index < data.ParentDepth || data.ParentDepth < 0) {
+            index++;
+            console.log("parentElement", parentElement);
+            attribute = {
+                ElementType: 2, // 2是html元素
+                Values:
+                {
+                    tag: parentElement.tagName,
+                    /*innerHTML: parentElement.innerHTML*/
+                },
+                Parent: null,
+                Children: []
+            }
+            for (let i = 0; i < parentElement.attributes.length; i++) {
+                var attr = parentElement.attributes[i];
+                attribute.Values[attr.name] = attr.value
+            }
+
+            if (allAttr == null) {
+                allAttr = attribute
+            }
+            else {
+                attribute.Children.push(allAttr);
+                allAttr = attribute;
+            }
+
+            console.log("parentElement", allAttr);
+            // 没有父元素的时候返回
+            //console.log("parentElement", element.parentNode.tagName);
+            if (parentElement.parentNode.tagName === "BODY") {
+                break;
+            }
+
+            parentElement = parentElement.parentNode;
+        }
+
 
         // 元素添加到缓存中
         elementCache[cacheId] = element;
-
+        allAttr.CacheId = cacheId;
+        data.Attribute = allAttr;
         data.Success = true;
 
     }

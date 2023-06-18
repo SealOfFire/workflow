@@ -7,8 +7,10 @@ namespace UIAutomation.Elements
     {
         #region 属性
 
-        public ElementBase? Parent { get; set; }
-        public ElementBase[]? Children { get; set; }
+        internal ElementBase? Parent { get; set; }
+        internal ElementBase[]? Children { get; set; }
+
+        internal abstract GRPCCommon.Protobuf.Common.Attribute Attribute { get; }
 
         #endregion
 
@@ -40,5 +42,6 @@ namespace UIAutomation.Elements
         /// 转换成元素选择器
         /// </summary>
         internal abstract ElementSelector ToElementSelector();
+
     }
 }
