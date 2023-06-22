@@ -65,7 +65,7 @@ commands["fromPoint"] = (data) => {
             }
 
             if (parentElement.id != undefined) {
-                attribute.name = parentElement.id;
+                attribute.id = parentElement.id;
             }
 
             if (parentElement.name != undefined) {
