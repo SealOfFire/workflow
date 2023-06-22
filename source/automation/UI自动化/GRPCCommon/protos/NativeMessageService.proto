@@ -15,6 +15,9 @@ service NativeMessage {
 
 	// 高亮
 	rpc Highlight(HighlightRequest) returns (HighlightResponse);
+
+	// 通过元素属性查找元素
+	rpc Find(FindRequest) returns(FindResponse);
 }
 
 // 
@@ -83,6 +86,39 @@ message HighlightResponse{
 
 	// 执行是否成功
 	bool success = 3;
+
+	// 错误消息
+	optional common.Error error=999;
+}
+
+// 查找元素
+message FindRequest{
+		// guid格式的id
+	string id=1;
+
+	// 命令
+	string command = 2;
+
+	// 本条命令的执行超时时间（单位：毫秒）
+	int32 millisecondsTimeout  = 3;
+
+	// 元素属性
+	optional common.Attribute attribute=4;
+}
+
+// 查找元素
+message FindResponse{
+		// guid格式的id
+	string id=1;
+
+	// 执行是否成功
+	bool success =2;
+
+	 // 命令
+	string command = 3;
+
+	// 属性列表
+	optional common.Attribute attribute=4;
 
 	// 错误消息
 	optional common.Error error=999;

@@ -7,6 +7,7 @@ commands["fromPoint"] = (data) => {
     // 颜色 data.Highlight.Color
     // 持续时间 data.Highlight.Duration
     const element = document.elementFromPoint(data.Position.X, data.Position.Y);
+    //const element = document.elementsFromPoint(data.Position.X, data.Position.Y); // todo
     if (element == null) {
         // 没找到元素
         data.Success = false;
@@ -56,19 +57,43 @@ commands["fromPoint"] = (data) => {
             console.log("parentElement", parentElement);
             attribute = {
                 ElementType: 2, // 2是html元素
-                Values:
-                {
-                    tag: parentElement.tagName,
-                    /*innerHTML: parentElement.innerHTML*/
-                },
+                CacheId: cacheId,
+                tag: parentElement.tagName,
+                Values: {},
                 Parent: null,
                 Children: []
             }
+
+            if (parentElement.id != undefined) {
+                attribute.name = parentElement.id;
+            }
+
+            if (parentElement.name != undefined) {
+                attribute.name = parentElement.name;
+            }
+
+            if (parentElement.className != undefined) {
+                attribute.className = parentElement.className;
+            }
+
+            if (parentElement.href != undefined) {
+                attribute.title = parentElement.title;
+            }
+
+            if (parentElement.href != undefined) {
+                attribute.href = parentElement.href;
+            }
+
+            if (parentElement.type != undefined) {
+                attribute.type = parentElement.type;
+            }
+
             for (let i = 0; i < parentElement.attributes.length; i++) {
                 var attr = parentElement.attributes[i];
                 attribute.Values[attr.name] = attr.value
             }
 
+            console.log("parentElement", 8);
             if (allAttr == null) {
                 allAttr = attribute
             }

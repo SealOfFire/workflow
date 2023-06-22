@@ -5,12 +5,17 @@ namespace UIAutomation.Elements
 {
     public abstract class ElementBase
     {
+        /// <summary>
+        /// 元素属性列表
+        /// </summary>
+        protected GRPCCommon.Protobuf.Common.Attribute attribute;
+
         #region 属性
 
         internal ElementBase? Parent { get; set; }
         internal ElementBase[]? Children { get; set; }
 
-        internal abstract GRPCCommon.Protobuf.Common.Attribute Attribute { get; }
+        internal GRPCCommon.Protobuf.Common.Attribute Attribute { get { return this.attribute; } }
 
         #endregion
 
@@ -24,7 +29,7 @@ namespace UIAutomation.Elements
         /// </summary>
         /// <param name="condition"></param>
         /// <returns></returns>
-        internal abstract ElementBase[] FindAllChildren(Dictionary<string, object> condition);
+        //internal abstract ElementBase[] FindAllChildren(Dictionary<string, object> condition);
 
         /// <summary>
         /// 高亮当前元素

@@ -9,16 +9,12 @@ namespace UIAutomation.Elements
     internal class HTMLElement : ElementBase
     {
         private BrowserExtension browserExtension;
-        private GRPCCommon.Protobuf.Common.Attribute attribute;
+
         #region 属性
 
         public string Tag { get; set; }
 
         public string CacheId { get; set; }
-        internal override GRPCCommon.Protobuf.Common.Attribute Attribute
-        {
-            get => this.attribute;
-        }
 
         #endregion
 
@@ -26,16 +22,11 @@ namespace UIAutomation.Elements
         {
             this.browserExtension = browserExtension;
             this.attribute = attribute;
-            this.Tag=attribute.Values["tag"];
+            this.Tag=attribute.Tag;
             this.CacheId = attribute.CacheId;
         }
 
         #region 重写方法
-
-        internal override ElementBase[] FindAllChildren(Dictionary<string, object> condition)
-        {
-            throw new NotImplementedException();
-        }
 
         internal override void Highlight(Highlight highlight)
         {

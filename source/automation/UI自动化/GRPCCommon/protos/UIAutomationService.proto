@@ -17,6 +17,9 @@ service UIAutomation {
 	// 高亮
 	rpc Highlight(HighlightRequest) returns (HighlightResponse);
 
+	// 单击 TODO 参数不对
+	rpc Click (HighlightRequest) returns (HighlightResponse);
+
 }
 
 // 鼠标悬浮高亮的请求
@@ -111,6 +114,9 @@ message HighlightRequest{
 
 	// 高亮的参数
 	common.Highlight highlight=6;
+
+	// 查找html元素时，使用的浏览器
+	common.BrowserType browserType=7;
 
 }
 

@@ -3,6 +3,7 @@ using FlaUI.Core.AutomationElements;
 using FlaUI.Core.Conditions;
 using FlaUI.Core.Definitions;
 using System.Drawing;
+using System.Windows;
 using UIAutomation.Models;
 
 namespace UIAutomation.Elements
@@ -29,7 +30,7 @@ namespace UIAutomation.Elements
 
         public ControlType ControlType
         {
-            get { return this.ControlType; }
+            get { return this.controlType; }
         }
 
         public string AutomationId
@@ -47,29 +48,37 @@ namespace UIAutomation.Elements
             get { return this.boundingRectangle; }
         }
 
-        internal override GRPCCommon.Protobuf.Common.Attribute Attribute => throw new NotImplementedException();
-
         #endregion
 
         #region 构造函数
 
-        public WindowElement(AutomationElement automationElement)
+        public WindowElement(AutomationElement automationElement,
+             int parentDepth = 1)
         {
             this.automationElement = automationElement;
+            this.attribute = new GRPCCommon.Protobuf.Common.Attribute();
+
+            automationElement.Properties.Name.TryGetValue(out this.name);
+            automationElement.Properties.ClassName.TryGetValue(out this.className);
+            automationElement.Properties.ControlType.TryGetValue(out this.controlType);
+            automationElement.Properties.AutomationId.TryGetValue(out this.automationId);
+
+            this.attribute = this.LoadParent(automationElement, this.attribute, parentDepth);
+
+            //if (parentDepth>0)
+            //{
+            //    // 递归加载父级
+            //    this.attribute = this.LoadParent(automationElement, this.attribute, parentDepth);
+            //}
+            //else
+            //{
+            //    this.attribute = LoadAttribute(automationElement);
+            //}
         }
 
         #endregion
 
         #region 重写方法
-
-        internal override ElementBase[] FindAllChildren(Dictionary<string, object> condition)
-        {
-            ConditionBase conditionBase = ConvertConditionBase(condition, this.automationElement.Automation.ConditionFactory);
-            AutomationElement[] automationElements = this.automationElement.FindAll(TreeScope.Children, conditionBase);
-            //ElementBase[] result = new ElementBase[automationElements.Length];
-            ElementBase[] result = WindowElement.Create(automationElements);
-            return result;
-        }
 
         internal override void Highlight(GRPCCommon.Protobuf.Common.Highlight highlight)
         {
@@ -87,7 +96,67 @@ namespace UIAutomation.Elements
             throw new NotImplementedException();
         }
 
+        internal override void Click()
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="automationElement"></param>
+        /// <returns></returns>
+        internal GRPCCommon.Protobuf.Common.Attribute LoadParent(AutomationElement automationElement,
+             GRPCCommon.Protobuf.Common.Attribute attributeParent,
+            int parentDepth = 1)
+        {
+            GRPCCommon.Protobuf.Common.Attribute attribute = LoadAttribute(automationElement);
+
+            int index = 1;
+            while (automationElement.Parent !=null && (index< parentDepth || parentDepth<0))
+            {
+                automationElement = automationElement.Parent;
+                GRPCCommon.Protobuf.Common.Attribute parentAttr = LoadAttribute(automationElement);
+                parentAttr.Children.Add(attribute);
+                attribute = parentAttr;
+                index++;
+            }
+
+            return attribute;
+        }
+
+        internal GRPCCommon.Protobuf.Common.Attribute LoadAttribute(AutomationElement automationElement)
+        {
+            GRPCCommon.Protobuf.Common.Attribute attribute = new GRPCCommon.Protobuf.Common.Attribute();
+            attribute.ElementType = GRPCCommon.Protobuf.Common.ElementType.Form;
+
+            string name = string.Empty;
+            if (automationElement.Properties.Name.TryGetValue(out name))
+            {
+                attribute.Name = name;
+            }
+
+            string className = string.Empty;
+            if (automationElement.Properties.ClassName.TryGetValue(out className))
+            {
+                attribute.ClassName = className;
+            }
+
+            ControlType controlType = ControlType.Unknown;
+            if (automationElement.Properties.ControlType.TryGetValue(out controlType))
+            {
+                attribute.ControlType = (int)controlType;
+            }
+
+            string automationId = string.Empty;
+            if (automationElement.Properties.AutomationId.TryGetValue(out automationId))
+            {
+                attribute.AutomationId = automationId;
+            }
+            return attribute;
+        }
 
         internal void LoadDetails()
         {
@@ -186,11 +255,6 @@ namespace UIAutomation.Elements
                 result[index++] = new WindowElement(automationElement);
             }
             return result;
-        }
-
-        internal override void Click()
-        {
-            throw new NotImplementedException();
         }
 
         #endregion

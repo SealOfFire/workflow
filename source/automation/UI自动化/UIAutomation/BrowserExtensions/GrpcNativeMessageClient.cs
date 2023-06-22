@@ -4,6 +4,9 @@ using Microsoft.Extensions.Logging;
 
 namespace UIAutomation.BrowserExtensions
 {
+    /// <summary>
+    /// 和浏览器插件通信的客户端
+    /// </summary>
     public class GrpcNativeMessageClient
     {
         private readonly ILogger<GrpcNativeMessageClient> logger;
@@ -21,7 +24,7 @@ namespace UIAutomation.BrowserExtensions
             this.logger = logger;
         }
 
-        public void Connect(int port)
+        internal void Connect(int port)
         {
             this.channel = new Channel($"localhost:{port}", ChannelCredentials.Insecure);
             this.client = new NativeMessage.NativeMessageClient(this.channel);
@@ -33,7 +36,7 @@ namespace UIAutomation.BrowserExtensions
         /// <param name="request"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public FromPointResponse FromPoint(FromPointRequest request)
+        internal FromPointResponse FromPoint(FromPointRequest request)
         {
             if (this.client == null)
             {
@@ -46,9 +49,27 @@ namespace UIAutomation.BrowserExtensions
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        internal FindResponse Find(FindRequest request)
+        {
+            if (this.client == null)
+            {
+                throw new Exception("grpc客户端没有创建");
+            }
+            else
+            {
+                return this.client.Find(request);
+            }
+        }
+
+        /// <summary>
         /// 高亮元素
         /// </summary>
-        public HighlightResponse Highlight(HighlightRequest request)
+        internal HighlightResponse Highlight(HighlightRequest request)
         {
             if (this.client==null)
             {

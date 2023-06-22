@@ -1,32 +1,20 @@
 ﻿using FlaUI.Core.AutomationElements;
 using FlaUI.Core.Exceptions;
 using Microsoft.Extensions.Logging;
-using UIAutomation.Elements;
 
 namespace UIAutomation.BrowserExtensions
 {
-    public class ChromeExtension : BrowserExtension
+    internal class ChromeExtension : BrowserExtension
     {
         private const string PIPE_NAME = "NativeMessageHost";
 
-        public ChromeExtension(ILogger<BrowserExtension> logger,
+        public ChromeExtension(ILogger<ChromeExtension> logger,
             NativeMessageClient nativeMessageClient,
             GrpcNativeMessageClient grpcNativeMessageClient)
             : base(logger, nativeMessageClient, grpcNativeMessageClient)
         {
+            // TODO 修改配置
             this.grpcNativeMessageClient.Connect(50001);
-        }
-
-        internal override ElementBase[] FindElement()
-        {
-            throw new NotImplementedException();
-        }
-
-        internal override ElementBase FromPoint(int x, int y)
-        {
-            // 通过浏览器插件获取浏览器中元素信息
-            //this.Test();
-            throw new NotImplementedException();
         }
 
         internal override bool InBrowserDocument(AutomationElement automationElement, out AutomationElement? document)

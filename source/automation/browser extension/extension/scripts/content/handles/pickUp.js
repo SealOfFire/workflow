@@ -1,7 +1,7 @@
 /**
  * 选取元素
  */
-
+// TODO 可删除
 commands["pickUp"] = (data) => {
     console.log("pickUp.js", "in", data);
     // 坐标 data.Position.X, data.Position.Y

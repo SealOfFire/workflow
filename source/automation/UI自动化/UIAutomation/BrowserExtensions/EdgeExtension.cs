@@ -1,35 +1,18 @@
 ﻿using FlaUI.Core.AutomationElements;
 using FlaUI.Core.Exceptions;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UIAutomation.Elements;
 
 namespace UIAutomation.BrowserExtensions
 {
-    public class EdgeExtension : BrowserExtension
+    internal class EdgeExtension : BrowserExtension
     {
-        public EdgeExtension(ILogger<BrowserExtension> logger,
+        public EdgeExtension(ILogger<EdgeExtension> logger,
             NativeMessageClient nativeMessageClient,
              GrpcNativeMessageClient grpcNativeMessageClient)
             : base(logger, nativeMessageClient, grpcNativeMessageClient)
         {
+            // TODO 修改配置
             this.grpcNativeMessageClient.Connect(50002);
-        }
-
-        internal override ElementBase[] FindElement()
-        {
-            throw new NotImplementedException();
-        }
-
-        internal override ElementBase FromPoint(int x, int y)
-        {
-            int debug = 0;
-            debug++;
-            throw new NotImplementedException();
         }
 
         internal override bool InBrowserDocument(AutomationElement automationElement, out AutomationElement? document)
@@ -77,5 +60,6 @@ namespace UIAutomation.BrowserExtensions
 
             return false;
         }
+
     }
 }

@@ -20,10 +20,16 @@ namespace UIAutomation
             //services.TryAddSingleton<ExtensionCollection>();
             services.TryAddSingleton<UIAutomation>();
             services.TryAddSingleton<NativeMessageClient>();
-            services.TryAddSingleton<GrpcNativeMessageClient>();
+
+            // 每个插件内有自己的客户端，这个不使用单例
+            //services.TryAddScoped<GrpcNativeMessageClient>();
+            services.TryAddTransient<GrpcNativeMessageClient>();
+
             // 处理浏览插件的类
+            services.TryAddSingleton<ExtensionManager>();
             services.TryAddSingleton<BrowserExtension, ChromeExtension>();
             services.TryAddSingleton<BrowserExtension, EdgeExtension>();
+            services.TryAddSingleton<BrowserExtension, FirefoxExtension>();
 
             return services;
         }

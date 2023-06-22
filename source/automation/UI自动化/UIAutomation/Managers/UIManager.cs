@@ -7,6 +7,9 @@ using UIAutomation.Elements;
 
 namespace UIAutomation.Managers
 {
+    /// <summary>
+    /// 自动库对外的接口
+    /// </summary>
     public class UIManager
     {
         private readonly ILogger<UIManager> logger;
@@ -18,6 +21,11 @@ namespace UIAutomation.Managers
             this.uiAutomation = uiAutomation;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public HoverResponse Hover(HoverRequest request)
         {
             try
@@ -50,6 +58,11 @@ namespace UIAutomation.Managers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public PickUpResponse PickUp(PickUpRequest request)
         {
             try
@@ -76,11 +89,16 @@ namespace UIAutomation.Managers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public HighlightResponse Highlight(HighlightRequest request)
         {
             try
             {
-                ElementBase elementBase = this.uiAutomation.Find(request.Attribute, (AutomationType)request.AutomationType);
+                ElementBase elementBase = this.uiAutomation.Find(request.BrowserType, request.Attribute, (AutomationType)request.AutomationType);
 
                 // 高亮元素
                 Color color = ColorTranslator.FromHtml(request.Highlight.Color);

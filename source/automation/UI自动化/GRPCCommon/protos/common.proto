@@ -44,6 +44,13 @@ enum ElementType{
 	html=2;
 }
 
+// 浏览器类型
+enum BrowserType{
+	chrome=0;
+	firefox=1;
+	edge=2;
+}
+
 // 元素的属性
 message Attribute{
 	
@@ -64,6 +71,30 @@ message Attribute{
 
 	// 子级别属性列表
 	repeated Attribute children=6;
+
+	// html属性
+	optional string tag = 20;
+
+	optional string id = 21;
+
+	optional string name = 22;
+
+	optional string className=23;
+
+	optional string title=24;
+
+	optional string href=25;
+
+	optional string automationId=26;
+
+	optional int32 controlType=27;
+
+	optional int32 value=28;
+
+	optional int32 type=29;
+
+	// 同级别的第index个元素
+	optional int32 index=30;
 }
 
 // 边框范围

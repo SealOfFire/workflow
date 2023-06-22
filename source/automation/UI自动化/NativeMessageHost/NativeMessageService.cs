@@ -127,6 +127,12 @@ namespace NativeMessageHost
             return response;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public override Task<FromPointResponse> FromPoint(FromPointRequest request, ServerCallContext context)
         {
             this.logger.LogWarning($"grpc FromPoint");
@@ -143,6 +149,34 @@ namespace NativeMessageHost
             return Task.FromResult(response);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public override Task<FindResponse> Find(FindRequest request, ServerCallContext context)
+        {
+            this.logger.LogWarning($"grpc find");
+            string command = "find";
+
+            Error? error;
+
+            FindResponse response = this.Common<FindRequest, FindResponse>(command, request, out error);
+            if (error !=null)
+            {
+                response.Error = error;
+            }
+
+            return Task.FromResult(response);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public override Task<HighlightResponse> Highlight(HighlightRequest request, ServerCallContext context)
         {
             this.logger.LogWarning($"grpc Highlight");

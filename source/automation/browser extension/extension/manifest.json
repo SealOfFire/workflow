@@ -17,10 +17,9 @@
             "js": [
                 "scripts/libs/jquery.min.js",
                 "scripts/content/handles/commands.js",
+                "scripts/content/handles/find.js",
                 "scripts/content/handles/fromPoint.js",
                 "scripts/content/handles/highlight.js",
-                "scripts/content/handles/hover.js",
-                "scripts/content/handles/pickUp.js",
                 "scripts/content/content.js"
             ],
             "css": [

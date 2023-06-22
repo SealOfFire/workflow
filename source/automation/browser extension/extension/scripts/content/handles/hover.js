@@ -1,7 +1,7 @@
 /**
  * 鼠标悬浮在元素上的时候高亮元素
  */
-
+// TODO 可删除
 commands["hover"] = (data) => {
     console.log("hover.js", "in", data);
     // 坐标 data.Position.X, data.Position.Y
